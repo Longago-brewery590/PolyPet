@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Bump version
+        id: version
+        run: |
+          CURRENT=$(jq -r '.version' Unity/package.json)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          PATCH=$((PATCH + 1))
+          NEW="$MAJOR.$MINOR.$PATCH"
+          echo "VERSION=$NEW" >> $GITHUB_OUTPUT
+          echo "TAG=v$NEW" >> $GITHUB_OUTPUT
+
+          jq --arg v "$NEW" '.version = $v' Unity/package.json > tmp.json
+          mv tmp.json Unity/package.json
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Unity/package.json
+          git commit -m "Bump version to ${{ steps.version.outputs.VERSION }}"
+          git tag ${{ steps.version.outputs.TAG }}
+          git push origin main --tags
+
+      - name: Copy Core to Godot
+        run: |
+          mkdir -p Godot/Addons/PolyPet/Core
+          cp Core/*.cs Godot/Addons/PolyPet/Core/
+
+      - name: Copy Core to Unity
+        run: |
+          mkdir -p Unity/Runtime/Core
+          cp Core/*.cs Unity/Runtime/Core/
+
+      - name: Zip Godot addon
+        run: |
+          cd Godot
+          mkdir -p ../dist/addons
+          cp -r Addons/PolyPet ../dist/addons/PolyPet
+          cd ../dist
+          zip -r ../PolyPet-Godot-${{ steps.version.outputs.VERSION }}.zip addons/
+          rm -rf ../dist
+
+      - name: Zip Unity package
+        run: |
+          cd Unity
+          zip -r ../PolyPet-Unity-${{ steps.version.outputs.VERSION }}.zip .
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create ${{ steps.version.outputs.TAG }} \
+            --title "PolyPet ${{ steps.version.outputs.VERSION }}" \
+            --generate-notes \
+            PolyPet-Godot-${{ steps.version.outputs.VERSION }}.zip \
+            PolyPet-Unity-${{ steps.version.outputs.VERSION }}.zip

@@ -1,0 +1,30 @@
+name: Sync Core
+
+on:
+  push:
+    branches: [main]
+    paths: [Core/**]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Copy Core to Godot
+        run: |
+          mkdir -p Godot/Addons/PolyPet/Core
+          cp Core/*.cs Godot/Addons/PolyPet/Core/
+
+      - name: Copy Core to Unity
+        run: |
+          mkdir -p Unity/Runtime/Core
+          cp Core/*.cs Unity/Runtime/Core/
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Godot/Addons/PolyPet/Core/ Unity/Runtime/Core/
+          git diff --cached --quiet || git commit -m "Sync Core to engine adapters"
+          git push
