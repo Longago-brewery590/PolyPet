@@ -85,7 +85,7 @@ public partial class PolyPet : Node2D
     {
         if (Data.Body.Vertices == null) return;
 
-        var frame = PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
+        var frame = GetCurrentFrame();
         var offset = new Vector2(frame.PositionOffset.X, frame.PositionOffset.Y);
 
         DrawTransform(frame, offset, () =>
@@ -103,9 +103,11 @@ public partial class PolyPet : Node2D
 
     public override void _Input(InputEvent @event)
     {
+        if (Data.Body.Vertices == null) return;
+
         if (@event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
         {
-            var localPos = ToLocal(mb.GlobalPosition);
+            var localPos = GetAnimatedLocalPosition(ToLocal(mb.GlobalPosition));
             float hitRadius = Data.Body.Scale * 1.5f;
             if (localPos.LengthSquared() < hitRadius * hitRadius)
             {
@@ -123,6 +125,25 @@ public partial class PolyPet : Node2D
         DrawSetTransform(xform.Origin, 0f, new Vector2(frame.ScaleX, frame.ScaleY));
         drawAction();
         DrawSetTransform(Vector2.Zero);
+    }
+
+    private AnimationFrame GetCurrentFrame()
+    {
+        return PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
+    }
+
+    private Vector2 GetAnimatedLocalPosition(Vector2 localPosition)
+    {
+        var frame = GetCurrentFrame();
+        var offset = new Vector2(frame.PositionOffset.X, frame.PositionOffset.Y);
+        var scale = new Vector2(frame.ScaleX, frame.ScaleY);
+
+        if (Mathf.IsZeroApprox(scale.X) || Mathf.IsZeroApprox(scale.Y))
+            return localPosition - offset;
+
+        return new Vector2(
+            (localPosition.X - offset.X) / scale.X,
+            (localPosition.Y - offset.Y) / scale.Y);
     }
 
     private void DrawShapePart(ShapePart part)
