@@ -10,6 +10,12 @@ public class PolyPetName : MonoBehaviour
     void Start()
     {
         _text = GetComponent<TMP_Text>();
+        if (_text == null || Pet == null)
+        {
+            if (_text != null) _text.text = "";
+            return;
+        }
+
         Pet.NameSeedChanged += UpdateText;
         UpdateText();
     }

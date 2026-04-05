@@ -1,7 +1,9 @@
 {
     "name": "Shilo.PolyPet",
     "rootNamespace": "PolyPet",
-    "references": [],
+    "references": [
+        "Unity.TextMeshPro"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
