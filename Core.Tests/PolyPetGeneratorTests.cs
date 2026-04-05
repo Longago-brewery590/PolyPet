@@ -49,6 +49,18 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void Create_NonCircularEyesAreNotTaggedAsCircles()
+        {
+            var pet = PolyPetGenerator.Create(6);
+
+            Assert.All(pet.Eyes, eye =>
+            {
+                Assert.Equal(10, eye.Vertices.Length);
+                Assert.NotEqual(ShapeType.Circle, eye.Shape);
+            });
+        }
+
+        [Fact]
         public void Create_HasTwoEars()
         {
             var pet = PolyPetGenerator.Create(1);

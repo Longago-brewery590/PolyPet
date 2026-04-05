@@ -19,7 +19,7 @@ namespace PolyPet
             data.Head = GenerateHead(rng, data.Body, data.PrimaryColor);
 
             // 4. Eyes
-            data.Eyes = GenerateEyes(rng, data.Head, data.TertiaryColor);
+            data.Eyes = GenerateEyes(rng, data.Head);
 
             // 5. Mouth
             data.Mouth = GenerateMouth(rng, data.Head);
@@ -119,7 +119,7 @@ namespace PolyPet
 
         // --- Eyes ---
 
-        private static ShapePart[] GenerateEyes(Random rng, ShapePart head, Color32 accentColor)
+        private static ShapePart[] GenerateEyes(Random rng, ShapePart head)
         {
             var style = (EyeStyle)rng.Next(Enum.GetValues(typeof(EyeStyle)).Length);
             float eyeSize = head.Scale * 0.15f;
@@ -131,23 +131,29 @@ namespace PolyPet
             {
                 float xDir = i == 0 ? -1f : 1f;
                 Vec2[] verts;
+                ShapeType shape;
 
                 switch (style)
                 {
                     case EyeStyle.Star:
                         verts = GenerateStarVertices(eyeSize, 5);
+                        shape = ShapeType.Triangle;
                         break;
                     case EyeStyle.Oval:
                         verts = GenerateCircleVertices(eyeSize, 16);
+                        shape = ShapeType.Circle;
                         break;
                     case EyeStyle.Dot:
                         verts = GenerateCircleVertices(eyeSize * 0.6f, 8);
+                        shape = ShapeType.Circle;
                         break;
                     case EyeStyle.HalfMoon:
                         verts = GenerateHalfCircleVertices(eyeSize);
+                        shape = ShapeType.Triangle;
                         break;
                     default: // Circle
                         verts = GenerateCircleVertices(eyeSize);
+                        shape = ShapeType.Circle;
                         break;
                 }
 
@@ -159,7 +165,7 @@ namespace PolyPet
                     Scale = eyeSize,
                     Rotation = 0f,
                     Radius = eyeSize,
-                    Shape = ShapeType.Circle
+                    Shape = shape
                 };
             }
             return eyes;
@@ -270,7 +276,7 @@ namespace PolyPet
                 for (int i = 0; i < 2; i++)
                 {
                     float xDir = i == 0 ? -1f : 1f;
-                    limbs[i] = MakeLimb(rng, xDir * spacing, limbY, limbSize, color);
+                    limbs[i] = MakeLimb(xDir * spacing, limbY, limbSize, color);
                 }
             }
             else
@@ -281,14 +287,14 @@ namespace PolyPet
                 {
                     float xDir = i % 2 == 0 ? -1f : 1f;
                     float y = yPositions[i / 2];
-                    limbs[i] = MakeLimb(rng, xDir * spacing, y, limbSize, color);
+                    limbs[i] = MakeLimb(xDir * spacing, y, limbSize, color);
                 }
             }
 
             return limbs;
         }
 
-        private static ShapePart MakeLimb(Random rng, float x, float y, float size, Color32 color)
+        private static ShapePart MakeLimb(float x, float y, float size, Color32 color)
         {
             return new ShapePart
             {
