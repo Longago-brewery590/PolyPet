@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          ref: main
 
       - name: Bump version
         id: version
@@ -38,11 +39,13 @@ jobs:
 
       - name: Copy Core to Godot
         run: |
+          rm -rf Godot/Addons/PolyPet/Core
           mkdir -p Godot/Addons/PolyPet/Core
           cp Core/*.cs Godot/Addons/PolyPet/Core/
 
       - name: Copy Core to Unity
         run: |
+          rm -rf Unity/Runtime/Core
           mkdir -p Unity/Runtime/Core
           cp Core/*.cs Unity/Runtime/Core/
 
