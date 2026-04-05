@@ -1,1 +1,18 @@
-docs/superpowers/
+# Copied Core files (CI manages these)
+Godot/Addons/PolyPet/Core/
+Unity/Runtime/Core/
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
