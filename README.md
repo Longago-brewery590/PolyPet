@@ -14,7 +14,7 @@ Add via Window > Package Manager > + > Add package from git URL:
 https://github.com/Shilo/PolyPet.git?path=Unity
 ```
 
-**Manual:** Download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases), extract into your project's `Packages/` folder.
+**Manual:** Download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases), extract it into your project's `Packages/com.shilo.polypet/` folder.
 
 ### Godot
 
