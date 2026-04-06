@@ -36,8 +36,8 @@ namespace PolyPet
                 return new AnimationEnvelope(
                     0f,
                     0f,
-                    0f,
-                    0f,
+                    -IdleAmplitude,
+                    IdleAmplitude,
                     0.9f,
                     1.15f,
                     0.8f,

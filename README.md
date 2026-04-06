@@ -7,8 +7,9 @@
 - Deterministic pet generation from an integer seed.
 - Optional seeded cute-name generation.
 - Shared animation math for idle bobbing and pet/click squish reactions.
-- Unity: `PolyPetAvatar` (`MonoBehaviour`) plus `PolyPetName` (`TextMeshPro`).
-- Godot: `PolyPetAvatar` (`Node2D`) plus `PolyPetName` (`Label`) in an addon the user enables in the editor.
+- Frame-based avatar fitting that uniformly scales each pet into a caller-provided rectangle without letting animated geometry escape the frame.
+- Unity: `PolyPetAvatar` (`MonoBehaviour`) plus `PolyPetName` (`TextMeshPro`), with either scene-space `FrameSize` sizing or `RectTransform` sizing inside a Canvas.
+- Godot: `PolyPetAvatar` (`Control`) plus `PolyPetName` (`Label`) in an addon the user enables in the editor.
 - GitHub Actions workflows for syncing Core into engine adapter folders and creating release zips.
 
 The Core generator also produces `BodyPattern` and `HeadPattern` metadata for custom renderers and future visual expansion.
@@ -43,8 +44,9 @@ Build the project's C# solution once so Godot can compile the addon scripts, the
 
 1. Add the package.
 2. Create an empty GameObject and add the `PolyPetAvatar` component.
-3. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
-4. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+3. Size the avatar by either setting `FrameSize` on the component for scene-space use, or by placing it on a Canvas object with a `RectTransform` and sizing that rect directly.
+4. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
+5. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
 ### Godot
 
@@ -52,8 +54,9 @@ Build the project's C# solution once so Godot can compile the addon scripts, the
 2. Build the project's C# solution once so `PolyPetAvatar` and `PolyPetName` are compiled and discoverable by the editor.
 3. Enable `PolyPet` in `Project > Project Settings > Plugins`.
 4. Add a `PolyPetAvatar` node from the "Create New Node" dialog.
-5. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
-6. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+5. Size the avatar by resizing the `Control` rect. The pet scales uniformly to fit inside that frame, including its animation envelope.
+6. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
+7. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
 ## Runtime API
 
@@ -65,6 +68,9 @@ pet.NameSeed = 99;
 // Randomize either seed.
 pet.RandomizeSeed();
 pet.RandomizeNameSeed();
+
+// Size the pet's hard render frame.
+pet.FrameSize = new Vector2(4f, 3f);
 
 // Observe updates from C# in Unity with explicit callback types.
 pet.AddSeedChangedListener((PolyPetAvatar avatar, NullableInt seed) =>
@@ -84,17 +90,20 @@ string? name = pet.Data.Name;
 If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
 
 In Unity, `SeedChanged` passes `(avatar, seed)` and `NameSeedChanged` passes `(avatar, nameSeed)`. They are serialized typed `UnityEvent`s for inspector wiring, and `AddSeedChangedListener` / `AddNameSeedChangedListener` expose named callback delegates for code subscriptions. The seed payload uses the serializable `NullableInt` wrapper so `null` and integer values are both represented exactly.
+If a `RectTransform` is present under a Canvas, `PolyPetAvatar` uses that rect as its frame; otherwise it renders into the serialized `FrameSize` in scene space.
 
 In Godot, `SeedChanged` passes `(avatar, seed)` and `NameSeedChanged` passes `(avatar, nameSeed)`. The payload is a `Variant` carrying either the integer seed or `null`, and the signals can be connected from the editor after rebuilding the project's C# solution once.
+`PolyPetAvatar` inherits `Control`, so resizing the node's rect defines the pet's render frame.
 
 ## Inspector Fields
 
-| Field                | Type            | Default | Description                                            |
-| -------------------- | --------------- | ------- | ------------------------------------------------------ |
-| Start Seed           | `int`           | `0`     | Seed value used when `Start Seed Type` is `Fixed`.     |
-| Start Name Seed      | `int`           | `0`     | Name seed used when `Start Name Seed Type` is `Fixed`. |
-| Start Seed Type      | `StartSeedType` | `Fixed` | `None`, `Fixed`, or `Random`.                          |
-| Start Name Seed Type | `StartSeedType` | `Fixed` | `None`, `Fixed`, or `Random`.                          |
+| Field                | Type            | Default   | Description                                                              |
+| -------------------- | --------------- | --------- | ------------------------------------------------------------------------ |
+| Start Seed           | `int`           | `0`       | Seed value used when `Start Seed Type` is `Fixed`.                       |
+| Start Name Seed      | `int`           | `0`       | Name seed used when `Start Name Seed Type` is `Fixed`.                   |
+| Start Seed Type      | `StartSeedType` | `Fixed`   | `None`, `Fixed`, or `Random`.                                            |
+| Start Name Seed Type | `StartSeedType` | `Fixed`   | `None`, `Fixed`, or `Random`.                                            |
+| Frame Size           | `Vector2`       | `(3, 3)`  | Unity scene-space frame when no `RectTransform` is driving the avatar.   |
 
 ## Repository Layout
 

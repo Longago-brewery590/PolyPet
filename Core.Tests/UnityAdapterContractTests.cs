@@ -64,5 +64,16 @@ namespace PolyPet.Tests
             Assert.DoesNotContain("ScreenToWorldPoint", source);
             Assert.DoesNotContain("WorldToScreenPoint", source);
         }
+
+        [Fact]
+        public void UnityPackage_DeclaresUgGuiDependenciesForPolyPetAvatar()
+        {
+            var asmdef = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "Shilo.PolyPet.asmdef")));
+            var packageManifest = File.ReadAllText(RepoFile(Path.Combine("Unity", "package.json")));
+
+            Assert.Contains("\"UnityEngine.UI\"", asmdef);
+            Assert.Contains("\"dependencies\"", packageManifest);
+            Assert.Contains("\"com.unity.ugui\"", packageManifest);
+        }
     }
 }

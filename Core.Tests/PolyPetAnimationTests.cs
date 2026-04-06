@@ -60,6 +60,21 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void GetEnvelope_BeingPet_IncludesIdleBobYRange()
+        {
+            var envelope = PolyPetAnimation.GetEnvelope(PetState.BeingPet);
+
+            foreach (var time in new[] { 0f, 0.5f, 1f, 1.5f })
+            {
+                var frame = PolyPetAnimation.GetFrame(PetState.BeingPet, time, 1f);
+                Assert.InRange(frame.PositionOffset.Y, envelope.MinOffsetY, envelope.MaxOffsetY);
+            }
+
+            Assert.Equal(-4f, envelope.MinOffsetY, 3);
+            Assert.Equal(4f, envelope.MaxOffsetY, 3);
+        }
+
+        [Fact]
         public void GetEnvelope_ReturnsUnionOfAllStateEnvelopes()
         {
             var envelope = PolyPetAnimation.GetEnvelope();

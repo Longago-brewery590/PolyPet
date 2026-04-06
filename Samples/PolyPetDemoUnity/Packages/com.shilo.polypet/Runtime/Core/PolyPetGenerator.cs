@@ -65,7 +65,9 @@ namespace PolyPet
         private static ShapePart GenerateBody(Random rng, Color32 color)
         {
             var shape = (ShapeType)rng.Next(Enum.GetValues(typeof(ShapeType)).Length);
-            var scale = 80f + (float)rng.NextDouble() * 40f; // 80-120
+            var scale = PolyPetGenerationLimits.BodyScaleMin +
+                        (float)rng.NextDouble() *
+                        (PolyPetGenerationLimits.BodyScaleMax - PolyPetGenerationLimits.BodyScaleMin);
 
             Vec2[] vertices;
             var radius = scale;
@@ -98,7 +100,10 @@ namespace PolyPet
                 ShapeType.Octagon, ShapeType.Pentagon, ShapeType.Square
             };
             var shape = cuteShapes[rng.Next(cuteShapes.Length)];
-            var scale = body.Scale * (0.5f + (float)rng.NextDouble() * 0.2f); // 50-70% of body
+            var scale = body.Scale * (PolyPetGenerationLimits.HeadScaleMinRatio +
+                                      (float)rng.NextDouble() *
+                                      (PolyPetGenerationLimits.HeadScaleMaxRatio -
+                                       PolyPetGenerationLimits.HeadScaleMinRatio));
 
             Vec2[] vertices;
             if (shape == ShapeType.Circle)
@@ -106,7 +111,7 @@ namespace PolyPet
             else
                 vertices = GenerateRegularPolygon(SidesForShape(shape), scale);
 
-            var headY = body.Scale + scale * 0.6f; // Above body
+            var headY = body.Scale + scale * PolyPetGenerationLimits.HeadVerticalOffsetRatio; // Above body
 
             return new ShapePart
             {
@@ -209,9 +214,9 @@ namespace PolyPet
         private static ShapePart[] GenerateEars(Random rng, ShapePart head, Color32 color)
         {
             var style = (EarStyle)rng.Next(Enum.GetValues(typeof(EarStyle)).Length);
-            var earSize = head.Scale * 0.4f;
+            var earSize = head.Scale * PolyPetGenerationLimits.EarScaleRatio;
             var spacing = head.Scale * 0.6f;
-            var earY = head.Position.Y + head.Scale * 0.7f;
+            var earY = head.Position.Y + head.Scale * PolyPetGenerationLimits.EarPositionRatio;
 
             var ears = new ShapePart[2];
             for (var i = 0; i < 2; i++)
@@ -271,13 +276,13 @@ namespace PolyPet
         private static ShapePart[] GenerateLimbs(Random rng, ShapePart body, Color32 color)
         {
             var count = rng.Next(2) == 0 ? 2 : 4; // 50/50
-            var limbSize = body.Scale * 0.2f;
+            var limbSize = body.Scale * PolyPetGenerationLimits.LimbScaleRatio;
             var limbs = new ShapePart[count];
 
             if (count == 2)
             {
-                var spacing = body.Scale * 0.4f;
-                var limbY = -body.Scale * 0.8f;
+                var spacing = body.Scale * PolyPetGenerationLimits.LimbTwoSpacingRatio;
+                var limbY = -body.Scale * PolyPetGenerationLimits.LimbUpperYRatio;
                 for (var i = 0; i < 2; i++)
                 {
                     var xDir = i == 0 ? -1f : 1f;
@@ -286,8 +291,8 @@ namespace PolyPet
             }
             else
             {
-                var spacing = body.Scale * 0.5f;
-                float[] yPositions = { -body.Scale * 0.8f, -body.Scale * 0.1f };
+                var spacing = body.Scale * PolyPetGenerationLimits.LimbFourSpacingRatio;
+                float[] yPositions = { -body.Scale * PolyPetGenerationLimits.LimbUpperYRatio, -body.Scale * PolyPetGenerationLimits.LimbLowerYRatio };
                 for (var i = 0; i < 4; i++)
                 {
                     var xDir = i % 2 == 0 ? -1f : 1f;
@@ -318,8 +323,8 @@ namespace PolyPet
         private static ShapePart GenerateTail(Random rng, ShapePart body, Color32 color)
         {
             var style = (TailStyle)rng.Next(Enum.GetValues(typeof(TailStyle)).Length);
-            var tailSize = body.Scale * 0.25f;
-            var tailX = body.Scale * 0.8f;
+            var tailSize = body.Scale * PolyPetGenerationLimits.TailScaleRatio;
+            var tailX = body.Scale * PolyPetGenerationLimits.TailOffsetRatio;
 
             Vec2[] vertices;
             switch (style)

@@ -23,7 +23,7 @@ mkdir -p "$staging/Godot/addons/PolyPet/Core" "$staging/Unity/Runtime/Core"
 cp "${core_files[@]}" "$staging/Godot/addons/PolyPet/Core/"
 cp "${core_files[@]}" "$staging/Unity/Runtime/Core/"
 
-mkdir -p "$(dirname "$godot_dest")" "$(dirname "$unity_dest")"
-rm -rf "$godot_dest" "$unity_dest"
-mv "$staging/Godot/addons/PolyPet/Core" "$godot_dest"
-mv "$staging/Unity/Runtime/Core" "$unity_dest"
+mkdir -p "$godot_dest" "$unity_dest"
+rm -f "$godot_dest"/*.cs "$unity_dest"/*.cs
+cp "$staging/Godot/addons/PolyPet/Core/"*.cs "$godot_dest/"
+cp "$staging/Unity/Runtime/Core/"*.cs "$unity_dest/"
