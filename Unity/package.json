@@ -1,6 +1,6 @@
 {
   "name": "com.shilo.polypet",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "PolyPet",
   "description": "Acute-ly polygon pet creator. Procedural 2D generation inspired by Tamagotchi and Peridot.",
   "unity": "6000.4",
