@@ -7,8 +7,8 @@
 - Deterministic pet generation from an integer seed.
 - Optional seeded cute-name generation.
 - Shared animation math for idle bobbing and pet/click squish reactions.
-- A Unity `MonoBehaviour` renderer plus `PolyPetName` TextMeshPro helper.
-- A Godot `Node2D` renderer plus `PolyPetName` label helper, packaged with a minimal editor plugin so the C# nodes register in the "Create New Node" dialog.
+- Unity: `PolyPetAvatar` (`MonoBehaviour`) plus `PolyPetName` (`TextMeshPro`).
+- Godot: `PolyPetAvatar` (`Node2D`) plus `PolyPetName` (`Label`) in an addon the user enables in the editor.
 - GitHub Actions workflows for syncing Core into engine adapter folders and creating release zips.
 
 The Core generator also produces `BodyPattern` and `HeadPattern` metadata for custom renderers and future visual expansion.
@@ -34,7 +34,7 @@ Or download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/P
 ### Godot
 
 Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases) and extract it into your project root so `addons/PolyPet/` is created.
-For Godot .NET, build the project once so the C# addon assembly compiles, then enable `PolyPet` in `Project > Project Settings > Plugins`.
+Build the project's C# solution once so Godot can compile the addon scripts, then enable `PolyPet` in `Project > Project Settings > Plugins`.
 
 ## Quick Start
 
@@ -48,7 +48,7 @@ For Godot .NET, build the project once so the C# addon assembly compiles, then e
 ### Godot
 
 1. Copy the addon into `addons/PolyPet/`.
-2. Open the project in Godot .NET and build once so `PolyPetEditorPlugin.cs` can compile.
+2. Build the project's C# solution once so `PolyPetAvatar` and `PolyPetName` are compiled and discoverable by the editor.
 3. Enable `PolyPet` in `Project > Project Settings > Plugins`.
 4. Add a `PolyPetAvatar` node from the "Create New Node" dialog.
 5. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
@@ -91,7 +91,7 @@ If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
 Unity/                    Unity package root
 Unity/Runtime/            Unity runtime adapter
 Godot/                    Godot package root
-Godot/addons/PolyPet/     Godot plugin entrypoint plus runtime adapter
+Godot/addons/PolyPet/     Godot addon and runtime adapter
 Core/                     Shared .NET Standard 2.1 generation library
 Core.Tests/               xUnit coverage for generator, names, and animation
 Samples/
@@ -151,7 +151,7 @@ cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
 cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
 ```
 
-In Godot, remember to build the sample project once and enable the `PolyPet` plugin in `Project Settings > Plugins` before expecting `PolyPetAvatar` and `PolyPetName` to appear as global nodes.
+In Godot, build the project's C# solution once, then enable the `PolyPet` plugin in `Project Settings > Plugins` before expecting `PolyPetAvatar` and `PolyPetName` to appear as global nodes.
 
 ## License
 

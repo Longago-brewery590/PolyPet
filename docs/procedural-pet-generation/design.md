@@ -35,7 +35,7 @@ The same seed should produce equivalent pet data regardless of whether the consu
 
 Consumers should be able to drop in a pet component, provide or randomize seeds, and get a complete result without needing to manually assemble sub-parts.
 
-For Godot, "lightweight" still includes the minimum editor integration needed for discoverability: the addon should be enableable from `Project Settings > Plugins` so its C# `GlobalClass` nodes appear in the editor after the project is built.
+For Godot, "lightweight" still includes the minimum editor integration needed for discoverability: the addon should be enableable from `Project Settings > Plugins`, and its C# scripts still need to be compiled once before the `GlobalClass` nodes appear in the editor.
 
 ## High-Level Architecture
 
@@ -141,7 +141,7 @@ Each engine adapter is responsible for:
 - Rendering the generated geometry using native engine APIs.
 - Applying animation offsets each frame.
 - Detecting simple click or tap interaction to trigger the pet reaction.
-- Providing only the minimal editor/plugin scaffolding needed for engine-native discoverability of the runtime components.
+- Providing only the minimal addon metadata needed for engine-native discoverability of the runtime components.
 
 ### Seed behavior
 
@@ -162,7 +162,7 @@ Unity and Godot implementations should expose the same conceptual runtime behavi
 - Randomization helpers are available for both pet and name seeds.
 - The current generated data is accessible for display or debugging.
 
-Godot additionally needs a minimal `EditorPlugin` entrypoint so the addon can be enabled and the `PolyPetAvatar` / `PolyPetName` C# node types are available from the editor's node creation flow.
+Godot needs addon packaging that can be enabled from `Project Settings > Plugins` so the `PolyPetAvatar` / `PolyPetName` C# node types are available from the editor's node creation flow. Those C# types still require an initial project build, but they do not require a placeholder `EditorPlugin` implementation.
 
 ### Name display component
 
@@ -194,7 +194,7 @@ Interaction should feel responsive and pleasant, but it should not introduce gam
 - Core code must remain engine-agnostic.
 - Generated output must be deterministic from seeds.
 - Runtime integration must support Unity 6.4+ and Godot .NET 4.6+.
-- The Godot addon must package whatever minimal plugin metadata/script is required for editor registration of its global C# node types.
+- The Godot addon must package whatever minimal plugin metadata is required for editor registration of its global C# node types.
 - The feature should remain lightweight enough to embed in simple demos, UI scenes, or toy experiences.
 
 ## Success Criteria
