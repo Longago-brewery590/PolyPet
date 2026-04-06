@@ -21,6 +21,14 @@ jobs:
           CURRENT=$(jq -r '.version' Unity/package.json)
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           PATCH=$((PATCH + 1))
+          if [ "$PATCH" -gt 9 ]; then
+            PATCH=0
+            MINOR=$((MINOR + 1))
+          fi
+          if [ "$MINOR" -gt 9 ]; then
+            MINOR=0
+            MAJOR=$((MAJOR + 1))
+          fi
           NEW="$MAJOR.$MINOR.$PATCH"
           echo "VERSION=$NEW" >> $GITHUB_OUTPUT
           echo "TAG=v$NEW" >> $GITHUB_OUTPUT
@@ -28,11 +36,13 @@ jobs:
           jq --arg v "$NEW" '.version = $v' Unity/package.json > tmp.json
           mv tmp.json Unity/package.json
 
+          sed -i "s/^version=\".*\"/version=\"$NEW\"/" Godot/Addons/PolyPet/plugin.cfg
+
       - name: Commit version bump
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Unity/package.json
+          git add Unity/package.json Godot/Addons/PolyPet/plugin.cfg
           git commit -m "chore(release): bump version to ${{ steps.version.outputs.VERSION }}"
           git tag ${{ steps.version.outputs.TAG }}
           git push origin main --tags

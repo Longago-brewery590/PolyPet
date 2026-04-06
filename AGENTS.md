@@ -5,7 +5,7 @@ Documentation: README.md docs/
 Core source of truth: Core/
 Core entry points: Core/PolyPetGenerator.cs Core/PolyPetNameGenerator.cs Core/PolyPetAnimation.cs Core/PolyPetData.cs
 Unity adapter: Unity/Runtime/PolyPet.cs Unity/Runtime/PolyPetName.cs Unity/Runtime/Shilo.PolyPet.asmdef Unity/package.json
-Godot adapter: Godot/Addons/PolyPet/PolyPet.cs Godot/Addons/PolyPet/PolyPetName.cs
+Godot adapter: Godot/Addons/PolyPet/PolyPet.cs Godot/Addons/PolyPet/PolyPetName.cs Godot/Addons/PolyPet/plugin.cfg
 Tests: Core.Tests/Core.Tests.csproj
 Automation: .github/workflows/sync-core.yml .github/workflows/release.yml
 Rules: keep Core engine-agnostic; PolyPetName is display-only; seed generation stays in PolyPet
