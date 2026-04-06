@@ -100,12 +100,27 @@ docs/                     Design documents and references
 
 ## Development
 
+Open [`PolyPet.sln`](./PolyPet.sln) if you want both the [`Core` library](./Core/Core.csproj) and [`Core.Tests` test project](./Core.Tests/Core.Tests.csproj) loaded together in Rider or Visual Studio.
+
+### CLI
+
 Run the Core verification commands from the repo root:
 
 ```powershell
 dotnet test .\Core.Tests\Core.Tests.csproj
 dotnet build .\Core\Core.csproj --configuration Release
 ```
+
+### Visual Studio / Rider
+
+This repository does not include a standalone executable app. `Core` is a class library and `Core.Tests` is a test project, so the normal workflow is build plus test rather than a game-style Play button.
+
+1. Open [`PolyPet.sln`](./PolyPet.sln).
+2. Build the solution with your IDE's build command, or build the [`Core` project](./Core/Core.csproj) directly from the solution explorer.
+3. Open your IDE's unit test or test explorer window.
+4. Run all tests in the solution, or run individual tests from [`Core.Tests`](./Core.Tests/Core.Tests.csproj) using the editor gutter or test explorer.
+
+If you open an individual `.csproj` instead of the solution, the project can still build, but your IDE may not give you the same solution-level build and test experience.
 
 The repo currently ships runtime code only. The sample directories are present as scaffolding, but demo scenes are not checked in yet.
 
