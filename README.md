@@ -1,6 +1,6 @@
 # PolyPet
 
-Acute-ly polygon pet creator. PolyPet is a seeded procedural 2D creature generator inspired by Tamagotchi and Peridot, with a shared C# Core library and lightweight adapters for Unity 6.4+ and Godot .NET 4.6+.
+**Acute-ly** polygon pet creator. A seeded procedural 2D creature generator inspired by Tamagotchi and Peridot, with a shared C# Core library and lightweight adapters for Unity 6.4+ and Godot .NET 4.6+.
 
 ## What It Includes
 
@@ -16,7 +16,7 @@ The Core generator also produces `BodyPattern` and `HeadPattern` metadata for cu
 ## Requirements
 
 - Unity 6.4+
-- Godot 4.6+ .NET
+- Godot .NET 4.6+
 - .NET SDK 8.x for local Core development and tests
 
 ## Install
