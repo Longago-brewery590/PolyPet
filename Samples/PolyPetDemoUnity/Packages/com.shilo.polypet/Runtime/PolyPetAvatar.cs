@@ -52,13 +52,13 @@ public delegate void NameSeedChangedCallback(PolyPetAvatar avatar, NullableInt n
 
 public class PolyPetAvatar : MonoBehaviour
 {
-    private const float MouthLineWidth = 2f;
+    private const float WorldScale = 0.01f;
+    private const float MouthLineWidth = 2f * WorldScale;
 
     [SerializeField] private int _startSeed;
     [SerializeField] private int _startNameSeed;
     [SerializeField] private StartSeedType _startSeedType = StartSeedType.Fixed;
     [SerializeField] private StartSeedType _startNameSeedType = StartSeedType.Fixed;
-    [SerializeField] private Vector2 _frameSize = new Vector2(3f, 3f);
     [SerializeField] private AvatarNullableIntEvent _seedChanged = new AvatarNullableIntEvent();
     [SerializeField] private AvatarNullableIntEvent _nameSeedChanged = new AvatarNullableIntEvent();
 
@@ -70,14 +70,11 @@ public class PolyPetAvatar : MonoBehaviour
     private Mesh _mesh;
     private Mesh _mouthMesh;
     private Material _material;
+    private Vector3 _initialLocalPosition;
+    private Vector3 _initialLocalScale;
 
     public AvatarNullableIntEvent SeedChanged => _seedChanged;
     public AvatarNullableIntEvent NameSeedChanged => _nameSeedChanged;
-    public Vector2 FrameSize
-    {
-        get => _frameSize;
-        set => _frameSize = new Vector2(Mathf.Max(0f, value.x), Mathf.Max(0f, value.y));
-    }
 
     public void AddSeedChangedListener(SeedChangedCallback onSeedChanged)
     {
@@ -128,6 +125,9 @@ public class PolyPetAvatar : MonoBehaviour
 
     void Start()
     {
+        _initialLocalPosition = transform.localPosition;
+        _initialLocalScale = transform.localScale;
+
         var shader = Shader.Find("Sprites/Default");
         if (shader != null)
             _material = new Material(shader);
@@ -150,31 +150,39 @@ public class PolyPetAvatar : MonoBehaviour
         if (_state == PetState.BeingPet && _time - _petTime > 0.5f)
             _state = PetState.Idle;
 
-        if (Data.Body.Vertices == null)
+        var frame = PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
+        transform.localPosition = _initialLocalPosition + new Vector3(
+            frame.PositionOffset.X * WorldScale,
+            frame.PositionOffset.Y * WorldScale,
+            0f);
+        transform.localScale = Vector3.Scale(
+            _initialLocalScale,
+            new Vector3(frame.ScaleX, frame.ScaleY, 1f));
+
+        if (Data.Body.Vertices == null || !Input.GetMouseButtonDown(0))
             return;
 
-        if (TryGetPressedPetPosition(out var petPosition))
+        var mainCamera = Camera.main;
+        if (mainCamera == null)
+            return;
+
+        var worldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        float hitRadius = Data.Body.Scale * 0.02f; // Scale for world units
+        if (Vector2.Distance(new Vector2(worldPos.x, worldPos.y),
+            new Vector2(transform.position.x, transform.position.y)) < hitRadius)
         {
-            var hitRadius = Data.Body.Scale * 1.5f;
-            if (petPosition.sqrMagnitude < hitRadius * hitRadius)
-            {
-                _state = PetState.BeingPet;
-                _petTime = _time;
-            }
+            _state = PetState.BeingPet;
+            _petTime = _time;
         }
     }
 
     void OnRenderObject()
     {
         if (_mesh == null || _material == null) return;
-
-        var frame = GetCurrentFrame();
-        var renderMatrix = GetRenderMatrix(frame);
-
         _material.SetPass(0);
-        Graphics.DrawMeshNow(_mesh, renderMatrix);
+        Graphics.DrawMeshNow(_mesh, transform.localToWorldMatrix);
         if (_mouthMesh != null)
-            Graphics.DrawMeshNow(_mouthMesh, renderMatrix);
+            Graphics.DrawMeshNow(_mouthMesh, transform.localToWorldMatrix);
     }
 
     private void BuildMesh()
@@ -191,14 +199,14 @@ public class PolyPetAvatar : MonoBehaviour
         var mouthColors = new System.Collections.Generic.List<UnityEngine.Color>();
         var mouthTriangles = new System.Collections.Generic.List<int>();
 
-        AddShapeToMesh(Data.Body, vertices, colors, triangles);
-        AddShapeToMesh(Data.Head, vertices, colors, triangles);
-        foreach (var ear in Data.Ears) AddShapeToMesh(ear, vertices, colors, triangles);
-        foreach (var eye in Data.Eyes) AddShapeToMesh(eye, vertices, colors, triangles);
-        AddMouthToMesh(Data.Mouth, mouthVertices, mouthColors, mouthTriangles);
-        foreach (var limb in Data.Limbs) AddShapeToMesh(limb, vertices, colors, triangles);
+        AddShapeToMesh(Data.Body, vertices, colors, triangles, WorldScale);
+        AddShapeToMesh(Data.Head, vertices, colors, triangles, WorldScale);
+        foreach (var ear in Data.Ears) AddShapeToMesh(ear, vertices, colors, triangles, WorldScale);
+        foreach (var eye in Data.Eyes) AddShapeToMesh(eye, vertices, colors, triangles, WorldScale);
+        AddMouthToMesh(Data.Mouth, mouthVertices, mouthColors, mouthTriangles, WorldScale);
+        foreach (var limb in Data.Limbs) AddShapeToMesh(limb, vertices, colors, triangles, WorldScale);
         if (Data.Tail.Vertices != null && Data.Tail.Vertices.Length >= 3)
-            AddShapeToMesh(Data.Tail, vertices, colors, triangles);
+            AddShapeToMesh(Data.Tail, vertices, colors, triangles, WorldScale);
 
         _mesh.SetVertices(vertices);
         _mesh.SetColors(colors);
@@ -212,7 +220,8 @@ public class PolyPetAvatar : MonoBehaviour
     private void AddShapeToMesh(ShapePart part,
         System.Collections.Generic.List<Vector3> vertices,
         System.Collections.Generic.List<UnityEngine.Color> colors,
-        System.Collections.Generic.List<int> triangles)
+        System.Collections.Generic.List<int> triangles,
+        float scale)
     {
         if (part.Vertices == null || part.Vertices.Length < 3) return;
 
@@ -223,8 +232,8 @@ public class PolyPetAvatar : MonoBehaviour
         for (int i = 0; i < part.Vertices.Length; i++)
         {
             vertices.Add(new Vector3(
-                part.Position.X + part.Vertices[i].X,
-                part.Position.Y + part.Vertices[i].Y,
+                (part.Position.X + part.Vertices[i].X) * scale,
+                (part.Position.Y + part.Vertices[i].Y) * scale,
                 0));
             colors.Add(color);
         }
@@ -241,7 +250,8 @@ public class PolyPetAvatar : MonoBehaviour
     private void AddMouthToMesh(ShapePart mouth,
         System.Collections.Generic.List<Vector3> vertices,
         System.Collections.Generic.List<UnityEngine.Color> colors,
-        System.Collections.Generic.List<int> triangles)
+        System.Collections.Generic.List<int> triangles,
+        float scale)
     {
         if (mouth.Vertices == null || mouth.Vertices.Length < 2) return;
 
@@ -251,11 +261,11 @@ public class PolyPetAvatar : MonoBehaviour
         for (int i = 0; i < mouth.Vertices.Length - 1; i++)
         {
             var start = new Vector2(
-                mouth.Position.X + mouth.Vertices[i].X,
-                mouth.Position.Y + mouth.Vertices[i].Y);
+                (mouth.Position.X + mouth.Vertices[i].X) * scale,
+                (mouth.Position.Y + mouth.Vertices[i].Y) * scale);
             var end = new Vector2(
-                mouth.Position.X + mouth.Vertices[i + 1].X,
-                mouth.Position.Y + mouth.Vertices[i + 1].Y);
+                (mouth.Position.X + mouth.Vertices[i + 1].X) * scale,
+                (mouth.Position.Y + mouth.Vertices[i + 1].Y) * scale);
 
             var segment = end - start;
             if (segment.sqrMagnitude <= Mathf.Epsilon)
@@ -310,131 +320,6 @@ public class PolyPetAvatar : MonoBehaviour
             Ears = Array.Empty<ShapePart>(),
             Limbs = Array.Empty<ShapePart>()
         };
-    }
-
-    private AnimationFrame GetCurrentFrame()
-    {
-        return PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
-    }
-
-    private Matrix4x4 GetRenderMatrix(AnimationFrame frame)
-    {
-        return transform.localToWorldMatrix * GetPetLocalMatrix(frame);
-    }
-
-    private Matrix4x4 GetPetLocalMatrix(AnimationFrame frame)
-    {
-        var frameRect = GetResolvedFrameRect();
-        var frameLayout = PolyPetLayout.CreateFrameLayout(Data, frameRect.width, frameRect.height);
-
-        return Matrix4x4.TRS(
-            GetLayoutOrigin(frameRect, frameLayout, frame),
-            Quaternion.identity,
-            GetLayoutScale(frameLayout, frame));
-    }
-
-    private Vector3 GetLayoutOrigin(Rect frameRect, PetFrameLayout frameLayout, AnimationFrame frame)
-    {
-        return new Vector3(
-            frameRect.xMin + frameLayout.OffsetX + frame.PositionOffset.X * frameLayout.Scale,
-            frameRect.yMin + frameLayout.OffsetY + frame.PositionOffset.Y * frameLayout.Scale,
-            0f);
-    }
-
-    private static Vector3 GetLayoutScale(PetFrameLayout frameLayout, AnimationFrame frame)
-    {
-        return new Vector3(
-            frameLayout.Scale * frame.ScaleX,
-            frameLayout.Scale * frame.ScaleY,
-            1f);
-    }
-
-    private Rect GetResolvedFrameRect()
-    {
-        if (transform is RectTransform rectTransform)
-        {
-            var rect = rectTransform.rect;
-            return new Rect(
-                rect.xMin,
-                rect.yMin,
-                Mathf.Max(rect.width, Mathf.Epsilon),
-                Mathf.Max(rect.height, Mathf.Epsilon));
-        }
-
-        var frameSize = FrameSize;
-        return new Rect(
-            -frameSize.x * 0.5f,
-            -frameSize.y * 0.5f,
-            Mathf.Max(frameSize.x, Mathf.Epsilon),
-            Mathf.Max(frameSize.y, Mathf.Epsilon));
-    }
-
-    private bool TryGetPressedPetPosition(out Vector2 petPosition)
-    {
-        if (TryGetPressedPointerLocalPosition(out var localPosition))
-        {
-            petPosition = GetPetLocalPosition(localPosition, GetCurrentFrame());
-            return true;
-        }
-
-        petPosition = default;
-        return false;
-    }
-
-    private Vector2 GetPetLocalPosition(Vector2 localPosition, AnimationFrame frame)
-    {
-        var frameRect = GetResolvedFrameRect();
-        var frameLayout = PolyPetLayout.CreateFrameLayout(Data, frameRect.width, frameRect.height);
-        var origin = GetLayoutOrigin(frameRect, frameLayout, frame);
-        var scale = GetLayoutScale(frameLayout, frame);
-
-        if (Mathf.Approximately(scale.x, 0f) || Mathf.Approximately(scale.y, 0f))
-            return localPosition - new Vector2(origin.x, origin.y);
-
-        return new Vector2(
-            (localPosition.x - origin.x) / scale.x,
-            (localPosition.y - origin.y) / scale.y);
-    }
-
-    private bool TryGetPressedPointerLocalPosition(out Vector2 localPosition)
-    {
-        if (Input.GetMouseButtonDown(0))
-            return TryGetScreenPointLocalPosition(Input.mousePosition, out localPosition);
-
-        if (Input.touchCount > 0)
-        {
-            var touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-                return TryGetScreenPointLocalPosition(touch.position, out localPosition);
-        }
-
-        localPosition = default;
-        return false;
-    }
-
-    private bool TryGetScreenPointLocalPosition(Vector2 screenPoint, out Vector2 localPosition)
-    {
-        if (transform is RectTransform rectTransform)
-        {
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                rectTransform,
-                screenPoint,
-                Camera.main,
-                out localPosition);
-        }
-
-        var mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-            localPosition = default;
-            return false;
-        }
-
-        var screenDepth = mainCamera.WorldToScreenPoint(transform.position).z;
-        var worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenPoint.x, screenPoint.y, screenDepth));
-        var local3 = transform.InverseTransformPoint(worldPosition);
-        localPosition = new Vector2(local3.x, local3.y);
-        return true;
     }
 
     void OnDestroy()
