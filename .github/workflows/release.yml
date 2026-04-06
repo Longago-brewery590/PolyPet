@@ -23,6 +23,7 @@ jobs:
         run: |
           git fetch origin main
           git pull --ff-only origin main
+          echo "RELEASE_BASE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Sync Core to engine adapters
         run: bash ./scripts/sync-core-to-adapters.sh
@@ -65,7 +66,13 @@ jobs:
           git commit -m "chore(release): prepare ${{ steps.version.outputs.VERSION }}"
 
       - name: Push release commit to main
-        run: git push origin HEAD:main
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$RELEASE_BASE_SHA" ]; then
+            echo "::error::origin/main advanced during release preparation; rerun release."
+            exit 1
+          fi
+          git push origin HEAD:main
 
       - name: Tag the pushed release commit
         run: |

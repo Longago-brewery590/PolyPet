@@ -126,4 +126,7 @@ fi
 
 test -f "$workspace/failure/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/keep.txt"
 
+grep -q 'bash ./scripts/sync-godot-sample.sh' "$repo_root/.github/workflows/sync-core.yml"
+grep -q 'bash ./scripts/sync-unity-sample.sh' "$repo_root/.github/workflows/sync-core.yml"
+
 echo "sync script smoke test passed"
