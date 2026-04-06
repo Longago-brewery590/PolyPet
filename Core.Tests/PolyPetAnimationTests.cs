@@ -58,5 +58,20 @@ namespace PolyPet.Tests
             var frame = PolyPetAnimation.GetFrame(PetState.BeingPet, 0f, 0.05f);
             Assert.True(frame.ScaleY < 1f);
         }
+
+        [Fact]
+        public void GetEnvelope_ReturnsCombinedAnimationExtents()
+        {
+            var envelope = PolyPetAnimation.GetEnvelope();
+
+            Assert.Equal(0f, envelope.MinOffsetX, 3);
+            Assert.Equal(0f, envelope.MaxOffsetX, 3);
+            Assert.Equal(-4f, envelope.MinOffsetY, 3);
+            Assert.Equal(4f, envelope.MaxOffsetY, 3);
+            Assert.Equal(0.9f, envelope.MinScaleX, 3);
+            Assert.Equal(1.15f, envelope.MaxScaleX, 3);
+            Assert.Equal(0.8f, envelope.MinScaleY, 3);
+            Assert.Equal(1.15f, envelope.MaxScaleY, 3);
+        }
     }
 }

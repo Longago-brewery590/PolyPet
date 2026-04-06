@@ -8,6 +8,37 @@ namespace PolyPet
         private const float IdleCycleDuration = 2f;
         private const float PetDuration = 0.5f;
 
+        public static AnimationEnvelope GetEnvelope()
+        {
+            return Union(GetEnvelope(PetState.Idle), GetEnvelope(PetState.BeingPet));
+        }
+
+        public static AnimationEnvelope GetEnvelope(PetState state)
+        {
+            if (state == PetState.BeingPet)
+            {
+                return new AnimationEnvelope(
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    0.9f,
+                    1.15f,
+                    0.8f,
+                    1.15f);
+            }
+
+            return new AnimationEnvelope(
+                0f,
+                0f,
+                -IdleAmplitude,
+                IdleAmplitude,
+                1f,
+                1f,
+                1f,
+                1f);
+        }
+
         public static AnimationFrame GetIdleFrame(float time)
         {
             var y = (float)Math.Sin(time / IdleCycleDuration * Math.PI * 2) * IdleAmplitude;
@@ -83,6 +114,19 @@ namespace PolyPet
         private static float Lerp(float a, float b, float t)
         {
             return a + (b - a) * t;
+        }
+
+        private static AnimationEnvelope Union(AnimationEnvelope left, AnimationEnvelope right)
+        {
+            return new AnimationEnvelope(
+                Math.Min(left.MinOffsetX, right.MinOffsetX),
+                Math.Max(left.MaxOffsetX, right.MaxOffsetX),
+                Math.Min(left.MinOffsetY, right.MinOffsetY),
+                Math.Max(left.MaxOffsetY, right.MaxOffsetY),
+                Math.Min(left.MinScaleX, right.MinScaleX),
+                Math.Max(left.MaxScaleX, right.MaxScaleX),
+                Math.Min(left.MinScaleY, right.MinScaleY),
+                Math.Max(left.MaxScaleY, right.MaxScaleY));
         }
     }
 }

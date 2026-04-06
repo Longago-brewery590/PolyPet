@@ -40,6 +40,23 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void CalculateCanonicalAnimatedBounds_ContainsAnimatedBoundsForSeedRange()
+        {
+            var canonicalBounds = PolyPetLayout.CalculateCanonicalAnimatedBounds();
+
+            for (var seed = 0; seed < 100; seed++)
+            {
+                var pet = PolyPetGenerator.Create(seed);
+                var animatedBounds = PolyPetLayout.CalculateAnimatedBounds(pet);
+
+                Assert.True(canonicalBounds.MinX <= animatedBounds.MinX);
+                Assert.True(canonicalBounds.MaxX >= animatedBounds.MaxX);
+                Assert.True(canonicalBounds.MinY <= animatedBounds.MinY);
+                Assert.True(canonicalBounds.MaxY >= animatedBounds.MaxY);
+            }
+        }
+
+        [Fact]
         public void CreateFrameLayout_FitsAnimatedBoundsInsideRequestedFrame()
         {
             for (var seed = 0; seed < 100; seed++)

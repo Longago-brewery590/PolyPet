@@ -121,4 +121,71 @@ namespace PolyPet
         public float ScaleX;
         public float ScaleY;
     }
+
+    public struct PetBounds
+    {
+        public float MinX;
+        public float MinY;
+        public float MaxX;
+        public float MaxY;
+
+        public PetBounds(float minX, float minY, float maxX, float maxY)
+        {
+            MinX = minX;
+            MinY = minY;
+            MaxX = maxX;
+            MaxY = maxY;
+        }
+
+        public float Width => MaxX - MinX;
+        public float Height => MaxY - MinY;
+        public float CenterX => (MinX + MaxX) * 0.5f;
+        public float CenterY => (MinY + MaxY) * 0.5f;
+    }
+
+    public struct PetFrameLayout
+    {
+        public float Scale;
+        public float OffsetX;
+        public float OffsetY;
+
+        public PetFrameLayout(float scale, float offsetX, float offsetY)
+        {
+            Scale = scale;
+            OffsetX = offsetX;
+            OffsetY = offsetY;
+        }
+    }
+
+    public struct AnimationEnvelope
+    {
+        public float MinOffsetX;
+        public float MaxOffsetX;
+        public float MinOffsetY;
+        public float MaxOffsetY;
+        public float MinScaleX;
+        public float MaxScaleX;
+        public float MinScaleY;
+        public float MaxScaleY;
+
+        public AnimationEnvelope(
+            float minOffsetX,
+            float maxOffsetX,
+            float minOffsetY,
+            float maxOffsetY,
+            float minScaleX,
+            float maxScaleX,
+            float minScaleY,
+            float maxScaleY)
+        {
+            MinOffsetX = minOffsetX;
+            MaxOffsetX = maxOffsetX;
+            MinOffsetY = minOffsetY;
+            MaxOffsetY = maxOffsetY;
+            MinScaleX = minScaleX;
+            MaxScaleX = maxScaleX;
+            MinScaleY = minScaleY;
+            MaxScaleY = maxScaleY;
+        }
+    }
 }
