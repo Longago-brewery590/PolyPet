@@ -104,7 +104,13 @@ Open [`PolyPet.sln`](./PolyPet.sln) if you want both the [`Core` library](./Core
 
 ### CLI
 
-Run the Core verification commands from the repo root:
+For the usual contributor verification flow, run [`verify.ps1`](./verify.ps1) from the repo root:
+
+```powershell
+.\verify.ps1
+```
+
+Or run the Core verification commands manually:
 
 ```powershell
 dotnet test .\Core.Tests\Core.Tests.csproj
