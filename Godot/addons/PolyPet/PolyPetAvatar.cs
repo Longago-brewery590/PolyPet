@@ -186,7 +186,7 @@ public partial class PolyPetAvatar : Control
             -frameLayout.Scale * frame.ScaleY);
     }
 
-    private static bool TryGetPressedPointerPosition(InputEvent @event, out Vector2 position)
+    private bool TryGetPressedPointerPosition(InputEvent @event, out Vector2 position)
     {
         switch (@event)
         {
@@ -194,7 +194,7 @@ public partial class PolyPetAvatar : Control
                 position = mouseButton.Position;
                 return true;
             case InputEventScreenTouch screenTouch when screenTouch.Pressed:
-                position = screenTouch.Position;
+                position = MakeCanvasPositionLocal(screenTouch.Position);
                 return true;
             default:
                 position = default;

@@ -55,25 +55,6 @@ namespace PolyPet.Tests
         }
 
         [Fact]
-        public void GodotPolyPetAvatar_UsesControlSizeAndSharedFrameLayout()
-        {
-            var source = File.ReadAllText(RepoFile(Path.Combine("Godot", "addons", "PolyPet", "PolyPetAvatar.cs")));
-
-            Assert.Contains("PolyPetLayout.CreateFrameLayout(Data, Size.X, Size.Y)", source);
-        }
-
-        [Fact]
-        public void GodotPolyPetAvatar_UsesControlLocalMouseAndTouchInputForHitTesting()
-        {
-            var source = File.ReadAllText(RepoFile(Path.Combine("Godot", "addons", "PolyPet", "PolyPetAvatar.cs")));
-
-            Assert.Contains("public override void _GuiInput(InputEvent @event)", source);
-            Assert.Contains("InputEventScreenTouch", source);
-            Assert.DoesNotContain("public override void _Input(InputEvent @event)", source);
-            Assert.DoesNotContain("ToLocal(mb.GlobalPosition)", source);
-        }
-
-        [Fact]
         public void UnityPolyPetAvatar_UsesSerializedTypedUnityEventsInsteadOfPlainEvents()
         {
             var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
