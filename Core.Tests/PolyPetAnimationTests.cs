@@ -58,5 +58,65 @@ namespace PolyPet.Tests
             var frame = PolyPetAnimation.GetFrame(PetState.BeingPet, 0f, 0.05f);
             Assert.True(frame.ScaleY < 1f);
         }
+
+        [Fact]
+        public void GetEnvelope_BeingPet_IncludesIdleBobYRange()
+        {
+            var envelope = PolyPetAnimation.GetEnvelope(PetState.BeingPet);
+
+            foreach (var time in new[] { 0f, 0.5f, 1f, 1.5f })
+            {
+                var frame = PolyPetAnimation.GetFrame(PetState.BeingPet, time, 1f);
+                Assert.InRange(frame.PositionOffset.Y, envelope.MinOffsetY, envelope.MaxOffsetY);
+            }
+
+            Assert.Equal(-4f, envelope.MinOffsetY, 3);
+            Assert.Equal(4f, envelope.MaxOffsetY, 3);
+        }
+
+        [Fact]
+        public void GetEnvelope_ReturnsUnionOfAllStateEnvelopes()
+        {
+            var envelope = PolyPetAnimation.GetEnvelope();
+            var expected = CombineAllStateEnvelopes();
+
+            Assert.Equal(expected.MinOffsetX, envelope.MinOffsetX, 3);
+            Assert.Equal(expected.MaxOffsetX, envelope.MaxOffsetX, 3);
+            Assert.Equal(expected.MinOffsetY, envelope.MinOffsetY, 3);
+            Assert.Equal(expected.MaxOffsetY, envelope.MaxOffsetY, 3);
+            Assert.Equal(expected.MinScaleX, envelope.MinScaleX, 3);
+            Assert.Equal(expected.MaxScaleX, envelope.MaxScaleX, 3);
+            Assert.Equal(expected.MinScaleY, envelope.MinScaleY, 3);
+            Assert.Equal(expected.MaxScaleY, envelope.MaxScaleY, 3);
+        }
+
+        private static AnimationEnvelope CombineAllStateEnvelopes()
+        {
+            var hasValue = false;
+            var combined = new AnimationEnvelope();
+
+            foreach (PetState state in System.Enum.GetValues(typeof(PetState)))
+            {
+                var current = PolyPetAnimation.GetEnvelope(state);
+                if (!hasValue)
+                {
+                    combined = current;
+                    hasValue = true;
+                    continue;
+                }
+
+                combined = new AnimationEnvelope(
+                    System.Math.Min(combined.MinOffsetX, current.MinOffsetX),
+                    System.Math.Max(combined.MaxOffsetX, current.MaxOffsetX),
+                    System.Math.Min(combined.MinOffsetY, current.MinOffsetY),
+                    System.Math.Max(combined.MaxOffsetY, current.MaxOffsetY),
+                    System.Math.Min(combined.MinScaleX, current.MinScaleX),
+                    System.Math.Max(combined.MaxScaleX, current.MaxScaleX),
+                    System.Math.Min(combined.MinScaleY, current.MinScaleY),
+                    System.Math.Max(combined.MaxScaleY, current.MaxScaleY));
+            }
+
+            return combined;
+        }
     }
 }

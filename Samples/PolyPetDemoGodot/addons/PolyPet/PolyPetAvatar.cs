@@ -10,7 +10,7 @@ public enum StartSeedType
 }
 
 [GlobalClass]
-public partial class PolyPetAvatar : Node2D
+public partial class PolyPetAvatar : Control
 {
     [Export] private int _startSeed;
     [Export] private int _startNameSeed;
@@ -110,10 +110,10 @@ public partial class PolyPetAvatar : Node2D
     {
         if (Data.Body.Vertices == null) return;
 
+        var frameLayout = PolyPetLayout.CreateFrameLayout(Data, Size.X, Size.Y);
         var frame = GetCurrentFrame();
-        var offset = new Vector2(frame.PositionOffset.X, frame.PositionOffset.Y);
 
-        DrawTransform(frame, offset, () =>
+        DrawTransform(frameLayout, frame, () =>
         {
             DrawShapePart(Data.Body);
             DrawShapePart(Data.Head);
@@ -126,13 +126,14 @@ public partial class PolyPetAvatar : Node2D
         });
     }
 
-    public override void _Input(InputEvent @event)
+    public override void _GuiInput(InputEvent @event)
     {
         if (Data.Body.Vertices == null) return;
 
-        if (@event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+        if (TryGetPressedPointerPosition(@event, out var localPosition))
         {
-            var localPos = GetAnimatedLocalPosition(ToLocal(mb.GlobalPosition));
+            var frameLayout = PolyPetLayout.CreateFrameLayout(Data, Size.X, Size.Y);
+            var localPos = GetAnimatedLocalPosition(localPosition, frameLayout);
             float hitRadius = Data.Body.Scale * 1.5f;
             if (localPos.LengthSquared() < hitRadius * hitRadius)
             {
@@ -142,14 +143,14 @@ public partial class PolyPetAvatar : Node2D
         }
     }
 
-    private void DrawTransform(AnimationFrame frame, Vector2 offset, Action drawAction)
+    private void DrawTransform(PetFrameLayout frameLayout, AnimationFrame frame, Action drawAction)
     {
-        var xform = Transform2D.Identity;
-        xform = xform.Translated(offset);
-        xform = xform.Scaled(new Vector2(frame.ScaleX, frame.ScaleY));
-        DrawSetTransform(xform.Origin, 0f, new Vector2(frame.ScaleX, frame.ScaleY));
+        DrawSetTransform(
+            GetLayoutOrigin(frameLayout, frame),
+            0f,
+            GetLayoutScale(frameLayout, frame));
         drawAction();
-        DrawSetTransform(Vector2.Zero);
+        DrawSetTransform(Vector2.Zero, 0f, Vector2.One);
     }
 
     private AnimationFrame GetCurrentFrame()
@@ -157,23 +158,53 @@ public partial class PolyPetAvatar : Node2D
         return PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
     }
 
-    private Vector2 GetAnimatedLocalPosition(Vector2 localPosition)
+    private Vector2 GetAnimatedLocalPosition(Vector2 localPosition, PetFrameLayout frameLayout)
     {
         var frame = GetCurrentFrame();
-        var offset = new Vector2(frame.PositionOffset.X, frame.PositionOffset.Y);
-        var scale = new Vector2(frame.ScaleX, frame.ScaleY);
+        var origin = GetLayoutOrigin(frameLayout, frame);
+        var scale = GetLayoutScale(frameLayout, frame);
 
         if (Mathf.IsZeroApprox(scale.X) || Mathf.IsZeroApprox(scale.Y))
-            return localPosition - offset;
+            return localPosition - origin;
 
         return new Vector2(
-            (localPosition.X - offset.X) / scale.X,
-            (localPosition.Y - offset.Y) / scale.Y);
+            (localPosition.X - origin.X) / scale.X,
+            (localPosition.Y - origin.Y) / scale.Y);
+    }
+
+    private Vector2 GetLayoutOrigin(PetFrameLayout frameLayout, AnimationFrame frame)
+    {
+        return new Vector2(
+            frameLayout.OffsetX + frame.PositionOffset.X * frameLayout.Scale,
+            Size.Y - frameLayout.OffsetY - frame.PositionOffset.Y * frameLayout.Scale);
+    }
+
+    private static Vector2 GetLayoutScale(PetFrameLayout frameLayout, AnimationFrame frame)
+    {
+        return new Vector2(
+            frameLayout.Scale * frame.ScaleX,
+            -frameLayout.Scale * frame.ScaleY);
+    }
+
+    private bool TryGetPressedPointerPosition(InputEvent @event, out Vector2 position)
+    {
+        switch (@event)
+        {
+            case InputEventMouseButton mouseButton when mouseButton.Pressed && mouseButton.ButtonIndex == MouseButton.Left:
+                position = mouseButton.Position;
+                return true;
+            case InputEventScreenTouch screenTouch when screenTouch.Pressed:
+                position = MakeCanvasPositionLocal(screenTouch.Position);
+                return true;
+            default:
+                position = default;
+                return false;
+        }
     }
 
     private void DrawShapePart(ShapePart part)
     {
-        var pos = new Vector2(part.Position.X, -part.Position.Y); // Flip Y for screen coords
+        var pos = new Vector2(part.Position.X, part.Position.Y);
         var color = new Color(part.Color.R / 255f, part.Color.G / 255f, part.Color.B / 255f);
 
         if (part.Shape == ShapeType.Circle && part.Vertices.Length > 8)
@@ -188,7 +219,7 @@ public partial class PolyPetAvatar : Node2D
         var colors = new Color[part.Vertices.Length];
         for (int i = 0; i < part.Vertices.Length; i++)
         {
-            verts[i] = pos + new Vector2(part.Vertices[i].X, -part.Vertices[i].Y);
+            verts[i] = pos + new Vector2(part.Vertices[i].X, part.Vertices[i].Y);
             colors[i] = color;
         }
         DrawPolygon(verts, colors);
@@ -198,12 +229,12 @@ public partial class PolyPetAvatar : Node2D
     {
         if (mouth.Vertices == null || mouth.Vertices.Length < 2) return;
 
-        var pos = new Vector2(mouth.Position.X, -mouth.Position.Y);
+        var pos = new Vector2(mouth.Position.X, mouth.Position.Y);
         var color = new Color(mouth.Color.R / 255f, mouth.Color.G / 255f, mouth.Color.B / 255f);
 
         var points = new Vector2[mouth.Vertices.Length];
         for (int i = 0; i < mouth.Vertices.Length; i++)
-            points[i] = pos + new Vector2(mouth.Vertices[i].X, -mouth.Vertices[i].Y);
+            points[i] = pos + new Vector2(mouth.Vertices[i].X, mouth.Vertices[i].Y);
 
         DrawPolyline(points, color, 2f);
     }

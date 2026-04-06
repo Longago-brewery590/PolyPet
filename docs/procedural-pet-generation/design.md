@@ -138,7 +138,7 @@ Each engine adapter is responsible for:
 - Exposing seed configuration in the editor/inspector.
 - Generating initial pet data from configured seeds.
 - Regenerating pet or name data when seeds change.
-- Rendering the generated geometry using native engine APIs.
+- Rendering the generated geometry into a caller-provided rectangular frame using native engine APIs.
 - Applying animation offsets each frame.
 - Detecting simple click or tap interaction to trigger the pet reaction.
 - Providing only the minimal addon metadata needed for engine-native discoverability of the runtime components.
@@ -175,6 +175,9 @@ The rendering strategy should stay intentionally lightweight:
 - Filled polygons and circles are the primary building blocks.
 - Pattern rendering is layered on top of base shapes.
 - Animation is applied through transform offsets rather than skeletal systems.
+- Both adapters use the same fit-to-frame contract: they render into a caller-provided rectangular frame, compute a uniform scale from the worst-case animated bounds, and keep the full animated pet contained within that frame at all times.
+- No rendered geometry may leave the frame, even during idle motion or petting reactions.
+- Relative size differences between pet shapes may remain visible, while the largest supported pet can still reach all four edges of the rectangular frame when measured at its worst-case animated bounds.
 - The result should be visually appealing in both engines without requiring complex shaders or imported art assets.
 
 Perfect pixel-for-pixel parity between engines is not required, but the same pet should clearly read as the same creature in both environments.

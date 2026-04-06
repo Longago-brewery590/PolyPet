@@ -4,6 +4,9 @@
   "displayName": "PolyPet",
   "description": "Acute-ly polygon pet creator. Procedural 2D generator inspired by Tamagotchi, Peridot, and Geometry Wars.",
   "unity": "6000.4",
+  "dependencies": {
+    "com.unity.ugui": "1.0.0"
+  },
   "author": {
     "name": "Shilo"
   },
