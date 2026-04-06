@@ -3,30 +3,30 @@ using TMPro;
 
 public class PolyPetName : MonoBehaviour
 {
-    [SerializeField] public PolyPet Pet;
+    [SerializeField] public PolyPetAvatar Avatar;
 
     private TMP_Text _text;
 
     void Start()
     {
         _text = GetComponent<TMP_Text>();
-        if (_text == null || Pet == null)
+        if (_text == null || Avatar == null)
         {
             if (_text != null) _text.text = "";
             return;
         }
 
-        Pet.NameSeedChanged += UpdateText;
+        Avatar.NameSeedChanged += UpdateText;
         UpdateText();
     }
 
     private void UpdateText()
     {
-        _text.text = Pet.Data.Name ?? "";
+        _text.text = Avatar.Data.Name ?? "";
     }
 
     void OnDestroy()
     {
-        if (Pet != null) Pet.NameSeedChanged -= UpdateText;
+        if (Avatar != null) Avatar.NameSeedChanged -= UpdateText;
     }
 }

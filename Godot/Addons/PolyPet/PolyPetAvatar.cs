@@ -10,7 +10,7 @@ public enum StartSeedType
 }
 
 [GlobalClass]
-public partial class PolyPet : Node2D
+public partial class PolyPetAvatar : Node2D
 {
     [Export] private int _startSeed;
     [Export] private int _startNameSeed;

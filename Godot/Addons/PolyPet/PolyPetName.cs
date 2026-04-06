@@ -3,29 +3,29 @@ using Godot;
 [GlobalClass]
 public partial class PolyPetName : Label
 {
-    [Export] public PolyPet Pet { get; set; } = null!;
+    [Export] public PolyPetAvatar Avatar { get; set; } = null!;
 
     public override void _Ready()
     {
-        if (Pet == null)
+        if (Avatar == null)
         {
             Text = "";
             return;
         }
 
-        Pet.NameSeedChanged += UpdateText;
+        Avatar.NameSeedChanged += UpdateText;
         UpdateText();
     }
 
     public override void _ExitTree()
     {
-        if (Pet == null) return;
+        if (Avatar == null) return;
 
-        Pet.NameSeedChanged -= UpdateText;
+        Avatar.NameSeedChanged -= UpdateText;
     }
 
     private void UpdateText()
     {
-        Text = Pet?.Data.Name ?? "";
+        Text = Avatar?.Data.Name ?? "";
     }
 }

@@ -93,7 +93,7 @@ namespace PolyPet
 
     public struct PolyPetData
     {
-        public string? Name;
+        public string Name;
         public ShapePart Body;
         public PatternData BodyPattern;
         public ShapePart Head;

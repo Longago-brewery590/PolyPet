@@ -40,15 +40,15 @@ Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/Poly
 ### Unity
 
 1. Add the package.
-2. Create an empty GameObject and add the `PolyPet` component.
-3. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Pet` reference.
+2. Create an empty GameObject and add the `PolyPetAvatar` component.
+3. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
 4. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
 ### Godot
 
 1. Copy the addon into `addons/PolyPet/`.
-2. Add a `PolyPet` node to your scene.
-3. Optionally add a `PolyPetName` label and assign its `Pet` export to the `PolyPet` node.
+2. Add a `PolyPetAvatar` node to your scene.
+3. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
 4. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
 ## Runtime API

@@ -10,7 +10,7 @@ public enum StartSeedType
     Random
 }
 
-public class PolyPet : MonoBehaviour
+public class PolyPetAvatar : MonoBehaviour
 {
     private const float WorldScale = 0.01f;
     private const float MouthLineWidth = 2f * WorldScale;

@@ -219,7 +219,7 @@ The repository includes standalone sample projects that are independently distri
 
 The addon and package folders inside sample projects are managed by CI (sync-core and release workflows copy from the source `Godot/` and `Unity/` directories) and are gitignored. After a fresh clone, contributors must run the sync workflow or copy manually.
 
-Each sample project should contain a demo scene with a PolyPet centered on screen, a PolyPetName label above, and buttons to re-roll the pet seed and name seed.
+Each sample project should contain a demo scene with a `PolyPetAvatar` renderer centered on screen, a `PolyPetName` display above, and buttons to re-roll the pet seed and name seed.
 
 ## Out of Scope
 
