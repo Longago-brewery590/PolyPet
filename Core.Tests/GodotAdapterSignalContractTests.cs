@@ -11,9 +11,7 @@ namespace PolyPet.Tests
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
 
             while (directory != null && !File.Exists(Path.Combine(directory.FullName, "PolyPet.sln")))
-            {
                 directory = directory.Parent;
-            }
 
             if (directory == null)
                 throw new DirectoryNotFoundException("Could not locate repository root.");
