@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using UnityEngine.Events;
 using PolyPet;
 using Random = System.Random;
 
@@ -19,6 +19,8 @@ public class PolyPetAvatar : MonoBehaviour
     [SerializeField] private int _startNameSeed;
     [SerializeField] private StartSeedType _startSeedType = StartSeedType.Fixed;
     [SerializeField] private StartSeedType _startNameSeedType = StartSeedType.Fixed;
+    [SerializeField] private UnityEvent _seedChanged = new UnityEvent();
+    [SerializeField] private UnityEvent _nameSeedChanged = new UnityEvent();
 
     private int? _seed;
     private int? _nameSeed;
@@ -31,8 +33,8 @@ public class PolyPetAvatar : MonoBehaviour
     private Vector3 _initialLocalPosition;
     private Vector3 _initialLocalScale;
 
-    public event Action SeedChanged;
-    public event Action NameSeedChanged;
+    public UnityEvent SeedChanged => _seedChanged;
+    public UnityEvent NameSeedChanged => _nameSeedChanged;
 
     public int? Seed
     {
@@ -70,14 +72,14 @@ public class PolyPetAvatar : MonoBehaviour
         {
             Data = PolyPetGenerator.Create(_seed.Value, _nameSeed);
             BuildMesh();
-            SeedChanged?.Invoke();
-            if (_nameSeed.HasValue) NameSeedChanged?.Invoke();
+            _seedChanged.Invoke();
+            if (_nameSeed.HasValue) _nameSeedChanged.Invoke();
         }
         else if (_nameSeed.HasValue)
         {
             Data = PolyPetGenerator.Create(0, _nameSeed);
             BuildMesh();
-            NameSeedChanged?.Invoke();
+            _nameSeedChanged.Invoke();
         }
     }
 
@@ -235,7 +237,7 @@ public class PolyPetAvatar : MonoBehaviour
     {
         Data = PolyPetGenerator.Create(Seed!.Value, NameSeed);
         BuildMesh();
-        SeedChanged?.Invoke();
+        _seedChanged.Invoke();
     }
 
     private void RegenerateName()
@@ -247,8 +249,8 @@ public class PolyPetAvatar : MonoBehaviour
             if (!Seed.HasValue) return;
             Data = PolyPetGenerator.Create(Seed.Value, NameSeed);
             BuildMesh();
-            SeedChanged?.Invoke();
-            NameSeedChanged?.Invoke();
+            _seedChanged.Invoke();
+            _nameSeedChanged.Invoke();
             return;
         }
 
@@ -264,7 +266,7 @@ public class PolyPetAvatar : MonoBehaviour
             TertiaryColor = Data.TertiaryColor,
             Seed = Data.Seed
         };
-        NameSeedChanged?.Invoke();
+        _nameSeedChanged.Invoke();
     }
 
     void OnDestroy()

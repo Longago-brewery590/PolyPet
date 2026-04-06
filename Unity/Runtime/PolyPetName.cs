@@ -16,7 +16,7 @@ public class PolyPetName : MonoBehaviour
             return;
         }
 
-        Avatar.NameSeedChanged += UpdateText;
+        Avatar.NameSeedChanged.AddListener(UpdateText);
         UpdateText();
     }
 
@@ -27,6 +27,6 @@ public class PolyPetName : MonoBehaviour
 
     void OnDestroy()
     {
-        if (Avatar != null) Avatar.NameSeedChanged -= UpdateText;
+        if (Avatar != null) Avatar.NameSeedChanged.RemoveListener(UpdateText);
     }
 }

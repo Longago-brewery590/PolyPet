@@ -67,8 +67,8 @@ pet.RandomizeSeed();
 pet.RandomizeNameSeed();
 
 // Observe updates from C#.
-pet.SeedChanged += () => { };
-pet.NameSeedChanged += () => { };
+pet.SeedChanged.AddListener(() => { });
+pet.NameSeedChanged.AddListener(() => { });
 
 // Read the generated data.
 PolyPetData data = pet.Data;
@@ -76,6 +76,8 @@ string? name = pet.Data.Name;
 ```
 
 If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
+
+In Unity, `SeedChanged` and `NameSeedChanged` are serialized `UnityEvent`s, so they can be wired up in the inspector or subscribed to from code with `AddListener`.
 
 In Godot, `SeedChanged` and `NameSeedChanged` are custom Godot signals, so they can also be connected from the editor after rebuilding the project's C# solution once.
 

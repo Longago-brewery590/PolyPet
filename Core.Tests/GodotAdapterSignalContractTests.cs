@@ -32,5 +32,19 @@ namespace PolyPet.Tests
             Assert.DoesNotContain("public event Action SeedChanged;", source);
             Assert.DoesNotContain("public event Action NameSeedChanged;", source);
         }
+
+        [Fact]
+        public void UnityPolyPetAvatar_UsesSerializedUnityEventsInsteadOfPlainEvents()
+        {
+            var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
+
+            Assert.Contains("using UnityEngine.Events;", source);
+            Assert.Contains("[SerializeField] private UnityEvent _seedChanged = new UnityEvent();", source);
+            Assert.Contains("[SerializeField] private UnityEvent _nameSeedChanged = new UnityEvent();", source);
+            Assert.Contains("public UnityEvent SeedChanged => _seedChanged;", source);
+            Assert.Contains("public UnityEvent NameSeedChanged => _nameSeedChanged;", source);
+            Assert.DoesNotContain("public event Action SeedChanged;", source);
+            Assert.DoesNotContain("public event Action NameSeedChanged;", source);
+        }
     }
 }
