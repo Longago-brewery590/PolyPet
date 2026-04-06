@@ -24,21 +24,31 @@ public partial class PolyPetAvatar : Node2D
     private float _petTime;
 
     [Signal]
-    public delegate void SeedChangedEventHandler();
+    public delegate void SeedChangedEventHandler(PolyPetAvatar avatar, Variant seed);
 
     [Signal]
-    public delegate void NameSeedChangedEventHandler();
+    public delegate void NameSeedChangedEventHandler(PolyPetAvatar avatar, Variant nameSeed);
 
     public int? Seed
     {
         get => _seed;
-        set { _seed = value; if (value.HasValue) RegeneratePet(); }
+        set
+        {
+            _seed = value;
+            RefreshData();
+            EmitSeedChanged();
+        }
     }
 
     public int? NameSeed
     {
         get => _nameSeed;
-        set { _nameSeed = value; if (value.HasValue) RegenerateName(); }
+        set
+        {
+            _nameSeed = value;
+            RefreshData();
+            EmitNameSeedChanged();
+        }
     }
 
     public PolyPetData Data { get; private set; }
@@ -61,17 +71,9 @@ public partial class PolyPetAvatar : Node2D
         if (_startNameSeedType == StartSeedType.Fixed) _nameSeed = _startNameSeed;
         else if (_startNameSeedType == StartSeedType.Random) _nameSeed = new System.Random().Next();
 
-        if (_seed.HasValue)
-        {
-            Data = PolyPetGenerator.Create(_seed.Value, _nameSeed);
-            EmitSignal(SignalName.SeedChanged);
-            if (_nameSeed.HasValue) EmitSignal(SignalName.NameSeedChanged);
-        }
-        else if (_nameSeed.HasValue)
-        {
-            Data = PolyPetGenerator.Create(0, _nameSeed);
-            EmitSignal(SignalName.NameSeedChanged);
-        }
+        RefreshData();
+        EmitSeedChanged();
+        EmitNameSeedChanged();
     }
 
     public override void _Process(double delta)
@@ -186,37 +188,36 @@ public partial class PolyPetAvatar : Node2D
         DrawPolyline(points, color, 2f);
     }
 
-    private void RegeneratePet()
+    private void RefreshData()
     {
-        Data = PolyPetGenerator.Create(Seed!.Value, NameSeed);
-        EmitSignal(SignalName.SeedChanged);
+        Data = _seed.HasValue || _nameSeed.HasValue
+            ? PolyPetGenerator.Create(_seed ?? 0, _nameSeed)
+            : CreateEmptyData();
     }
 
-    private void RegenerateName()
+    private void EmitSeedChanged()
     {
-        if (!NameSeed.HasValue) return;
+        EmitSignal(
+            SignalName.SeedChanged,
+            Variant.From(this),
+            _seed.HasValue ? Variant.From(_seed.Value) : default);
+    }
 
-        if (Data.Body.Vertices == null)
-        {
-            if (!Seed.HasValue) return;
-            Data = PolyPetGenerator.Create(Seed.Value, NameSeed);
-            EmitSignal(SignalName.SeedChanged);
-            EmitSignal(SignalName.NameSeedChanged);
-            return;
-        }
+    private void EmitNameSeedChanged()
+    {
+        EmitSignal(
+            SignalName.NameSeedChanged,
+            Variant.From(this),
+            _nameSeed.HasValue ? Variant.From(_nameSeed.Value) : default);
+    }
 
-        Data = new PolyPetData
+    private static PolyPetData CreateEmptyData()
+    {
+        return new PolyPetData
         {
-            Name = PolyPetNameGenerator.Create(NameSeed.Value),
-            Body = Data.Body, BodyPattern = Data.BodyPattern,
-            Head = Data.Head, HeadPattern = Data.HeadPattern,
-            Eyes = Data.Eyes, Mouth = Data.Mouth, Ears = Data.Ears,
-            Limbs = Data.Limbs, Tail = Data.Tail,
-            PrimaryColor = Data.PrimaryColor,
-            SecondaryColor = Data.SecondaryColor,
-            TertiaryColor = Data.TertiaryColor,
-            Seed = Data.Seed
+            Eyes = Array.Empty<ShapePart>(),
+            Ears = Array.Empty<ShapePart>(),
+            Limbs = Array.Empty<ShapePart>()
         };
-        EmitSignal(SignalName.NameSeedChanged);
     }
 }

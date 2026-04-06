@@ -28,4 +28,9 @@ public partial class PolyPetName : Label
     {
         Text = Avatar?.Data.Name ?? "";
     }
+
+    private void UpdateText(PolyPetAvatar avatar, Variant nameSeed)
+    {
+        UpdateText();
+    }
 }

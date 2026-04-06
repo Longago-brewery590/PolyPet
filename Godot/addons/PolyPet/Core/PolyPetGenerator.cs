@@ -46,18 +46,18 @@ namespace PolyPet
 
         // --- Palette ---
 
-        private static void GeneratePalette(Random rng, ref PolyPetData data)
+        private static void GeneratePalette(Random rng, ref PolyPetData petData)
         {
             var hue = (float)rng.NextDouble();
             var sat = 0.4f + (float)rng.NextDouble() * 0.4f; // 0.4-0.8
             var val = 0.7f + (float)rng.NextDouble() * 0.3f; // 0.7-1.0
-            data.PrimaryColor = HSVToRGB(hue, sat, val);
+            petData.PrimaryColor = HSVToRGB(hue, sat, val);
 
             var hue2 = hue + 0.3f + (float)rng.NextDouble() * 0.4f; // complementary/analogous
-            data.SecondaryColor = HSVToRGB(hue2 % 1f, sat * 0.8f, val * 0.9f);
+            petData.SecondaryColor = HSVToRGB(hue2 % 1f, sat * 0.8f, val * 0.9f);
 
             var hue3 = hue + 0.15f + (float)rng.NextDouble() * 0.2f;
-            data.TertiaryColor = HSVToRGB(hue3 % 1f, sat * 1.2f > 1f ? 1f : sat * 1.2f, val);
+            petData.TertiaryColor = HSVToRGB(hue3 % 1f, sat * 1.2f > 1f ? 1f : sat * 1.2f, val);
         }
 
         // --- Body ---

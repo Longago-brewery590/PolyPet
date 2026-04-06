@@ -66,9 +66,15 @@ pet.NameSeed = 99;
 pet.RandomizeSeed();
 pet.RandomizeNameSeed();
 
-// Observe updates from C#.
-pet.SeedChanged.AddListener(() => { });
-pet.NameSeedChanged.AddListener(() => { });
+// Observe updates from C# in Unity with explicit callback types.
+pet.AddSeedChangedListener((PolyPetAvatar avatar, NullableInt seed) =>
+{
+    int? seedValue = seed;
+});
+pet.AddNameSeedChangedListener((PolyPetAvatar avatar, NullableInt nameSeed) =>
+{
+    int? nameSeedValue = nameSeed;
+});
 
 // Read the generated data.
 PolyPetData data = pet.Data;
@@ -77,9 +83,9 @@ string? name = pet.Data.Name;
 
 If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
 
-In Unity, `SeedChanged` and `NameSeedChanged` are serialized `UnityEvent`s, so they can be wired up in the inspector or subscribed to from code with `AddListener`.
+In Unity, `SeedChanged` passes `(avatar, seed)` and `NameSeedChanged` passes `(avatar, nameSeed)`. They are serialized typed `UnityEvent`s for inspector wiring, and `AddSeedChangedListener` / `AddNameSeedChangedListener` expose named callback delegates for code subscriptions. The seed payload uses the serializable `NullableInt` wrapper so `null` and integer values are both represented exactly.
 
-In Godot, `SeedChanged` and `NameSeedChanged` are custom Godot signals, so they can also be connected from the editor after rebuilding the project's C# solution once.
+In Godot, `SeedChanged` passes `(avatar, seed)` and `NameSeedChanged` passes `(avatar, nameSeed)`. The payload is a `Variant` carrying either the integer seed or `null`, and the signals can be connected from the editor after rebuilding the project's C# solution once.
 
 ## Inspector Fields
 

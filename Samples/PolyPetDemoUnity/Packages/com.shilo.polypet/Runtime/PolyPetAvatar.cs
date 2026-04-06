@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using PolyPet;
@@ -10,6 +11,45 @@ public enum StartSeedType
     Random
 }
 
+[Serializable]
+public struct NullableInt
+{
+    [SerializeField] private bool _hasValue;
+    [SerializeField] private int _value;
+
+    public bool HasValue => _hasValue;
+    public int Value => _hasValue ? _value : throw new InvalidOperationException("NullableInt does not have a value.");
+
+    public NullableInt(int? nullableInt)
+    {
+        _hasValue = nullableInt.HasValue;
+        _value = nullableInt.GetValueOrDefault();
+    }
+
+    public int? ToNullable()
+    {
+        return _hasValue ? _value : (int?)null;
+    }
+
+    public static implicit operator NullableInt(int? nullableInt)
+    {
+        return new NullableInt(nullableInt);
+    }
+
+    public static implicit operator int?(NullableInt nullableInt)
+    {
+        return nullableInt.ToNullable();
+    }
+}
+
+[Serializable]
+public sealed class AvatarNullableIntEvent : UnityEvent<PolyPetAvatar, NullableInt>
+{
+}
+
+public delegate void SeedChangedCallback(PolyPetAvatar avatar, NullableInt seed);
+public delegate void NameSeedChangedCallback(PolyPetAvatar avatar, NullableInt nameSeed);
+
 public class PolyPetAvatar : MonoBehaviour
 {
     private const float WorldScale = 0.01f;
@@ -19,8 +59,8 @@ public class PolyPetAvatar : MonoBehaviour
     [SerializeField] private int _startNameSeed;
     [SerializeField] private StartSeedType _startSeedType = StartSeedType.Fixed;
     [SerializeField] private StartSeedType _startNameSeedType = StartSeedType.Fixed;
-    [SerializeField] private UnityEvent _seedChanged = new UnityEvent();
-    [SerializeField] private UnityEvent _nameSeedChanged = new UnityEvent();
+    [SerializeField] private AvatarNullableIntEvent _seedChanged = new AvatarNullableIntEvent();
+    [SerializeField] private AvatarNullableIntEvent _nameSeedChanged = new AvatarNullableIntEvent();
 
     private int? _seed;
     private int? _nameSeed;
@@ -33,19 +73,49 @@ public class PolyPetAvatar : MonoBehaviour
     private Vector3 _initialLocalPosition;
     private Vector3 _initialLocalScale;
 
-    public UnityEvent SeedChanged => _seedChanged;
-    public UnityEvent NameSeedChanged => _nameSeedChanged;
+    public AvatarNullableIntEvent SeedChanged => _seedChanged;
+    public AvatarNullableIntEvent NameSeedChanged => _nameSeedChanged;
+
+    public void AddSeedChangedListener(SeedChangedCallback onSeedChanged)
+    {
+        _seedChanged.AddListener(onSeedChanged.Invoke);
+    }
+
+    public void RemoveSeedChangedListener(SeedChangedCallback onSeedChanged)
+    {
+        _seedChanged.RemoveListener(onSeedChanged.Invoke);
+    }
+
+    public void AddNameSeedChangedListener(NameSeedChangedCallback onNameSeedChanged)
+    {
+        _nameSeedChanged.AddListener(onNameSeedChanged.Invoke);
+    }
+
+    public void RemoveNameSeedChangedListener(NameSeedChangedCallback onNameSeedChanged)
+    {
+        _nameSeedChanged.RemoveListener(onNameSeedChanged.Invoke);
+    }
 
     public int? Seed
     {
         get => _seed;
-        set { _seed = value; if (value.HasValue) RegeneratePet(); }
+        set
+        {
+            _seed = value;
+            RefreshDataAndMesh();
+            EmitSeedChanged();
+        }
     }
 
     public int? NameSeed
     {
         get => _nameSeed;
-        set { _nameSeed = value; if (value.HasValue) RegenerateName(); }
+        set
+        {
+            _nameSeed = value;
+            RefreshDataAndMesh();
+            EmitNameSeedChanged();
+        }
     }
 
     public PolyPetData Data { get; private set; }
@@ -68,19 +138,9 @@ public class PolyPetAvatar : MonoBehaviour
         if (_startNameSeedType == StartSeedType.Fixed) _nameSeed = _startNameSeed;
         else if (_startNameSeedType == StartSeedType.Random) _nameSeed = new Random().Next();
 
-        if (_seed.HasValue)
-        {
-            Data = PolyPetGenerator.Create(_seed.Value, _nameSeed);
-            BuildMesh();
-            _seedChanged.Invoke();
-            if (_nameSeed.HasValue) _nameSeedChanged.Invoke();
-        }
-        else if (_nameSeed.HasValue)
-        {
-            Data = PolyPetGenerator.Create(0, _nameSeed);
-            BuildMesh();
-            _nameSeedChanged.Invoke();
-        }
+        RefreshDataAndMesh();
+        EmitSeedChanged();
+        EmitNameSeedChanged();
     }
 
     void Update()
@@ -233,40 +293,33 @@ public class PolyPetAvatar : MonoBehaviour
         }
     }
 
-    private void RegeneratePet()
+    private void RefreshDataAndMesh()
     {
-        Data = PolyPetGenerator.Create(Seed!.Value, NameSeed);
+        Data = _seed.HasValue || _nameSeed.HasValue
+            ? PolyPetGenerator.Create(_seed ?? 0, _nameSeed)
+            : CreateEmptyData();
+
         BuildMesh();
-        _seedChanged.Invoke();
     }
 
-    private void RegenerateName()
+    private void EmitSeedChanged()
     {
-        if (!NameSeed.HasValue) return;
+        _seedChanged.Invoke(this, _seed);
+    }
 
-        if (Data.Body.Vertices == null)
-        {
-            if (!Seed.HasValue) return;
-            Data = PolyPetGenerator.Create(Seed.Value, NameSeed);
-            BuildMesh();
-            _seedChanged.Invoke();
-            _nameSeedChanged.Invoke();
-            return;
-        }
+    private void EmitNameSeedChanged()
+    {
+        _nameSeedChanged.Invoke(this, _nameSeed);
+    }
 
-        Data = new PolyPetData
+    private static PolyPetData CreateEmptyData()
+    {
+        return new PolyPetData
         {
-            Name = PolyPetNameGenerator.Create(NameSeed.Value),
-            Body = Data.Body, BodyPattern = Data.BodyPattern,
-            Head = Data.Head, HeadPattern = Data.HeadPattern,
-            Eyes = Data.Eyes, Mouth = Data.Mouth, Ears = Data.Ears,
-            Limbs = Data.Limbs, Tail = Data.Tail,
-            PrimaryColor = Data.PrimaryColor,
-            SecondaryColor = Data.SecondaryColor,
-            TertiaryColor = Data.TertiaryColor,
-            Seed = Data.Seed
+            Eyes = Array.Empty<ShapePart>(),
+            Ears = Array.Empty<ShapePart>(),
+            Limbs = Array.Empty<ShapePart>()
         };
-        _nameSeedChanged.Invoke();
     }
 
     void OnDestroy()
