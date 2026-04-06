@@ -19,8 +19,9 @@ staging="$(mktemp -d)"
 trap 'rm -rf "$staging"' EXIT
 
 mkdir -p "$staging/Godot/addons/PolyPet" "$staging/Unity/Runtime"
-cp -R "$source_dir" "$staging/Godot/addons/PolyPet/Core"
-cp -R "$source_dir" "$staging/Unity/Runtime/Core"
+mkdir -p "$staging/Godot/addons/PolyPet/Core" "$staging/Unity/Runtime/Core"
+cp "${core_files[@]}" "$staging/Godot/addons/PolyPet/Core/"
+cp "${core_files[@]}" "$staging/Unity/Runtime/Core/"
 
 mkdir -p "$(dirname "$godot_dest")" "$(dirname "$unity_dest")"
 rm -rf "$godot_dest" "$unity_dest"

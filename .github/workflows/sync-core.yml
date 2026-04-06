@@ -6,12 +6,7 @@ on:
     paths: [Core/**]
 
 permissions:
-  actions: write
   contents: write
-
-concurrency:
-  group: polypet-main-writers
-  cancel-in-progress: false
 
 jobs:
   sync:
@@ -22,23 +17,22 @@ jobs:
           fetch-depth: 0
 
       - name: Sync Core to engine adapters
-        run: ./scripts/sync-core-to-adapters.sh
+        run: bash ./scripts/sync-core-to-adapters.sh
+
+      - name: Sync sample projects
+        run: |
+          bash ./scripts/sync-godot-sample.sh
+          bash ./scripts/sync-unity-sample.sh
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f Godot/addons/PolyPet/Core/ Unity/Runtime/Core/
+          git add -f Samples/PolyPetDemoGodot/addons/PolyPet/ Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
           if git diff --cached --quiet; then
             exit 0
           fi
-          git commit -m "chore(core): sync Core to engine adapters"
+          git commit -m "chore(core): sync Core to engine adapters and samples"
           git pull --rebase origin main
           git push origin HEAD:main
-
-      - name: Trigger sample sync workflows
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh workflow run sync-unity-package.yml
-          gh workflow run sync-godot-addon.yml

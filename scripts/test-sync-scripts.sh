@@ -28,7 +28,6 @@ cp "$repo_root"/scripts/sync-unity-sample.sh "$workspace/success/scripts/"
 cp "$repo_root"/scripts/sync-core-to-adapters.sh "$workspace/failure/scripts/"
 cp "$repo_root"/scripts/sync-godot-sample.sh "$workspace/failure/scripts/"
 cp "$repo_root"/scripts/sync-unity-sample.sh "$workspace/failure/scripts/"
-chmod +x "$workspace/success/scripts/"*.sh "$workspace/failure/scripts/"*.sh
 
 cat > "$workspace/success/Core/PolyPetAnimation.cs" <<'EOF'
 namespace Core;
@@ -71,17 +70,23 @@ cat > "$workspace/success/Unity/package.json" <<'EOF'
 { "name": "com.shilo.polypet", "version": "9.9.9" }
 EOF
 
+cat > "$workspace/success/Core/Core.csproj" <<'EOF'
+<Project Sdk="Microsoft.NET.Sdk"></Project>
+EOF
+
 (
   cd "$workspace/outside"
-  "$workspace/success/scripts/sync-core-to-adapters.sh"
-  "$workspace/success/scripts/sync-godot-sample.sh"
-  "$workspace/success/scripts/sync-unity-sample.sh"
+  bash "$workspace/success/scripts/sync-core-to-adapters.sh"
+  bash "$workspace/success/scripts/sync-godot-sample.sh"
+  bash "$workspace/success/scripts/sync-unity-sample.sh"
 )
 
 test -f "$workspace/success/Godot/addons/PolyPet/Core/PolyPetGenerator.cs"
 test -f "$workspace/success/Unity/Runtime/Core/PolyPetGenerator.cs"
 test -f "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/plugin.cfg"
 test -f "$workspace/success/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/package.json"
+test ! -f "$workspace/success/Godot/addons/PolyPet/Core/Core.csproj"
+test ! -f "$workspace/success/Unity/Runtime/Core/Core.csproj"
 
 cmp "$workspace/success/Godot/addons/PolyPet/plugin.cfg" "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/plugin.cfg"
 cmp "$workspace/success/Unity/package.json" "$workspace/success/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/package.json"
@@ -94,7 +99,7 @@ cat > "$workspace/failure/Unity/Runtime/Core/keep.txt" <<'EOF'
 keep me
 EOF
 
-if "$workspace/failure/scripts/sync-core-to-adapters.sh"; then
+if bash "$workspace/failure/scripts/sync-core-to-adapters.sh"; then
   exit 1
 fi
 
@@ -105,7 +110,7 @@ cat > "$workspace/failure/Samples/PolyPetDemoGodot/addons/PolyPet/keep.txt" <<'E
 keep me
 EOF
 
-if "$workspace/failure/scripts/sync-godot-sample.sh"; then
+if bash "$workspace/failure/scripts/sync-godot-sample.sh"; then
   exit 1
 fi
 
@@ -115,7 +120,7 @@ cat > "$workspace/failure/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/ke
 keep me
 EOF
 
-if "$workspace/failure/scripts/sync-unity-sample.sh"; then
+if bash "$workspace/failure/scripts/sync-unity-sample.sh"; then
   exit 1
 fi
 

@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: polypet-main-writers
+  group: polypet-release
   cancel-in-progress: false
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
           git pull --ff-only origin main
 
       - name: Sync Core to engine adapters
-        run: ./scripts/sync-core-to-adapters.sh
+        run: bash ./scripts/sync-core-to-adapters.sh
 
       - name: Bump version
         id: version
@@ -52,8 +52,8 @@ jobs:
 
       - name: Sync sample projects from release-ready engine sources
         run: |
-          ./scripts/sync-godot-sample.sh
-          ./scripts/sync-unity-sample.sh
+          bash ./scripts/sync-godot-sample.sh
+          bash ./scripts/sync-unity-sample.sh
 
       - name: Commit fully synced release state
         run: |

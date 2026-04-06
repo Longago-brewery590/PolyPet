@@ -9,10 +9,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: polypet-main-writers
-  cancel-in-progress: false
-
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -22,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Copy package to Unity sample
-        run: ./scripts/sync-unity-sample.sh
+        run: bash ./scripts/sync-unity-sample.sh
 
       - name: Commit if changed
         run: |
