@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths: [Godot/**]
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -31,10 +30,8 @@ jobs:
             git checkout main
             git reset --hard origin/main
 
-            bash ./scripts/sync-core-to-adapters.sh
             bash ./scripts/sync-godot-sample.sh
 
-            git add -f Godot/addons/PolyPet/Core/
             git add -f Samples/PolyPetDemoGodot/addons/PolyPet/
             if git diff --cached --quiet; then
               exit 0
