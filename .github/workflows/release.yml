@@ -47,30 +47,6 @@ jobs:
           git tag ${{ steps.version.outputs.TAG }}
           git push origin main --tags
 
-      - name: Copy Core to Godot
-        run: |
-          rm -rf Godot/addons/PolyPet/Core
-          mkdir -p Godot/addons/PolyPet/Core
-          cp Core/*.cs Godot/addons/PolyPet/Core/
-
-      - name: Copy Core to Unity
-        run: |
-          rm -rf Unity/Runtime/Core
-          mkdir -p Unity/Runtime/Core
-          cp Core/*.cs Unity/Runtime/Core/
-
-      - name: Copy addon to Godot sample
-        run: |
-          rm -rf Samples/PolyPetDemoGodot/addons/PolyPet
-          mkdir -p Samples/PolyPetDemoGodot/addons
-          cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
-
-      - name: Copy package to Unity sample
-        run: |
-          rm -rf Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
-          mkdir -p Samples/PolyPetDemoUnity/Packages
-          cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
-
       - name: Zip Godot addon
         run: |
           cd Godot

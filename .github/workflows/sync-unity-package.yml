@@ -1,0 +1,30 @@
+name: Sync Unity Package to Sample
+
+on:
+  push:
+    branches: [main]
+    paths: [Unity/**]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Copy package to Unity sample
+        run: |
+          rm -rf Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
+          mkdir -p Samples/PolyPetDemoUnity/Packages
+          cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
+          git diff --cached --quiet || git commit -m "chore: sync Unity package to sample project"
+          git push

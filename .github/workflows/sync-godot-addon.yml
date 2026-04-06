@@ -1,0 +1,30 @@
+name: Sync Godot Addon to Sample
+
+on:
+  push:
+    branches: [main]
+    paths: [Godot/**]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Copy addon to Godot sample
+        run: |
+          rm -rf Samples/PolyPetDemoGodot/addons/PolyPet
+          mkdir -p Samples/PolyPetDemoGodot/addons
+          cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f Samples/PolyPetDemoGodot/addons/PolyPet/
+          git diff --cached --quiet || git commit -m "chore: sync Godot addon to sample project"
+          git push
