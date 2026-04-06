@@ -27,4 +27,5 @@ Thumbs.db
 docs/superpowers/
 
 # Sample projects generated files
-Samples/PolyPetDemoGodot/*.import
+*.import
+*.uid
