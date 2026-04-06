@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 using Xunit;
 
 namespace PolyPet.Tests
@@ -92,6 +93,26 @@ namespace PolyPet.Tests
             Assert.Matches(
                 @"private\s+bool\s+TryGetPressedPointerLocalPosition\(out\s+Vector2\s+localPosition\)\s*\{\s*#if\s+ENABLE_INPUT_SYSTEM\s*return\s+TryGetPressedPointerLocalPositionInputSystem\(out\s+localPosition\);\s*#elif\s+ENABLE_LEGACY_INPUT_MANAGER\s*return\s+TryGetPressedPointerLocalPositionLegacy\(out\s+localPosition\);",
                 source);
+        }
+
+        [Fact]
+        public void UnityPackage_DeclaresPolyPetCreatorSampleUnderSamplesTilde()
+        {
+            var packageManifest = File.ReadAllText(RepoFile(Path.Combine("Unity", "package.json")));
+            using var document = JsonDocument.Parse(packageManifest);
+            JsonElement? polyPetCreatorSample = null;
+
+            foreach (var sample in document.RootElement.GetProperty("samples").EnumerateArray())
+            {
+                if (sample.GetProperty("displayName").GetString() != "PolyPet Creator")
+                    continue;
+
+                polyPetCreatorSample = sample;
+                break;
+            }
+
+            Assert.NotNull(polyPetCreatorSample);
+            Assert.Equal("Samples~/PolyPetCreator", polyPetCreatorSample.Value.GetProperty("path").GetString());
         }
 
         [Fact]
