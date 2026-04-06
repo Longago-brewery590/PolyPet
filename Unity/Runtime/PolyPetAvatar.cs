@@ -331,7 +331,7 @@ public class PolyPetAvatar : MonoBehaviour
         return PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
     }
 
-    private bool IsUiRenderMode => TryGetRectTransform(out _);
+    private bool IsUiRenderMode => TryGetUiRenderContext(out _, out _);
 
     private Matrix4x4 GetRenderMatrix(AnimationFrame frame)
     {
@@ -387,7 +387,7 @@ public class PolyPetAvatar : MonoBehaviour
 
     private void RefreshRenderMode()
     {
-        if (TryGetRectTransform(out _))
+        if (TryGetUiRenderContext(out _, out _))
         {
             if (_uiGraphic == null)
                 _uiGraphic = GetComponent<PolyPetAvatarGraphic>() ?? gameObject.AddComponent<PolyPetAvatarGraphic>();
@@ -411,6 +411,19 @@ public class PolyPetAvatar : MonoBehaviour
     {
         rectTransform = transform as RectTransform;
         return rectTransform != null;
+    }
+
+    private bool TryGetUiRenderContext(out RectTransform rectTransform, out Canvas canvas)
+    {
+        if (TryGetRectTransform(out rectTransform))
+        {
+            canvas = rectTransform.GetComponentInParent<Canvas>();
+            if (canvas != null)
+                return true;
+        }
+
+        canvas = null;
+        return false;
     }
 
     private bool TryGetPressedPetPosition(out Vector2 petPosition)
@@ -458,12 +471,12 @@ public class PolyPetAvatar : MonoBehaviour
 
     private bool TryGetScreenPointLocalPosition(Vector2 screenPoint, out Vector2 localPosition)
     {
-        if (transform is RectTransform rectTransform)
+        if (TryGetUiRenderContext(out var rectTransform, out var canvas))
         {
             return RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 rectTransform,
                 screenPoint,
-                GetRectTransformEventCamera(rectTransform),
+                GetRectTransformEventCamera(canvas),
                 out localPosition);
         }
 
@@ -481,16 +494,16 @@ public class PolyPetAvatar : MonoBehaviour
         return true;
     }
 
-    private Camera GetRectTransformEventCamera(RectTransform rectTransform)
+    private static Camera GetRectTransformEventCamera(Canvas canvas)
     {
-        var canvas = rectTransform.GetComponentInParent<Canvas>();
-        if (canvas == null)
-            return null;
-
         if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             return null;
 
-        return canvas.worldCamera != null ? canvas.worldCamera : Camera.main;
+        if (canvas.worldCamera != null)
+            return canvas.worldCamera;
+
+        var rootCanvas = canvas.rootCanvas;
+        return rootCanvas != null ? rootCanvas.worldCamera : null;
     }
 
     internal bool HasRenderableData => Data.Body.Vertices != null;
