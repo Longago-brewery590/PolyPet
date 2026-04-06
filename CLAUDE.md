@@ -8,6 +8,6 @@ Unity adapter: Unity/Runtime/PolyPetAvatar.cs Unity/Runtime/PolyPetName.cs Unity
 Godot adapter: Godot/addons/PolyPet/PolyPetAvatar.cs Godot/addons/PolyPet/PolyPetName.cs Godot/addons/PolyPet/plugin.cfg
 Tests: Core.Tests/Core.Tests.csproj
 Automation: .github/workflows/sync-core.yml .github/workflows/release.yml
-Rules: keep Core engine-agnostic; PolyPetName is display-only; seed generation stays in PolyPet
+Rules: keep Core engine-agnostic; PolyPetName is display-only; seed generation stays in PolyPet; Godot PolyPetAvatar is Control-based and must fit its Control rect; Unity PolyPetAvatar must support FrameSize and Canvas RectTransform framing
 Verify after code changes, run: .\scripts\verify.ps1 -NoPause
 Limits: sample folders are scaffolding; no sample scenes or Godot/Unity editor compile harness here

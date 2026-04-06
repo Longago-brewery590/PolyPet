@@ -26,7 +26,7 @@ layout_mode = 2
 [node name="Origin" type="Control" parent="ScrollContainer/GridContainer/PolyPetAvatarControl" unique_id=80489148]
 layout_mode = 2
 
-[node name="PolyPetAvatar" type="Node2D" parent="ScrollContainer/GridContainer/PolyPetAvatarControl/Origin" unique_id=1703280634]
+[node name="PolyPetAvatar" type="Control" parent="ScrollContainer/GridContainer/PolyPetAvatarControl/Origin" unique_id=1703280634]
 script = ExtResource("1_pq1lp")
 metadata/_custom_type_script = "uid://b770jfm8t7i50"
 

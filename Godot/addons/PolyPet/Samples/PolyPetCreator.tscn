@@ -35,7 +35,7 @@ script/source = "extends SpinBox
 @onready var avatar: PolyPetAvatar = %PolyPetAvatar
 
 
-func _on_poly_pet_avatar_seed_changed(avatar: Node2D, seed: Variant) -> void:
+func _on_poly_pet_avatar_seed_changed(avatar: PolyPetAvatar, seed: Variant) -> void:
 	value = int(seed)
 
 
@@ -76,7 +76,7 @@ anchor_bottom = 0.75
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PolyPetAvatar" type="Node2D" parent="AvatarContainer/Origin" unique_id=264461052]
+[node name="PolyPetAvatar" type="Control" parent="AvatarContainer/Origin" unique_id=264461052]
 unique_name_in_owner = true
 script = ExtResource("2_33x3t")
 _startSeedType = 2
