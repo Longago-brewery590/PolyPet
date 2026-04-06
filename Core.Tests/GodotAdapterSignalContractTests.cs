@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace PolyPet.Tests
@@ -45,6 +46,15 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void GodotPolyPetAvatar_InheritsFromControlForFrameBasedLayout()
+        {
+            var source = File.ReadAllText(RepoFile(Path.Combine("Godot", "addons", "PolyPet", "PolyPetAvatar.cs")));
+
+            Assert.True(Regex.IsMatch(source, @"class\s+PolyPetAvatar\s*:\s*Control"),
+                "Expected PolyPetAvatar to inherit from Control.");
+        }
+
+        [Fact]
         public void UnityPolyPetAvatar_UsesSerializedTypedUnityEventsInsteadOfPlainEvents()
         {
             var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
@@ -66,6 +76,19 @@ namespace PolyPet.Tests
             Assert.Contains("public AvatarNullableIntEvent NameSeedChanged => _nameSeedChanged;", source);
             Assert.DoesNotContain("public event Action SeedChanged;", source);
             Assert.DoesNotContain("public event Action NameSeedChanged;", source);
+        }
+
+        [Fact]
+        public void UnityPolyPetAvatar_ExposesFrameSizingAndRectTransformSupport()
+        {
+            var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
+
+            Assert.True(Regex.IsMatch(source, @"using\s+UnityEngine\s*;"),
+                "Expected UnityEngine support in the Unity avatar source.");
+            Assert.True(Regex.IsMatch(source, @"public\s+Vector2\s+FrameSize\b"),
+                "Expected a public FrameSize property.");
+            Assert.True(Regex.IsMatch(source, @"\bRectTransform\b"),
+                "Expected RectTransform support in the Unity avatar source.");
         }
     }
 }
