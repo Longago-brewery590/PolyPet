@@ -2,6 +2,7 @@
   "name": "Shilo.PolyPet",
   "rootNamespace": "PolyPet",
   "references": [
+    "Unity.InputSystem",
     "UnityEngine.UI",
     "Unity.TextMeshPro"
   ],

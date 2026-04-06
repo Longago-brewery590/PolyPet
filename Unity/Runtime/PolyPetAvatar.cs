@@ -4,6 +4,9 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using PolyPet;
 using Random = System.Random;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 public enum StartSeedType
 {
@@ -455,6 +458,39 @@ public class PolyPetAvatar : MonoBehaviour
 
     private bool TryGetPressedPointerLocalPosition(out Vector2 localPosition)
     {
+#if ENABLE_INPUT_SYSTEM
+        return TryGetPressedPointerLocalPositionInputSystem(out localPosition);
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        return TryGetPressedPointerLocalPositionLegacy(out localPosition);
+#else
+        localPosition = default;
+        return false;
+#endif
+    }
+
+#if ENABLE_INPUT_SYSTEM
+    private bool TryGetPressedPointerLocalPositionInputSystem(out Vector2 localPosition)
+    {
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            return TryGetScreenPointLocalPosition(Mouse.current.position.ReadValue(), out localPosition);
+
+        if (Touchscreen.current != null)
+        {
+            foreach (var touch in Touchscreen.current.touches)
+            {
+                if (touch.press.wasPressedThisFrame)
+                    return TryGetScreenPointLocalPosition(touch.position.ReadValue(), out localPosition);
+            }
+        }
+
+        localPosition = default;
+        return false;
+    }
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+    private bool TryGetPressedPointerLocalPositionLegacy(out Vector2 localPosition)
+    {
         if (Input.GetMouseButtonDown(0))
             return TryGetScreenPointLocalPosition(Input.mousePosition, out localPosition);
 
@@ -468,6 +504,7 @@ public class PolyPetAvatar : MonoBehaviour
         localPosition = default;
         return false;
     }
+#endif
 
     private bool TryGetScreenPointLocalPosition(Vector2 screenPoint, out Vector2 localPosition)
     {

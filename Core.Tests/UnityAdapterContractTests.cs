@@ -77,6 +77,24 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void UnityPackage_SupportsInputSystemPointerPressesWithoutDroppingLegacyInput()
+        {
+            var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
+            var asmdef = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "Shilo.PolyPet.asmdef")));
+            var packageManifest = File.ReadAllText(RepoFile(Path.Combine("Unity", "package.json")));
+
+            Assert.Contains("ENABLE_INPUT_SYSTEM", source);
+            Assert.Contains("ENABLE_LEGACY_INPUT_MANAGER", source);
+            Assert.Contains("Mouse.current", source);
+            Assert.Contains("Touchscreen.current", source);
+            Assert.Contains("\"Unity.InputSystem\"", asmdef);
+            Assert.Contains("\"com.unity.inputsystem\"", packageManifest);
+            Assert.Matches(
+                @"private\s+bool\s+TryGetPressedPointerLocalPosition\(out\s+Vector2\s+localPosition\)\s*\{\s*#if\s+ENABLE_INPUT_SYSTEM\s*return\s+TryGetPressedPointerLocalPositionInputSystem\(out\s+localPosition\);\s*#elif\s+ENABLE_LEGACY_INPUT_MANAGER\s*return\s+TryGetPressedPointerLocalPositionLegacy\(out\s+localPosition\);",
+                source);
+        }
+
+        [Fact]
         public void PolyPetAvatar_UsesRectTransformFrameOnlyWhenInUiRenderMode()
         {
             var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
