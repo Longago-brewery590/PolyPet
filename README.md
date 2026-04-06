@@ -1,71 +1,109 @@
 # PolyPet
 
-Acute-ly polygon pet creator. Procedural 2D generation inspired by Tamagotchi and Peridot. Supports Unity 6.4+ and Godot .NET 4.6+.
+Acute-ly polygon pet creator. PolyPet is a seeded procedural 2D creature generator inspired by Tamagotchi and Peridot, with a shared C# Core library and lightweight adapters for Unity 6.4+ and Godot .NET 4.6+.
+
+## What It Includes
+
+- Deterministic pet generation from an integer seed.
+- Optional seeded cute-name generation.
+- Shared animation math for idle bobbing and pet/click squish reactions.
+- A Unity `MonoBehaviour` renderer plus `PolyPetName` TextMeshPro helper.
+- A Godot `Node2D` renderer plus `PolyPetName` label helper.
+- GitHub Actions workflows for syncing Core into engine adapter folders and creating release zips.
+
+The Core generator also produces `BodyPattern` and `HeadPattern` metadata for custom renderers and future visual expansion.
+
+## Requirements
+
+- Unity 6.4+
+- Godot 4.6+ .NET
+- .NET SDK 8.x for local Core development and tests
 
 ## Install
 
 ### Unity
 
-**Package Manager (Git URL):**
+Add via `Window > Package Manager > + > Add package from git URL`:
 
-Add via Window > Package Manager > + > Add package from git URL:
-
-```
+```text
 https://github.com/Shilo/PolyPet.git?path=Unity
 ```
 
-**Manual:** Download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases), extract it into your project's `Packages/com.shilo.polypet/` folder.
+Or download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases) and extract it into `Packages/com.shilo.polypet/`.
 
 ### Godot
 
-Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases), extract to your project root so `addons/PolyPet/` is created.
+Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases) and extract it into your project root so `addons/PolyPet/` is created.
 
-## Usage
+## Quick Start
 
-### Quick Start
+### Unity
 
-Add a `PolyPet` node (Godot) or component (Unity) to your scene. Set a seed in the inspector or leave defaults for a deterministic pet on start.
+1. Add the package.
+2. Create an empty GameObject and add the `PolyPet` component.
+3. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Pet` reference.
+4. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
-### API
+### Godot
+
+1. Copy the addon into `addons/PolyPet/`.
+2. Add a `PolyPet` node to your scene.
+3. Optionally add a `PolyPetName` label and assign its `Pet` export to the `PolyPet` node.
+4. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+
+## Runtime API
 
 ```csharp
-// Properties (setters trigger regeneration)
-pet.Seed = 42;           // Regenerates pet
-pet.NameSeed = 99;       // Regenerates name
+// Setters regenerate at runtime when given a value.
+pet.Seed = 42;
+pet.NameSeed = 99;
 
-// Randomize
-pet.RandomizeSeed();     // Random pet
-pet.RandomizeNameSeed(); // Random name
+// Randomize either seed.
+pet.RandomizeSeed();
+pet.RandomizeNameSeed();
 
-// Events
+// Observe updates.
 pet.SeedChanged += () => { };
 pet.NameSeedChanged += () => { };
 
-// Read
+// Read the generated data.
 PolyPetData data = pet.Data;
 string? name = pet.Data.Name;
 ```
 
-### Inspector Settings
+If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
 
-| Field | Type | Default | Description |
-|---|---|---|---|
-| Start Seed | int | 0 | Seed value used on Start |
-| Start Name Seed | int | 0 | Name seed value used on Start |
-| Start Seed Type | StartSeedType | Fixed | None / Fixed / Random |
-| Start Name Seed Type | StartSeedType | Fixed | None / Fixed / Random |
+## Inspector Fields
 
-### Display Name
+| Field                | Type            | Default | Description                                            |
+| -------------------- | --------------- | ------- | ------------------------------------------------------ |
+| Start Seed           | `int`           | `0`     | Seed value used when `Start Seed Type` is `Fixed`.     |
+| Start Name Seed      | `int`           | `0`     | Name seed used when `Start Name Seed Type` is `Fixed`. |
+| Start Seed Type      | `StartSeedType` | `Fixed` | `None`, `Fixed`, or `Random`.                          |
+| Start Name Seed Type | `StartSeedType` | `Fixed` | `None`, `Fixed`, or `Random`.                          |
 
-Add a `PolyPetName` component (Label in Godot, requires TextMeshPro in Unity). Set the `Pet` reference. It auto-updates when the name changes.
+## Repository Layout
 
-## Architecture
-
+```text
+Unity/                    Unity package root
+Godot/Addons/PolyPet/     Godot runtime adapter
+Core/                     Shared .NET Standard 2.1 generation library
+Core.Tests/               xUnit coverage for generator, names, and animation
+.github/workflows/        Core sync and release automation
 ```
-Core/           Shared C# (.NET Standard 2.1) — generation, animation, naming
-Godot/          Godot addon — Node2D renderer + Label display
-Unity/          Unity package — MonoBehaviour renderer + TMP display
+
+`Core/` is the source of truth. The engine-specific `Core/` mirrors are populated by CI and should not be edited manually.
+
+## Development
+
+Run the Core verification commands from the repo root:
+
+```powershell
+dotnet test .\Core.Tests\Core.Tests.csproj
+dotnet build .\Core\Core.csproj --configuration Release
 ```
+
+The repo currently ships runtime code only. The sample directories are present as scaffolding, but demo scenes are not checked in yet.
 
 ## License
 
