@@ -5,7 +5,11 @@ namespace PolyPet
         public float X;
         public float Y;
 
-        public Vec2(float x, float y) { X = x; Y = y; }
+        public Vec2(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 
     public struct Color32
@@ -15,7 +19,13 @@ namespace PolyPet
         public byte B;
         public byte A;
 
-        public Color32(byte r, byte g, byte b, byte a = 255) { R = r; G = g; B = b; A = a; }
+        public Color32(byte r, byte g, byte b, byte a = 255)
+        {
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
     }
 
     public enum ShapeType
@@ -111,5 +121,4 @@ namespace PolyPet
         public float ScaleX;
         public float ScaleY;
     }
-
 }

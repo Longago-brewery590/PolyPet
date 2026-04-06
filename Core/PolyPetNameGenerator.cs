@@ -15,17 +15,14 @@ namespace PolyPet
         public static string Create(int seed)
         {
             var rng = new Random(seed);
-            int syllableCount = rng.Next(2, 4); // 2 or 3 syllables
+            var syllableCount = rng.Next(2, 4); // 2 or 3 syllables
             var name = new char[syllableCount * 3]; // max 3 chars per syllable
-            int pos = 0;
+            var pos = 0;
 
-            for (int i = 0; i < syllableCount; i++)
+            for (var i = 0; i < syllableCount; i++)
             {
                 var syllable = Syllables[rng.Next(Syllables.Length)];
-                foreach (char c in syllable)
-                {
-                    name[pos++] = c;
-                }
+                foreach (var c in syllable) name[pos++] = c;
             }
 
             name[0] = char.ToUpper(name[0]);

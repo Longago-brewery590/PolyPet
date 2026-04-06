@@ -1,6 +1,4 @@
-using System;
 using Xunit;
-using PolyPet;
 
 namespace PolyPet.Tests
 {
@@ -48,7 +46,7 @@ namespace PolyPet.Tests
         [Fact]
         public void GetFrame_Idle_MatchesGetIdleFrame()
         {
-            float t = 0.7f;
+            var t = 0.7f;
             var idle = PolyPetAnimation.GetIdleFrame(t);
             var combined = PolyPetAnimation.GetFrame(PetState.Idle, t, 0f);
             Assert.Equal(idle.PositionOffset.Y, combined.PositionOffset.Y, 3);

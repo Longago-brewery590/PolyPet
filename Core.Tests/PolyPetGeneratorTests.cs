@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using Xunit;
-using PolyPet;
 
 namespace PolyPet.Tests
 {
@@ -70,7 +68,7 @@ namespace PolyPet.Tests
         [Fact]
         public void Create_HasTwoOrFourLimbs()
         {
-            for (int seed = 0; seed < 50; seed++)
+            for (var seed = 0; seed < 50; seed++)
             {
                 var pet = PolyPetGenerator.Create(seed);
                 Assert.True(pet.Limbs.Length == 2 || pet.Limbs.Length == 4,
@@ -88,7 +86,7 @@ namespace PolyPet.Tests
         [Fact]
         public void Create_NameIsSetWithNameSeed()
         {
-            var pet = PolyPetGenerator.Create(1, nameSeed: 42);
+            var pet = PolyPetGenerator.Create(1, 42);
             Assert.NotNull(pet.Name);
             Assert.True(pet.Name!.Length > 0);
         }
@@ -96,7 +94,7 @@ namespace PolyPet.Tests
         [Fact]
         public void Create_NameMatchesNameGenerator()
         {
-            var pet = PolyPetGenerator.Create(1, nameSeed: 42);
+            var pet = PolyPetGenerator.Create(1, 42);
             var expectedName = PolyPetNameGenerator.Create(42);
             Assert.Equal(expectedName, pet.Name);
         }
@@ -107,11 +105,11 @@ namespace PolyPet.Tests
             var pet1 = PolyPetGenerator.Create(1);
             var pet2 = PolyPetGenerator.Create(2);
             // At least one visual property should differ
-            bool differs = pet1.Body.Shape != pet2.Body.Shape
-                || pet1.PrimaryColor.R != pet2.PrimaryColor.R
-                || pet1.PrimaryColor.G != pet2.PrimaryColor.G
-                || pet1.PrimaryColor.B != pet2.PrimaryColor.B
-                || pet1.Body.Vertices.Length != pet2.Body.Vertices.Length;
+            var differs = pet1.Body.Shape != pet2.Body.Shape
+                          || pet1.PrimaryColor.R != pet2.PrimaryColor.R
+                          || pet1.PrimaryColor.G != pet2.PrimaryColor.G
+                          || pet1.PrimaryColor.B != pet2.PrimaryColor.B
+                          || pet1.Body.Vertices.Length != pet2.Body.Vertices.Length;
             Assert.True(differs);
         }
 
@@ -119,19 +117,19 @@ namespace PolyPet.Tests
         public void Create_PaletteHasThreeDistinctColors()
         {
             var pet = PolyPetGenerator.Create(42);
-            bool allSame = pet.PrimaryColor.R == pet.SecondaryColor.R
-                && pet.PrimaryColor.G == pet.SecondaryColor.G
-                && pet.PrimaryColor.B == pet.SecondaryColor.B
-                && pet.PrimaryColor.R == pet.TertiaryColor.R
-                && pet.PrimaryColor.G == pet.TertiaryColor.G
-                && pet.PrimaryColor.B == pet.TertiaryColor.B;
+            var allSame = pet.PrimaryColor.R == pet.SecondaryColor.R
+                          && pet.PrimaryColor.G == pet.SecondaryColor.G
+                          && pet.PrimaryColor.B == pet.SecondaryColor.B
+                          && pet.PrimaryColor.R == pet.TertiaryColor.R
+                          && pet.PrimaryColor.G == pet.TertiaryColor.G
+                          && pet.PrimaryColor.B == pet.TertiaryColor.B;
             Assert.False(allSame);
         }
 
         [Fact]
         public void Create_PatternTypeIsValid()
         {
-            for (int seed = 0; seed < 50; seed++)
+            for (var seed = 0; seed < 50; seed++)
             {
                 var pet = PolyPetGenerator.Create(seed);
                 Assert.True(Enum.IsDefined(typeof(PatternType), pet.BodyPattern.Type));
@@ -145,7 +143,7 @@ namespace PolyPet.Tests
             var pet = PolyPetGenerator.Create(1);
             // Body is at origin (0,0), head Y should be positive (above)
             Assert.True(pet.Head.Position.Y > pet.Body.Position.Y,
-                         "Head should be above body");
+                "Head should be above body");
         }
     }
 }

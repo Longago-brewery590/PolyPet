@@ -4,7 +4,9 @@
   "displayName": "PolyPet",
   "description": "Acute-ly polygon pet creator. Procedural 2D generation inspired by Tamagotchi and Peridot.",
   "unity": "6000.4",
-  "author": { "name": "Shilo" },
+  "author": {
+    "name": "Shilo"
+  },
   "samples": [
     {
       "displayName": "PolyPet Creator",

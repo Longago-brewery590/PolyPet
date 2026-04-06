@@ -1,5 +1,4 @@
 using Xunit;
-using PolyPet;
 
 namespace PolyPet.Tests
 {
@@ -32,7 +31,7 @@ namespace PolyPet.Tests
         public void Create_ReturnsNameWith4To9Characters()
         {
             // 2 syllables = 4-6 chars, 3 syllables = 6-9 chars
-            for (int seed = 0; seed < 100; seed++)
+            for (var seed = 0; seed < 100; seed++)
             {
                 var name = PolyPetNameGenerator.Create(seed);
                 Assert.InRange(name.Length, 4, 9);
@@ -42,7 +41,7 @@ namespace PolyPet.Tests
         [Fact]
         public void Create_ReturnsOnlyLetters()
         {
-            for (int seed = 0; seed < 100; seed++)
+            for (var seed = 0; seed < 100; seed++)
             {
                 var name = PolyPetNameGenerator.Create(seed);
                 Assert.All(name.ToCharArray(), c => Assert.True(char.IsLetter(c)));
