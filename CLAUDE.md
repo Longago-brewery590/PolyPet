@@ -1,6 +1,6 @@
 PolyPet - seeded procedural polygon pet generator inspired by Tamagotchi, Peridot, and Geometry Wars, with shared C# Core library and Godot/Unity adapters.
-
-Design: .impeccable.md
+Design: cute resolution-independent 2D vector polygon creatures with flat fills, clean edges, kawaii proportions, silhouette-first; Tamagotchi retro simplicity, Peridot procedural variety and warm colors, Geometry Wars geometric clarity and shape-as-identity; bright/saturated palettes, no neon/muddy/dark tones.
+- Details: .impeccable.md
 Documentation: README.md docs/
 Core source of truth: Core/
 Core entry points: Core/PolyPetGenerator.cs Core/PolyPetNameGenerator.cs Core/PolyPetAnimation.cs Core/PolyPetData.cs
