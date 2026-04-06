@@ -129,6 +129,7 @@ test -f "$workspace/failure/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
 grep -q 'bash ./scripts/sync-godot-sample.sh' "$repo_root/.github/workflows/sync-core.yml"
 grep -q 'bash ./scripts/sync-unity-sample.sh' "$repo_root/.github/workflows/sync-core.yml"
 grep -q 'bash ./scripts/sync-godot-sample.sh' "$repo_root/.github/workflows/sync-godot-addon.yml"
+grep -q "if: github.actor != 'github-actions\\[bot\\]'" "$repo_root/.github/workflows/sync-godot-addon.yml"
 if grep -q 'bash ./scripts/sync-core-to-adapters.sh' "$repo_root/.github/workflows/sync-godot-addon.yml"; then
   exit 1
 fi
@@ -136,6 +137,7 @@ if grep -q 'workflow_dispatch:' "$repo_root/.github/workflows/sync-godot-addon.y
   exit 1
 fi
 grep -q 'bash ./scripts/sync-unity-sample.sh' "$repo_root/.github/workflows/sync-unity-package.yml"
+grep -q "if: github.actor != 'github-actions\\[bot\\]'" "$repo_root/.github/workflows/sync-unity-package.yml"
 if grep -q 'bash ./scripts/sync-core-to-adapters.sh' "$repo_root/.github/workflows/sync-unity-package.yml"; then
   exit 1
 fi
