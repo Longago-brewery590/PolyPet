@@ -34,6 +34,7 @@ Or download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/P
 ### Godot
 
 Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases) and extract it into your project root so `addons/PolyPet/` is created.
+PolyPet is a runtime addon, not an editor plugin, so there is no `Project Settings > Plugins` step.
 
 ## Quick Start
 
@@ -47,9 +48,10 @@ Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/Poly
 ### Godot
 
 1. Copy the addon into `addons/PolyPet/`.
-2. Add a `PolyPetAvatar` node to your scene.
-3. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
-4. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+2. Do not enable anything in `Project Settings > Plugins`; PolyPet works as plain runtime C# scripts under `addons/`.
+3. Add a `PolyPetAvatar` node to your scene.
+4. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
+5. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
 ## Runtime API
 
