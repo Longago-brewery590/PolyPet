@@ -13,7 +13,6 @@ public partial class PolyPetName : Label
             return;
         }
 
-        Pet.SeedChanged += UpdateText;
         Pet.NameSeedChanged += UpdateText;
         UpdateText();
     }
@@ -22,7 +21,6 @@ public partial class PolyPetName : Label
     {
         if (Pet == null) return;
 
-        Pet.SeedChanged -= UpdateText;
         Pet.NameSeedChanged -= UpdateText;
     }
 
