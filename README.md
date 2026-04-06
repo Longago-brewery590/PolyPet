@@ -91,6 +91,7 @@ Godot/                    Godot package root
 Godot/Addons/PolyPet/     Godot runtime adapter
 Core/                     Shared .NET Standard 2.1 generation library
 Core.Tests/               xUnit coverage for generator, names, and animation
+docs/                     Design documents and references
 .github/workflows/        Core sync and release automation
 ```
 
