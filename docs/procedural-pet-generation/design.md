@@ -177,7 +177,7 @@ The rendering strategy should stay intentionally lightweight:
 - Animation is applied through transform offsets rather than skeletal systems.
 - Both adapters use the same fit-to-frame contract: they render into a caller-provided rectangular frame, compute a uniform scale from the worst-case animated bounds, and keep the full animated pet contained within that frame at all times.
 - No rendered geometry may leave the frame, even during idle motion or petting reactions.
-- Relative size differences between pet shapes may remain visible, while the largest supported pet can still reach edge-to-edge within the available frame.
+- Relative size differences between pet shapes may remain visible, while the largest supported pet can still reach all four edges of the rectangular frame when measured at its worst-case animated bounds.
 - The result should be visually appealing in both engines without requiring complex shaders or imported art assets.
 
 Perfect pixel-for-pixel parity between engines is not required, but the same pet should clearly read as the same creature in both environments.
