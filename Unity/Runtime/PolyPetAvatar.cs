@@ -72,8 +72,9 @@ public class PolyPetAvatar : MonoBehaviour
     private float _time;
     private float _petTime;
     private Mesh _mesh;
-    private Mesh _mouthMesh;
     private Material _material;
+    private MeshFilter _sceneMeshFilter;
+    private MeshRenderer _sceneMeshRenderer;
     private PolyPetAvatarGraphic _uiGraphic;
 
     public AvatarNullableIntEvent SeedChanged => _seedChanged;
@@ -150,6 +151,7 @@ public class PolyPetAvatar : MonoBehaviour
         else if (_startNameSeedType == StartSeedType.Random) _nameSeed = new Random().Next();
 
         RefreshDataAndMesh();
+        RefreshRenderMode();
         EmitSeedChanged();
         EmitNameSeedChanged();
     }
@@ -162,7 +164,14 @@ public class PolyPetAvatar : MonoBehaviour
             _state = PetState.Idle;
 
         RefreshRenderMode();
-        MarkUiGraphicDirty();
+        if (IsUiRenderMode)
+        {
+            MarkUiGraphicDirty();
+        }
+        else
+        {
+            RefreshSceneMesh();
+        }
 
         if (Data.Body.Vertices == null)
             return;
@@ -178,57 +187,43 @@ public class PolyPetAvatar : MonoBehaviour
         }
     }
 
-    void OnRenderObject()
+    private void RefreshSceneMesh()
     {
-        if (IsUiRenderMode || _mesh == null || _material == null) return;
-
-        var frame = GetCurrentFrame();
-        var renderMatrix = GetRenderMatrix(frame);
-
-        _material.SetPass(0);
-        Graphics.DrawMeshNow(_mesh, renderMatrix);
-        if (_mouthMesh != null)
-            Graphics.DrawMeshNow(_mouthMesh, renderMatrix);
-    }
-
-    private void BuildMesh()
-    {
-        if (_mesh != null) Destroy(_mesh);
-        if (_mouthMesh != null) Destroy(_mouthMesh);
-        _mesh = new Mesh();
-        _mouthMesh = new Mesh();
+        if (_mesh == null)
+            _mesh = new Mesh();
+        else
+            _mesh.Clear();
 
         var vertices = new System.Collections.Generic.List<Vector3>();
         var colors = new System.Collections.Generic.List<UnityEngine.Color>();
         var triangles = new System.Collections.Generic.List<int>();
-        var mouthVertices = new System.Collections.Generic.List<Vector3>();
-        var mouthColors = new System.Collections.Generic.List<UnityEngine.Color>();
-        var mouthTriangles = new System.Collections.Generic.List<int>();
+        var frameRect = GetResolvedFrameRect();
+        var frameLayout = PolyPetLayout.CreateFrameLayout(Data, frameRect.width, frameRect.height);
+        var frame = GetCurrentFrame();
 
-        AddShapeToMesh(Data.Body, vertices, colors, triangles);
-        AddShapeToMesh(Data.Head, vertices, colors, triangles);
-        foreach (var ear in Data.Ears) AddShapeToMesh(ear, vertices, colors, triangles);
-        foreach (var eye in Data.Eyes) AddShapeToMesh(eye, vertices, colors, triangles);
-        AddMouthToMesh(Data.Mouth, mouthVertices, mouthColors, mouthTriangles);
-        foreach (var limb in Data.Limbs) AddShapeToMesh(limb, vertices, colors, triangles);
+        AddShapeToMesh(Data.Body, vertices, colors, triangles, frameRect, frameLayout, frame);
+        AddShapeToMesh(Data.Head, vertices, colors, triangles, frameRect, frameLayout, frame);
+        foreach (var ear in Data.Ears) AddShapeToMesh(ear, vertices, colors, triangles, frameRect, frameLayout, frame);
+        foreach (var eye in Data.Eyes) AddShapeToMesh(eye, vertices, colors, triangles, frameRect, frameLayout, frame);
+        AddMouthToMesh(Data.Mouth, vertices, colors, triangles, frameRect, frameLayout, frame);
+        foreach (var limb in Data.Limbs) AddShapeToMesh(limb, vertices, colors, triangles, frameRect, frameLayout, frame);
         if (Data.Tail.Vertices != null && Data.Tail.Vertices.Length >= 3)
-            AddShapeToMesh(Data.Tail, vertices, colors, triangles);
+            AddShapeToMesh(Data.Tail, vertices, colors, triangles, frameRect, frameLayout, frame);
 
         _mesh.SetVertices(vertices);
         _mesh.SetColors(colors);
         _mesh.SetTriangles(triangles, 0);
         _mesh.RecalculateBounds();
-
-        _mouthMesh.SetVertices(mouthVertices);
-        _mouthMesh.SetColors(mouthColors);
-        _mouthMesh.SetTriangles(mouthTriangles, 0);
-        _mouthMesh.RecalculateBounds();
+        SyncSceneRenderer();
     }
 
     private void AddShapeToMesh(ShapePart part,
         System.Collections.Generic.List<Vector3> vertices,
         System.Collections.Generic.List<UnityEngine.Color> colors,
-        System.Collections.Generic.List<int> triangles)
+        System.Collections.Generic.List<int> triangles,
+        Rect frameRect,
+        PetFrameLayout frameLayout,
+        AnimationFrame frame)
     {
         if (part.Vertices == null || part.Vertices.Length < 3) return;
 
@@ -238,10 +233,12 @@ public class PolyPetAvatar : MonoBehaviour
 
         for (int i = 0; i < part.Vertices.Length; i++)
         {
-            vertices.Add(new Vector3(
+            var petPoint = new Vector2(
                 part.Position.X + part.Vertices[i].X,
-                part.Position.Y + part.Vertices[i].Y,
-                0));
+                part.Position.Y + part.Vertices[i].Y);
+            var position = TransformToFrameSpace(petPoint, frameRect, frameLayout, frame);
+
+            vertices.Add(new Vector3(position.x, position.y, 0f));
             colors.Add(color);
         }
 
@@ -257,7 +254,10 @@ public class PolyPetAvatar : MonoBehaviour
     private void AddMouthToMesh(ShapePart mouth,
         System.Collections.Generic.List<Vector3> vertices,
         System.Collections.Generic.List<UnityEngine.Color> colors,
-        System.Collections.Generic.List<int> triangles)
+        System.Collections.Generic.List<int> triangles,
+        Rect frameRect,
+        PetFrameLayout frameLayout,
+        AnimationFrame frame)
     {
         if (mouth.Vertices == null || mouth.Vertices.Length < 2) return;
 
@@ -280,10 +280,15 @@ public class PolyPetAvatar : MonoBehaviour
             var normal = new Vector2(-segment.y, segment.x).normalized * (MouthLineWidth * 0.5f);
             int startIndex = vertices.Count;
 
-            vertices.Add(new Vector3(start.x - normal.x, start.y - normal.y, 0f));
-            vertices.Add(new Vector3(start.x + normal.x, start.y + normal.y, 0f));
-            vertices.Add(new Vector3(end.x + normal.x, end.y + normal.y, 0f));
-            vertices.Add(new Vector3(end.x - normal.x, end.y - normal.y, 0f));
+            var transformedStartLeft = TransformToFrameSpace(start - normal, frameRect, frameLayout, frame);
+            var transformedStartRight = TransformToFrameSpace(start + normal, frameRect, frameLayout, frame);
+            var transformedEndRight = TransformToFrameSpace(end + normal, frameRect, frameLayout, frame);
+            var transformedEndLeft = TransformToFrameSpace(end - normal, frameRect, frameLayout, frame);
+
+            vertices.Add(new Vector3(transformedStartLeft.x, transformedStartLeft.y, 0f));
+            vertices.Add(new Vector3(transformedStartRight.x, transformedStartRight.y, 0f));
+            vertices.Add(new Vector3(transformedEndRight.x, transformedEndRight.y, 0f));
+            vertices.Add(new Vector3(transformedEndLeft.x, transformedEndLeft.y, 0f));
 
             colors.Add(color);
             colors.Add(color);
@@ -305,7 +310,9 @@ public class PolyPetAvatar : MonoBehaviour
             ? PolyPetGenerator.Create(_seed ?? 0, _nameSeed)
             : CreateEmptyData();
 
-        BuildMesh();
+        if (!IsUiRenderMode)
+            RefreshSceneMesh();
+
         MarkUiGraphicDirty();
     }
 
@@ -335,22 +342,6 @@ public class PolyPetAvatar : MonoBehaviour
     }
 
     private bool IsUiRenderMode => TryGetUiRenderContext(out _, out _);
-
-    private Matrix4x4 GetRenderMatrix(AnimationFrame frame)
-    {
-        return transform.localToWorldMatrix * GetPetLocalMatrix(frame);
-    }
-
-    private Matrix4x4 GetPetLocalMatrix(AnimationFrame frame)
-    {
-        var frameRect = GetResolvedFrameRect();
-        var frameLayout = PolyPetLayout.CreateFrameLayout(Data, frameRect.width, frameRect.height);
-
-        return Matrix4x4.TRS(
-            GetLayoutOrigin(frameRect, frameLayout, frame),
-            Quaternion.identity,
-            GetLayoutScale(frameLayout, frame));
-    }
 
     private Vector3 GetLayoutOrigin(Rect frameRect, PetFrameLayout frameLayout, AnimationFrame frame)
     {
@@ -393,15 +384,54 @@ public class PolyPetAvatar : MonoBehaviour
         if (TryGetUiRenderContext(out _, out _))
         {
             if (_uiGraphic == null)
-                _uiGraphic = GetComponent<PolyPetAvatarGraphic>() ?? gameObject.AddComponent<PolyPetAvatarGraphic>();
+                _uiGraphic = GetOrAddComponent<PolyPetAvatarGraphic>();
 
             _uiGraphic.Bind(this);
             _uiGraphic.enabled = true;
+            DisableSceneRenderer();
             return;
         }
 
         if (_uiGraphic != null)
             _uiGraphic.enabled = false;
+
+        EnsureSceneRenderer();
+    }
+
+    private void EnsureSceneRenderer()
+    {
+        if (_sceneMeshFilter == null)
+            _sceneMeshFilter = GetOrAddComponent<MeshFilter>();
+
+        if (_sceneMeshRenderer == null)
+            _sceneMeshRenderer = GetOrAddComponent<MeshRenderer>();
+
+        _sceneMeshRenderer.enabled = true;
+        SyncSceneRenderer();
+    }
+
+    private void DisableSceneRenderer()
+    {
+        if (_sceneMeshRenderer != null)
+            _sceneMeshRenderer.enabled = false;
+    }
+
+    private void SyncSceneRenderer()
+    {
+        if (_sceneMeshFilter != null)
+            _sceneMeshFilter.sharedMesh = _mesh;
+
+        if (_sceneMeshRenderer != null)
+            _sceneMeshRenderer.sharedMaterial = _material;
+    }
+
+    private T GetOrAddComponent<T>() where T : Component
+    {
+        var component = GetComponent<T>();
+        if (component == null)
+            component = gameObject.AddComponent<T>();
+
+        return component;
     }
 
     private void MarkUiGraphicDirty()
@@ -673,7 +703,6 @@ public class PolyPetAvatar : MonoBehaviour
     void OnDestroy()
     {
         if (_mesh != null) Destroy(_mesh);
-        if (_mouthMesh != null) Destroy(_mouthMesh);
         if (_material != null) Destroy(_material);
     }
 }
