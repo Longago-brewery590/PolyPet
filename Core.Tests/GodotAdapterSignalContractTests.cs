@@ -89,6 +89,7 @@ namespace PolyPet.Tests
                 "Expected a public FrameSize property.");
             Assert.True(Regex.IsMatch(source, @"\bRectTransform\b"),
                 "Expected RectTransform support in the Unity avatar source.");
+            Assert.Contains("PolyPetLayout.CreateFrameLayout", source);
         }
     }
 }
