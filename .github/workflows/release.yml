@@ -15,6 +15,16 @@ jobs:
           fetch-depth: 0
           ref: main
 
+      - name: Sync Core to engine adapters
+        run: |
+          rm -rf Godot/addons/PolyPet/Core
+          mkdir -p Godot/addons/PolyPet/Core
+          cp Core/*.cs Godot/addons/PolyPet/Core/
+
+          rm -rf Unity/Runtime/Core
+          mkdir -p Unity/Runtime/Core
+          cp Core/*.cs Unity/Runtime/Core/
+
       - name: Bump version
         id: version
         run: |
@@ -42,6 +52,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f Godot/addons/PolyPet/Core/ Unity/Runtime/Core/
           git add Unity/package.json Godot/addons/PolyPet/plugin.cfg
           git commit -m "chore(release): bump version to ${{ steps.version.outputs.VERSION }}"
           git pull --rebase origin main
