@@ -9,5 +9,5 @@ Godot adapter: Godot/Addons/PolyPet/PolyPet.cs Godot/Addons/PolyPet/PolyPetName.
 Tests: Core.Tests/Core.Tests.csproj
 Automation: .github/workflows/sync-core.yml .github/workflows/release.yml
 Rules: keep Core engine-agnostic; PolyPetName is display-only; seed generation stays in PolyPet
-Verify after code changes: run .\verify.ps1
+Verify after code changes, run: .\verify.ps1 -NoPause
 Limits: sample folders are scaffolding; no sample scenes or Godot/Unity editor compile harness here
