@@ -1,5 +1,6 @@
 PolyPet - seeded procedural polygon pet generator with shared C# Core library and Godot/Unity adapters.
 
+Design: .impeccable.md
 Documentation: README.md docs/
 Core source of truth: Core/
 Core entry points: Core/PolyPetGenerator.cs Core/PolyPetNameGenerator.cs Core/PolyPetAnimation.cs Core/PolyPetData.cs
