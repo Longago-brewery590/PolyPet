@@ -88,9 +88,12 @@ If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
 Unity/                    Unity package root
 Unity/Runtime/            Unity runtime adapter
 Godot/                    Godot package root
-Godot/Addons/PolyPet/     Godot runtime adapter
+Godot/addons/PolyPet/     Godot runtime adapter
 Core/                     Shared .NET Standard 2.1 generation library
 Core.Tests/               xUnit coverage for generator, names, and animation
+Samples/
+  PolyPetDemoGodot/       Standalone Godot project that imports the addon
+  PolyPetDemoUnity/       Standalone Unity project that imports the package
 docs/                     Design documents and references
 .impeccable.md            Design context and visual direction
 .github/workflows/        Core sync and release automation
@@ -128,7 +131,22 @@ This repository does not include a standalone executable app. `Core` is a class 
 
 If you open an individual `.csproj` instead of the solution, the project can still build, but your IDE may not give you the same solution-level build and test experience.
 
-The repo currently ships runtime code only. The sample directories are present as scaffolding, but demo scenes are not checked in yet.
+### Sample Projects
+
+The `Samples/` folder contains standalone engine projects for testing the addon/package:
+
+- **`Samples/PolyPetDemoGodot/`** — Standalone Godot project with the addon included.
+- **`Samples/PolyPetDemoUnity/`** — Standalone Unity project with the package included.
+
+The addon and package folders inside the sample projects are **managed by CI** (copied from `Godot/` and `Unity/` by the sync-core and release workflows) and are gitignored. They are not present after a fresh clone — run the sync workflow or copy manually:
+
+```bash
+# Godot sample
+cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
+
+# Unity sample
+cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
+```
 
 ## License
 

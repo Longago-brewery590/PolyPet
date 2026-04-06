@@ -210,6 +210,17 @@ These are plausible extensions, but they are not part of the current feature sco
 - Batch or zoo-style pet presentation
 - Export or shareable seed workflows
 
+## Sample Projects
+
+The repository includes standalone sample projects that are independently distributable:
+
+- `Samples/PolyPetDemoGodot/` — A standalone Godot project with the PolyPet addon copied into `addons/PolyPet/`.
+- `Samples/PolyPetDemoUnity/` — A standalone Unity project with the PolyPet package copied into `Packages/com.shilo.polypet/`.
+
+The addon and package folders inside sample projects are managed by CI (sync-core and release workflows copy from the source `Godot/` and `Unity/` directories) and are gitignored. After a fresh clone, contributors must run the sync workflow or copy manually.
+
+Each sample project should contain a demo scene with a PolyPet centered on screen, a PolyPetName label above, and buttons to re-roll the pet seed and name seed.
+
 ## Out of Scope
 
 - Sound effects

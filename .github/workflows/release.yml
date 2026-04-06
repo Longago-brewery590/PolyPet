@@ -36,22 +36,22 @@ jobs:
           jq --arg v "$NEW" '.version = $v' Unity/package.json > tmp.json
           mv tmp.json Unity/package.json
 
-          sed -i "s/^version=\".*\"/version=\"$NEW\"/" Godot/Addons/PolyPet/plugin.cfg
+          sed -i "s/^version=\".*\"/version=\"$NEW\"/" Godot/addons/PolyPet/plugin.cfg
 
       - name: Commit version bump
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Unity/package.json Godot/Addons/PolyPet/plugin.cfg
+          git add Unity/package.json Godot/addons/PolyPet/plugin.cfg
           git commit -m "chore(release): bump version to ${{ steps.version.outputs.VERSION }}"
           git tag ${{ steps.version.outputs.TAG }}
           git push origin main --tags
 
       - name: Copy Core to Godot
         run: |
-          rm -rf Godot/Addons/PolyPet/Core
-          mkdir -p Godot/Addons/PolyPet/Core
-          cp Core/*.cs Godot/Addons/PolyPet/Core/
+          rm -rf Godot/addons/PolyPet/Core
+          mkdir -p Godot/addons/PolyPet/Core
+          cp Core/*.cs Godot/addons/PolyPet/Core/
 
       - name: Copy Core to Unity
         run: |
@@ -59,11 +59,23 @@ jobs:
           mkdir -p Unity/Runtime/Core
           cp Core/*.cs Unity/Runtime/Core/
 
+      - name: Copy addon to Godot sample
+        run: |
+          rm -rf Samples/PolyPetDemoGodot/addons/PolyPet
+          mkdir -p Samples/PolyPetDemoGodot/addons
+          cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
+
+      - name: Copy package to Unity sample
+        run: |
+          rm -rf Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
+          mkdir -p Samples/PolyPetDemoUnity/Packages
+          cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
+
       - name: Zip Godot addon
         run: |
           cd Godot
           mkdir -p ../dist/addons
-          cp -r Addons/PolyPet ../dist/addons/PolyPet
+          cp -r addons/PolyPet ../dist/addons/PolyPet
           cd ../dist
           zip -r ../PolyPet-Godot-${{ steps.version.outputs.VERSION }}.zip addons/
           rm -rf ../dist

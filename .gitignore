@@ -1,6 +1,10 @@
 # Copied Core files (CI manages these)
-Godot/Addons/PolyPet/Core/
+Godot/addons/PolyPet/Core/
 Unity/Runtime/Core/
+
+# Copied addon/package in sample projects (CI manages these)
+Samples/PolyPetDemoGodot/addons/PolyPet/
+Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
 
 # .NET
 .dotnet-cli/
