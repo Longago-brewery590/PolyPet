@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://dmsjl3qehawoh"]
+[gd_scene format=3]
 
-[ext_resource type="Script" uid="uid://bcr3lywtsksar" path="res://addons/PolyPet/PolyPetName.cs" id="1_k8tk0"]
-[ext_resource type="Script" uid="uid://dkgj31pt5f5vm" path="res://addons/PolyPet/PolyPetAvatar.cs" id="2_33x3t"]
-[ext_resource type="Texture2D" uid="uid://b8wbdoql2k6j7" path="res://addons/PolyPet/Samples/Assets/shuffle.svg" id="3_o1n1n"]
+[ext_resource type="Script" path="res://addons/PolyPet/PolyPetName.cs" id="1_k8tk0"]
+[ext_resource type="Script" path="res://addons/PolyPet/PolyPetAvatar.cs" id="2_33x3t"]
+[ext_resource type="Texture2D" path="res://addons/PolyPet/Samples/Assets/shuffle.svg" id="3_o1n1n"]
 
 [sub_resource type="GDScript" id="GDScript_33x3t"]
 resource_name = "RandomizePolyPetNameButton"
