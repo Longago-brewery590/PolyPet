@@ -39,7 +39,44 @@ namespace PolyPet.Tests
             Assert.True(File.Exists(attributesPath));
 
             var source = File.ReadAllText(attributesPath);
+            Assert.Contains("* text=auto", source);
             Assert.Contains("*.sh text eol=lf", source);
+        }
+
+        [Fact]
+        public void EditorConfig_EnforcesWindowsFriendlyLineEndingsRepositoryWide()
+        {
+            var editorConfigPath = RepoFile(".editorconfig");
+
+            Assert.True(File.Exists(editorConfigPath));
+
+            var source = File.ReadAllText(editorConfigPath);
+            Assert.Contains("root = true", source);
+            Assert.Contains("end_of_line = crlf", source);
+        }
+
+        [Fact]
+        public void GodotSampleEditorConfig_EnforcesWindowsFriendlyLineEndings()
+        {
+            var editorConfigPath = RepoFile("Samples/PolyPetDemoGodot/.editorconfig");
+
+            Assert.True(File.Exists(editorConfigPath));
+
+            var source = File.ReadAllText(editorConfigPath);
+            Assert.Contains("root = true", source);
+            Assert.Contains("end_of_line = crlf", source);
+        }
+
+        [Fact]
+        public void GodotSampleGitAttributes_DoesNotOverrideWindowsCheckoutLineEndings()
+        {
+            var attributesPath = RepoFile("Samples/PolyPetDemoGodot/.gitattributes");
+
+            Assert.True(File.Exists(attributesPath));
+
+            var source = File.ReadAllText(attributesPath);
+            Assert.Contains("* text=auto", source);
+            Assert.DoesNotContain("eol=lf", source);
         }
     }
 }
