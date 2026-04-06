@@ -4,6 +4,22 @@
 [ext_resource type="Script" path="res://addons/PolyPet/PolyPetAvatar.cs" id="2_33x3t"]
 [ext_resource type="Texture2D" path="res://addons/PolyPet/Samples/Assets/shuffle.svg" id="3_o1n1n"]
 
+[sub_resource type="GDScript" id="GDScript_m6ijy"]
+resource_name = "NameSeed"
+script/source = "extends SpinBox
+
+@onready var avatar: PolyPetAvatar = %PolyPetAvatar
+
+
+func _on_poly_pet_avatar_name_seed_changed(_avatar: PolyPetAvatar, nameSeed: Variant) -> void:
+	value = int(nameSeed)
+
+
+func _on_value_changed(value: float) -> void:
+	if !is_node_ready(): return
+	avatar.SetNameSeed(int(value))
+"
+
 [sub_resource type="GDScript" id="GDScript_33x3t"]
 resource_name = "RandomizePolyPetNameButton"
 script/source = "extends Button
@@ -12,28 +28,20 @@ func _pressed() -> void:
 	%PolyPetAvatar.RandomizeNameSeed()
 "
 
-[sub_resource type="GDScript" id="GDScript_m6ijy"]
-resource_name = "NameSeed"
-script/source = "extends LineEdit
+[sub_resource type="GDScript" id="GDScript_kwek3"]
+resource_name = "AvatarSeed"
+script/source = "extends SpinBox
 
 @onready var avatar: PolyPetAvatar = %PolyPetAvatar
 
 
-func _on_poly_pet_avatar_name_seed_changed(_avatar: PolyPetAvatar, nameSeed: Variant) -> void:
-	text = str(nameSeed)
+func _on_poly_pet_avatar_seed_changed(avatar: PolyPetAvatar, seed: Variant) -> void:
+	value = int(seed)
 
 
-func _on_text_submitted(new_text: String) -> void:
-	avatar.NameSeed = int(new_text)
-"
-
-[sub_resource type="GDScript" id="GDScript_kwek3"]
-resource_name = "AvatarSeed"
-script/source = "extends LineEdit
-
-
-func _on_poly_pet_avatar_seed_changed(avatar: Node2D, seed: Variant) -> void:
-	text = str(seed)
+func _on_value_changed(value: float) -> void:
+	if !is_node_ready(): return
+	avatar.SetSeed(int(value))
 "
 
 [sub_resource type="GDScript" id="GDScript_o1n1n"]
@@ -44,88 +52,22 @@ func _pressed() -> void:
 	%PolyPetAvatar.RandomizeSeed()
 "
 
-[node name="PolyPetCreator" type="Control" unique_id=1826839560]
-layout_mode = 3
+[node name="PolyPetCreator" type="MarginContainer" unique_id=1288176367]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="UI" type="PanelContainer" parent="." unique_id=1075514391]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -140.0
-offset_right = 83.0
-offset_bottom = 125.0
-grow_horizontal = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="UI" unique_id=1027590759]
+[node name="AvatarContainer" type="Control" parent="." unique_id=1813218209]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer" unique_id=1981588813]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="GridContainer" type="GridContainer" parent="UI/MarginContainer/HBoxContainer" unique_id=861989436]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 3
-
-[node name="NameLabel" type="Label" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=579698615]
-layout_mode = 2
-text = "Name:"
-
-[node name="PolyPetName" type="Label" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=1675894007 node_paths=PackedStringArray("Avatar")]
-layout_mode = 2
-size_flags_horizontal = 3
-uppercase = true
-script = ExtResource("1_k8tk0")
-Avatar = NodePath("../../../../../AvatarOrigin/PolyPetAvatar")
-
-[node name="RandomizeName" type="Button" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=786034616]
-layout_mode = 2
-icon = ExtResource("3_o1n1n")
-script = SubResource("GDScript_33x3t")
-
-[node name="Spacer" type="Control" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=863450605]
-layout_mode = 2
-
-[node name="NameSeed" type="LineEdit" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=301370324]
-custom_minimum_size = Vector2(101, 0)
-layout_mode = 2
-expand_to_text_length = true
-script = SubResource("GDScript_m6ijy")
-
-[node name="Spacer2" type="Control" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=1547713120]
-layout_mode = 2
-
-[node name="AvatarLabel" type="Label" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=38632948]
-layout_mode = 2
-text = "Body:"
-
-[node name="AvatarSeed" type="LineEdit" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=1616937740]
-custom_minimum_size = Vector2(101, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-script = SubResource("GDScript_kwek3")
-
-[node name="RandomizeAvatar" type="Button" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=1833411425]
-layout_mode = 2
-icon = ExtResource("3_o1n1n")
-script = SubResource("GDScript_o1n1n")
-
-[node name="Node" type="Node" parent="UI/MarginContainer/HBoxContainer/GridContainer" unique_id=409569466]
-
-[node name="AvatarOrigin" type="Control" parent="." unique_id=1813218209]
+[node name="Origin" type="Control" parent="AvatarContainer" unique_id=408482342]
 layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.75
@@ -134,12 +76,83 @@ anchor_bottom = 0.75
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PolyPetAvatar" type="Node2D" parent="AvatarOrigin" unique_id=264461052]
+[node name="PolyPetAvatar" type="Control" parent="AvatarContainer/Origin" unique_id=264461052]
 unique_name_in_owner = true
 script = ExtResource("2_33x3t")
 _startSeedType = 2
 _startNameSeedType = 2
 
-[connection signal="text_submitted" from="UI/MarginContainer/HBoxContainer/GridContainer/NameSeed" to="UI/MarginContainer/HBoxContainer/GridContainer/NameSeed" method="_on_text_submitted"]
-[connection signal="NameSeedChanged" from="AvatarOrigin/PolyPetAvatar" to="UI/MarginContainer/HBoxContainer/GridContainer/NameSeed" method="_on_poly_pet_avatar_name_seed_changed"]
-[connection signal="SeedChanged" from="AvatarOrigin/PolyPetAvatar" to="UI/MarginContainer/HBoxContainer/GridContainer/AvatarSeed" method="_on_poly_pet_avatar_seed_changed"]
+[node name="UI" type="PanelContainer" parent="." unique_id=1075514391]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI" unique_id=1027590759]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer" unique_id=242556999]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PolyPetName" type="Label" parent="UI/MarginContainer/VBoxContainer" unique_id=1675894007 node_paths=PackedStringArray("Avatar")]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PolyPet Name"
+horizontal_alignment = 1
+script = ExtResource("1_k8tk0")
+Avatar = NodePath("../../../../AvatarContainer/Origin/PolyPetAvatar")
+
+[node name="GridContainer" type="GridContainer" parent="UI/MarginContainer/VBoxContainer" unique_id=861989436]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="NameLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=579698615]
+layout_mode = 2
+text = "Name:"
+
+[node name="NameSeed" type="SpinBox" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=820435238]
+custom_minimum_size = Vector2(165, 0)
+layout_mode = 2
+min_value = -2147483646.0
+max_value = 2147483647.0
+rounded = true
+prefix = "Seed"
+script = SubResource("GDScript_m6ijy")
+
+[node name="RandomizeName" type="Button" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=786034616]
+layout_mode = 2
+icon = ExtResource("3_o1n1n")
+script = SubResource("GDScript_33x3t")
+
+[node name="AvatarLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=38632948]
+layout_mode = 2
+text = "Body:"
+
+[node name="AvatarSeed" type="SpinBox" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=1290128746]
+custom_minimum_size = Vector2(165, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -2147483646.0
+max_value = 2147483647.0
+rounded = true
+prefix = "Seed"
+script = SubResource("GDScript_kwek3")
+
+[node name="RandomizeAvatar" type="Button" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=1833411425]
+layout_mode = 2
+icon = ExtResource("3_o1n1n")
+script = SubResource("GDScript_o1n1n")
+
+[node name="Node" type="Node" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=409569466]
+
+[connection signal="NameSeedChanged" from="AvatarContainer/Origin/PolyPetAvatar" to="UI/MarginContainer/VBoxContainer/GridContainer/NameSeed" method="_on_poly_pet_avatar_name_seed_changed"]
+[connection signal="SeedChanged" from="AvatarContainer/Origin/PolyPetAvatar" to="UI/MarginContainer/VBoxContainer/GridContainer/AvatarSeed" method="_on_poly_pet_avatar_seed_changed"]
+[connection signal="value_changed" from="UI/MarginContainer/VBoxContainer/GridContainer/NameSeed" to="UI/MarginContainer/VBoxContainer/GridContainer/NameSeed" method="_on_value_changed"]
+[connection signal="value_changed" from="UI/MarginContainer/VBoxContainer/GridContainer/AvatarSeed" to="UI/MarginContainer/VBoxContainer/GridContainer/AvatarSeed" method="_on_value_changed"]
