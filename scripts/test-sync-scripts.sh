@@ -145,5 +145,8 @@ if grep -q 'workflow_dispatch:' "$repo_root/.github/workflows/sync-unity-package
   exit 1
 fi
 grep -q 'workflow_dispatch:' "$repo_root/.github/workflows/release.yml"
+grep -q 'name: Verify release-ready state' "$repo_root/.github/workflows/release.yml"
+grep -q 'shell: pwsh' "$repo_root/.github/workflows/release.yml"
+grep -q './verify.ps1 -NoPause' "$repo_root/.github/workflows/release.yml"
 
 echo "sync script smoke test passed"
