@@ -5,6 +5,7 @@ Unity/Runtime/Core/
 # Copied addon/package in sample projects (CI manages these)
 Samples/PolyPetDemoGodot/addons/PolyPet/
 Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
+.worktrees/
 
 # .NET
 .dotnet-cli/
