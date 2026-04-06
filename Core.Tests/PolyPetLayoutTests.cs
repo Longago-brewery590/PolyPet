@@ -131,6 +131,25 @@ namespace PolyPet.Tests
             }
         }
 
+        [Fact]
+        public void CreateFrameLayout_ZeroSizedFrame_CollapsesAnimatedBoundsInsideFrame()
+        {
+            var pet = PolyPetGenerator.Create(42);
+            var layout = PolyPetLayout.CreateFrameLayout(pet, 0f, 0f);
+            var animatedBounds = PolyPetLayout.CalculateAnimatedBounds(pet);
+
+            var left = animatedBounds.MinX * layout.Scale + layout.OffsetX;
+            var right = animatedBounds.MaxX * layout.Scale + layout.OffsetX;
+            var top = animatedBounds.MinY * layout.Scale + layout.OffsetY;
+            var bottom = animatedBounds.MaxY * layout.Scale + layout.OffsetY;
+
+            Assert.Equal(0f, layout.Scale, 3);
+            AssertWithinRange(left, 0f, 0f);
+            AssertWithinRange(right, 0f, 0f);
+            AssertWithinRange(top, 0f, 0f);
+            AssertWithinRange(bottom, 0f, 0f);
+        }
+
         private static void AssertVerticesInsideBounds(ShapePart part, PetBounds bounds)
         {
             if (part.Vertices == null || part.Vertices.Length == 0)

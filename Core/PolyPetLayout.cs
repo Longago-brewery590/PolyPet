@@ -50,21 +50,34 @@ namespace PolyPet
         {
             var canonicalAnimatedBounds = CalculateCanonicalAnimatedBounds();
             var animatedBounds = CalculateAnimatedBounds(pet);
+            var safeFrameWidth = SanitizeFrameExtent(frameWidth);
+            var safeFrameHeight = SanitizeFrameExtent(frameHeight);
 
             if (canonicalAnimatedBounds.Width <= 0f || canonicalAnimatedBounds.Height <= 0f)
-                return new PetFrameLayout(1f, 0f, 0f);
+                return new PetFrameLayout(0f, safeFrameWidth * 0.5f, safeFrameHeight * 0.5f);
 
-            var scaleX = frameWidth / canonicalAnimatedBounds.Width;
-            var scaleY = frameHeight / canonicalAnimatedBounds.Height;
+            if (safeFrameWidth <= 0f || safeFrameHeight <= 0f)
+                return new PetFrameLayout(0f, safeFrameWidth * 0.5f, safeFrameHeight * 0.5f);
+
+            var scaleX = safeFrameWidth / canonicalAnimatedBounds.Width;
+            var scaleY = safeFrameHeight / canonicalAnimatedBounds.Height;
             var scale = Math.Min(scaleX, scaleY);
 
             if (float.IsNaN(scale) || float.IsInfinity(scale) || scale <= 0f)
-                scale = 1f;
+                return new PetFrameLayout(0f, safeFrameWidth * 0.5f, safeFrameHeight * 0.5f);
 
-            var offsetX = frameWidth * 0.5f - animatedBounds.CenterX * scale;
-            var offsetY = frameHeight * 0.5f - animatedBounds.CenterY * scale;
+            var offsetX = safeFrameWidth * 0.5f - animatedBounds.CenterX * scale;
+            var offsetY = safeFrameHeight * 0.5f - animatedBounds.CenterY * scale;
 
             return new PetFrameLayout(scale, offsetX, offsetY);
+        }
+
+        private static float SanitizeFrameExtent(float extent)
+        {
+            if (float.IsNaN(extent) || float.IsInfinity(extent) || extent <= 0f)
+                return 0f;
+
+            return extent;
         }
 
         private static PetBounds ApplyEnvelope(PetBounds bounds, AnimationEnvelope envelope)

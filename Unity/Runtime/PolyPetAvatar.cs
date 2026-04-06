@@ -367,22 +367,22 @@ public class PolyPetAvatar : MonoBehaviour
 
     private Rect GetResolvedFrameRect()
     {
-        if (transform is RectTransform rectTransform)
+        if (TryGetUiRenderContext(out var rectTransform, out _))
         {
             var rect = rectTransform.rect;
             return new Rect(
                 rect.xMin,
                 rect.yMin,
-                Mathf.Max(rect.width, Mathf.Epsilon),
-                Mathf.Max(rect.height, Mathf.Epsilon));
+                Mathf.Max(rect.width, 0f),
+                Mathf.Max(rect.height, 0f));
         }
 
         var frameSize = FrameSize;
         return new Rect(
             -frameSize.x * 0.5f,
             -frameSize.y * 0.5f,
-            Mathf.Max(frameSize.x, Mathf.Epsilon),
-            Mathf.Max(frameSize.y, Mathf.Epsilon));
+            Mathf.Max(frameSize.x, 0f),
+            Mathf.Max(frameSize.y, 0f));
     }
 
     private void RefreshRenderMode()

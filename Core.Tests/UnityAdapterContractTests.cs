@@ -75,5 +75,16 @@ namespace PolyPet.Tests
             Assert.Contains("\"dependencies\"", packageManifest);
             Assert.Contains("\"com.unity.ugui\"", packageManifest);
         }
+
+        [Fact]
+        public void PolyPetAvatar_UsesRectTransformFrameOnlyWhenInUiRenderMode()
+        {
+            var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
+
+            Assert.Matches(
+                @"private\s+Rect\s+GetResolvedFrameRect\(\)\s*\{\s*if\s*\(TryGetUiRenderContext\(out\s+var\s+rectTransform,\s*out\s+_\)\)",
+                source);
+            Assert.Contains("var frameSize = FrameSize;", source);
+        }
     }
 }
