@@ -60,18 +60,48 @@ namespace PolyPet.Tests
         }
 
         [Fact]
-        public void GetEnvelope_ReturnsCombinedAnimationExtents()
+        public void GetEnvelope_ReturnsUnionOfAllStateEnvelopes()
         {
             var envelope = PolyPetAnimation.GetEnvelope();
+            var expected = CombineAllStateEnvelopes();
 
-            Assert.Equal(0f, envelope.MinOffsetX, 3);
-            Assert.Equal(0f, envelope.MaxOffsetX, 3);
-            Assert.Equal(-4f, envelope.MinOffsetY, 3);
-            Assert.Equal(4f, envelope.MaxOffsetY, 3);
-            Assert.Equal(0.9f, envelope.MinScaleX, 3);
-            Assert.Equal(1.15f, envelope.MaxScaleX, 3);
-            Assert.Equal(0.8f, envelope.MinScaleY, 3);
-            Assert.Equal(1.15f, envelope.MaxScaleY, 3);
+            Assert.Equal(expected.MinOffsetX, envelope.MinOffsetX, 3);
+            Assert.Equal(expected.MaxOffsetX, envelope.MaxOffsetX, 3);
+            Assert.Equal(expected.MinOffsetY, envelope.MinOffsetY, 3);
+            Assert.Equal(expected.MaxOffsetY, envelope.MaxOffsetY, 3);
+            Assert.Equal(expected.MinScaleX, envelope.MinScaleX, 3);
+            Assert.Equal(expected.MaxScaleX, envelope.MaxScaleX, 3);
+            Assert.Equal(expected.MinScaleY, envelope.MinScaleY, 3);
+            Assert.Equal(expected.MaxScaleY, envelope.MaxScaleY, 3);
+        }
+
+        private static AnimationEnvelope CombineAllStateEnvelopes()
+        {
+            var hasValue = false;
+            var combined = new AnimationEnvelope();
+
+            foreach (PetState state in System.Enum.GetValues(typeof(PetState)))
+            {
+                var current = PolyPetAnimation.GetEnvelope(state);
+                if (!hasValue)
+                {
+                    combined = current;
+                    hasValue = true;
+                    continue;
+                }
+
+                combined = new AnimationEnvelope(
+                    System.Math.Min(combined.MinOffsetX, current.MinOffsetX),
+                    System.Math.Max(combined.MaxOffsetX, current.MaxOffsetX),
+                    System.Math.Min(combined.MinOffsetY, current.MinOffsetY),
+                    System.Math.Max(combined.MaxOffsetY, current.MaxOffsetY),
+                    System.Math.Min(combined.MinScaleX, current.MinScaleX),
+                    System.Math.Max(combined.MaxScaleX, current.MaxScaleX),
+                    System.Math.Min(combined.MinScaleY, current.MinScaleY),
+                    System.Math.Max(combined.MaxScaleY, current.MaxScaleY));
+            }
+
+            return combined;
         }
     }
 }

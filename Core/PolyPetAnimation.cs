@@ -10,7 +10,23 @@ namespace PolyPet
 
         public static AnimationEnvelope GetEnvelope()
         {
-            return Union(GetEnvelope(PetState.Idle), GetEnvelope(PetState.BeingPet));
+            var hasEnvelope = false;
+            var combined = new AnimationEnvelope();
+
+            foreach (PetState state in Enum.GetValues(typeof(PetState)))
+            {
+                var current = GetEnvelope(state);
+                if (!hasEnvelope)
+                {
+                    combined = current;
+                    hasEnvelope = true;
+                    continue;
+                }
+
+                combined = Union(combined, current);
+            }
+
+            return combined;
         }
 
         public static AnimationEnvelope GetEnvelope(PetState state)

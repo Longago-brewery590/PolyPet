@@ -57,6 +57,28 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void CalculateCanonicalAnimatedBounds_MatchesSharedGenerationLimits()
+        {
+            var canonicalBounds = PolyPetLayout.CalculateCanonicalAnimatedBounds();
+            var expectedStaticBounds = new PetBounds(
+                -PolyPetGenerationLimits.BodyScaleMax,
+                -PolyPetGenerationLimits.BodyScaleMax,
+                PolyPetGenerationLimits.BodyScaleMax * PolyPetGenerationLimits.TailOffsetRatio +
+                    PolyPetGenerationLimits.BodyScaleMax * PolyPetGenerationLimits.TailScaleRatio * 1.5f,
+                PolyPetGenerationLimits.BodyScaleMax +
+                    (PolyPetGenerationLimits.BodyScaleMax * PolyPetGenerationLimits.HeadScaleMaxRatio) *
+                    (PolyPetGenerationLimits.HeadVerticalOffsetRatio +
+                     PolyPetGenerationLimits.EarPositionRatio +
+                     PolyPetGenerationLimits.EarScaleRatio));
+            var expectedAnimatedBounds = ApplyEnvelope(expectedStaticBounds, PolyPetAnimation.GetEnvelope());
+
+            Assert.Equal(expectedAnimatedBounds.MinX, canonicalBounds.MinX, 3);
+            Assert.Equal(expectedAnimatedBounds.MaxX, canonicalBounds.MaxX, 3);
+            Assert.Equal(expectedAnimatedBounds.MinY, canonicalBounds.MinY, 3);
+            Assert.Equal(expectedAnimatedBounds.MaxY, canonicalBounds.MaxY, 3);
+        }
+
+        [Fact]
         public void CreateFrameLayout_FitsAnimatedBoundsInsideRequestedFrame()
         {
             for (var seed = 0; seed < 100; seed++)
@@ -129,6 +151,49 @@ namespace PolyPet.Tests
 
             Assert.True(value >= min - tolerance && value <= max + tolerance,
                 $"Expected {value} to be within [{min}, {max}] with tolerance {tolerance}.");
+        }
+
+        private static PetBounds ApplyEnvelope(PetBounds bounds, AnimationEnvelope envelope)
+        {
+            var xRange = TransformRange(
+                bounds.MinX,
+                bounds.MaxX,
+                envelope.MinScaleX,
+                envelope.MaxScaleX,
+                envelope.MinOffsetX,
+                envelope.MaxOffsetX);
+            var yRange = TransformRange(
+                bounds.MinY,
+                bounds.MaxY,
+                envelope.MinScaleY,
+                envelope.MaxScaleY,
+                envelope.MinOffsetY,
+                envelope.MaxOffsetY);
+
+            return new PetBounds(xRange.Min, yRange.Min, xRange.Max, yRange.Max);
+        }
+
+        private static (float Min, float Max) TransformRange(
+            float minValue,
+            float maxValue,
+            float minScale,
+            float maxScale,
+            float minOffset,
+            float maxOffset)
+        {
+            var a = minValue * minScale + minOffset;
+            var b = minValue * minScale + maxOffset;
+            var c = minValue * maxScale + minOffset;
+            var d = minValue * maxScale + maxOffset;
+            var e = maxValue * minScale + minOffset;
+            var f = maxValue * minScale + maxOffset;
+            var g = maxValue * maxScale + minOffset;
+            var h = maxValue * maxScale + maxOffset;
+
+            return (
+                Math.Min(Math.Min(Math.Min(a, b), Math.Min(c, d)), Math.Min(Math.Min(e, f), Math.Min(g, h))),
+                Math.Max(Math.Max(Math.Max(a, b), Math.Max(c, d)), Math.Max(Math.Max(e, f), Math.Max(g, h)))
+            );
         }
     }
 }

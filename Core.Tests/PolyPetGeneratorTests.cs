@@ -147,6 +147,17 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void Create_BodyScaleStaysWithinSharedGenerationLimits()
+        {
+            for (var seed = 0; seed < 100; seed++)
+            {
+                var pet = PolyPetGenerator.Create(seed);
+
+                Assert.InRange(pet.Body.Scale, PolyPetGenerationLimits.BodyScaleMin, PolyPetGenerationLimits.BodyScaleMax);
+            }
+        }
+
+        [Fact]
         public void Create_TailPolygonsStaySimpleAcrossSeedRange()
         {
             for (var seed = 0; seed < 100; seed++)

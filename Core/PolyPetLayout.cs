@@ -43,12 +43,7 @@ namespace PolyPet
 
         public static PetBounds CalculateCanonicalAnimatedBounds()
         {
-            return ApplyEnvelope(CalculateCanonicalStaticBounds(), CanonicalAnimationEnvelope);
-        }
-
-        public static PetBounds CalculateCanonicalAnimatedBounds(PolyPetData pet)
-        {
-            return CalculateCanonicalAnimatedBounds();
+            return ApplyEnvelope(PolyPetGenerationLimits.GetCanonicalStaticBounds(), CanonicalAnimationEnvelope);
         }
 
         public static PetFrameLayout CreateFrameLayout(PolyPetData pet, float frameWidth, float frameHeight)
@@ -70,24 +65,6 @@ namespace PolyPet
             var offsetY = frameHeight * 0.5f - animatedBounds.CenterY * scale;
 
             return new PetFrameLayout(scale, offsetX, offsetY);
-        }
-
-        private static PetBounds CalculateCanonicalStaticBounds()
-        {
-            const float bodyMaxScale = 120f;
-            const float headScaleRatio = 0.7f;
-            const float tailScaleRatio = 0.25f;
-
-            var headMaxScale = bodyMaxScale * headScaleRatio;
-            var tailMaxScale = bodyMaxScale * tailScaleRatio;
-            var tailMaxX = bodyMaxScale * 0.8f + tailMaxScale * 1.5f;
-            var topFromEars = bodyMaxScale + headMaxScale * 1.7f;
-
-            return new PetBounds(
-                -bodyMaxScale,
-                -bodyMaxScale,
-                tailMaxX,
-                topFromEars);
         }
 
         private static PetBounds ApplyEnvelope(PetBounds bounds, AnimationEnvelope envelope)

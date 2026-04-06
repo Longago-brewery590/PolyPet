@@ -188,4 +188,38 @@ namespace PolyPet
             MaxScaleY = maxScaleY;
         }
     }
+
+    public static class PolyPetGenerationLimits
+    {
+        public const float BodyScaleMin = 80f;
+        public const float BodyScaleMax = 120f;
+
+        public const float HeadScaleMinRatio = 0.5f;
+        public const float HeadScaleMaxRatio = 0.7f;
+        public const float HeadVerticalOffsetRatio = 0.6f;
+        public const float EarPositionRatio = 0.7f;
+        public const float EarScaleRatio = 0.4f;
+
+        public const float LimbScaleRatio = 0.2f;
+        public const float LimbTwoSpacingRatio = 0.4f;
+        public const float LimbFourSpacingRatio = 0.5f;
+        public const float LimbUpperYRatio = 0.8f;
+        public const float LimbLowerYRatio = 0.1f;
+
+        public const float TailScaleRatio = 0.25f;
+        public const float TailOffsetRatio = 0.8f;
+        public const float TailLongTipRatio = 1.5f;
+
+        public static float MaxHeadScale => BodyScaleMax * HeadScaleMaxRatio;
+        public static float MaxTailScale => BodyScaleMax * TailScaleRatio;
+
+        public static PetBounds GetCanonicalStaticBounds()
+        {
+            return new PetBounds(
+                -BodyScaleMax,
+                -BodyScaleMax,
+                BodyScaleMax * TailOffsetRatio + MaxTailScale * TailLongTipRatio,
+                BodyScaleMax + MaxHeadScale * (HeadVerticalOffsetRatio + EarPositionRatio + EarScaleRatio));
+        }
+    }
 }
