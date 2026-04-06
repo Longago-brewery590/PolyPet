@@ -86,6 +86,8 @@ If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
 
 ```text
 Unity/                    Unity package root
+Unity/Runtime/            Unity runtime adapter
+Godot/                    Godot package root
 Godot/Addons/PolyPet/     Godot runtime adapter
 Core/                     Shared .NET Standard 2.1 generation library
 Core.Tests/               xUnit coverage for generator, names, and animation
