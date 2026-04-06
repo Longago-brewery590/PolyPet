@@ -6,7 +6,12 @@ on:
     paths: [Core/**]
 
 permissions:
+  actions: write
   contents: write
+
+concurrency:
+  group: polypet-main-writers
+  cancel-in-progress: false
 
 jobs:
   sync:
@@ -16,17 +21,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Copy Core to Godot
-        run: |
-          rm -rf Godot/addons/PolyPet/Core
-          mkdir -p Godot/addons/PolyPet/Core
-          cp Core/*.cs Godot/addons/PolyPet/Core/
-
-      - name: Copy Core to Unity
-        run: |
-          rm -rf Unity/Runtime/Core
-          mkdir -p Unity/Runtime/Core
-          cp Core/*.cs Unity/Runtime/Core/
+      - name: Sync Core to engine adapters
+        run: ./scripts/sync-core-to-adapters.sh
 
       - name: Commit if changed
         run: |

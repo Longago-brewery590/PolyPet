@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: polypet-main-writers
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -18,10 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Copy addon to Godot sample
-        run: |
-          rm -rf Samples/PolyPetDemoGodot/addons/PolyPet
-          mkdir -p Samples/PolyPetDemoGodot/addons
-          cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
+        run: ./scripts/sync-godot-sample.sh
 
       - name: Commit if changed
         run: |

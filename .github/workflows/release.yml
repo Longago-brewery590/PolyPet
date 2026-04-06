@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: polypet-main-writers
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -15,15 +19,13 @@ jobs:
           fetch-depth: 0
           ref: main
 
-      - name: Sync Core to engine adapters
+      - name: Refresh release base
         run: |
-          rm -rf Godot/addons/PolyPet/Core
-          mkdir -p Godot/addons/PolyPet/Core
-          cp Core/*.cs Godot/addons/PolyPet/Core/
+          git fetch origin main
+          git pull --ff-only origin main
 
-          rm -rf Unity/Runtime/Core
-          mkdir -p Unity/Runtime/Core
-          cp Core/*.cs Unity/Runtime/Core/
+      - name: Sync Core to engine adapters
+        run: ./scripts/sync-core-to-adapters.sh
 
       - name: Bump version
         id: version
@@ -40,24 +42,36 @@ jobs:
             MAJOR=$((MAJOR + 1))
           fi
           NEW="$MAJOR.$MINOR.$PATCH"
-          echo "VERSION=$NEW" >> $GITHUB_OUTPUT
-          echo "TAG=v$NEW" >> $GITHUB_OUTPUT
+          echo "VERSION=$NEW" >> "$GITHUB_OUTPUT"
+          echo "TAG=v$NEW" >> "$GITHUB_OUTPUT"
 
           jq --arg v "$NEW" '.version = $v' Unity/package.json > tmp.json
           mv tmp.json Unity/package.json
 
           sed -i "s/^version=\".*\"/version=\"$NEW\"/" Godot/addons/PolyPet/plugin.cfg
 
-      - name: Commit version bump
+      - name: Sync sample projects from release-ready engine sources
+        run: |
+          ./scripts/sync-godot-sample.sh
+          ./scripts/sync-unity-sample.sh
+
+      - name: Commit fully synced release state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f Godot/addons/PolyPet/Core/ Unity/Runtime/Core/
-          git add Unity/package.json Godot/addons/PolyPet/plugin.cfg
-          git commit -m "chore(release): bump version to ${{ steps.version.outputs.VERSION }}"
-          git pull --rebase origin main
-          git tag ${{ steps.version.outputs.TAG }}
-          git push origin HEAD:main --tags
+          git add Godot/addons/PolyPet/plugin.cfg Unity/package.json
+          git add -f Samples/PolyPetDemoGodot/addons/PolyPet/ Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
+          git commit -m "chore(release): prepare ${{ steps.version.outputs.VERSION }}"
+
+      - name: Push release commit to main
+        run: git push origin HEAD:main
+
+      - name: Tag the pushed release commit
+        run: |
+          RELEASE_SHA="$(git rev-parse HEAD)"
+          git tag "${{ steps.version.outputs.TAG }}" "$RELEASE_SHA"
+          git push origin "${{ steps.version.outputs.TAG }}"
 
       - name: Zip Godot addon
         run: |
