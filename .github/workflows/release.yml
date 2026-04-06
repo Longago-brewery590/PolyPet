@@ -58,7 +58,7 @@ jobs:
 
       - name: Verify release-ready state
         shell: pwsh
-        run: ./verify.ps1 -NoPause
+        run: ./scripts/verify.ps1 -NoPause
 
       - name: Commit fully synced release state
         run: |

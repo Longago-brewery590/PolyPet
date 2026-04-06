@@ -121,10 +121,10 @@ Open [`PolyPet.sln`](./PolyPet.sln) if you want both the [`Core` library](./Core
 
 ### CLI
 
-For the usual contributor verification flow, run [`verify.ps1`](./verify.ps1) from the repo root:
+For the usual contributor verification flow, run [`scripts/verify.ps1`](./scripts/verify.ps1) from the repo root:
 
 ```powershell
-.\verify.ps1
+.\scripts\verify.ps1
 ```
 
 Or run the Core verification commands manually:
@@ -160,6 +160,13 @@ cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
 
 # Unity sample
 cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
+```
+
+If you make changes inside the sample-owned addon/package folders and want to copy them back into the main adapter folders, use:
+
+```powershell
+.\scripts\sync-godot-addon-from-sample.ps1
+.\scripts\sync-unity-package-from-sample.ps1
 ```
 
 In Godot, build the project's C# solution once, then enable the `PolyPet` plugin in `Project Settings > Plugins` before expecting `PolyPetAvatar` and `PolyPetName` to appear as global nodes.

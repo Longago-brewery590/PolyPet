@@ -18,7 +18,7 @@ function Get-LastExitCodeOrDefault {
     return $Default
 }
 
-$repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $exitCode = 0
 $statusMessage = "Verification complete."
 
@@ -76,6 +76,9 @@ try {
 catch {
     if ($exitCode -eq 0) {
         $exitCode = Get-LastExitCodeOrDefault
+        if ($exitCode -eq 0) {
+            $exitCode = 1
+        }
     }
 
     $statusMessage = "Verification failed: $($_.Exception.Message)"

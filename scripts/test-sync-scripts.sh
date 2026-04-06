@@ -66,6 +66,21 @@ version="9.9.9"
 script=""
 EOF
 
+cat > "$workspace/success/Godot/addons/PolyPet/Samples/UidScene.tscn" <<'EOF'
+[gd_scene format=3 uid="uid://sceneuid"]
+
+[ext_resource type="Script" uid="uid://scriptuid" path="res://addons/PolyPet/PolyPetAvatar.cs" id="1_test"]
+
+[node name="Root" type="Node"]
+script = ExtResource("1_test")
+EOF
+
+cat > "$workspace/success/Godot/addons/PolyPet/Samples/uid.import" <<'EOF'
+[remap]
+uid="uid://importuid"
+path="res://addons/PolyPet/Samples/Assets/shuffle.svg"
+EOF
+
 cat > "$workspace/success/Unity/package.json" <<'EOF'
 { "name": "com.shilo.polypet", "version": "9.9.9" }
 EOF
@@ -90,6 +105,17 @@ test ! -f "$workspace/success/Unity/Runtime/Core/Core.csproj"
 
 cmp "$workspace/success/Godot/addons/PolyPet/plugin.cfg" "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/plugin.cfg"
 cmp "$workspace/success/Unity/package.json" "$workspace/success/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/package.json"
+grep -q 'uid="uid://sceneuid"' "$workspace/success/Godot/addons/PolyPet/Samples/UidScene.tscn"
+grep -q 'uid="uid://scriptuid"' "$workspace/success/Godot/addons/PolyPet/Samples/UidScene.tscn"
+grep -q 'uid="uid://importuid"' "$workspace/success/Godot/addons/PolyPet/Samples/uid.import"
+if grep -q 'uid="uid://' "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/Samples/UidScene.tscn"; then
+  exit 1
+fi
+if grep -q 'uid="uid://' "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/Samples/uid.import"; then
+  exit 1
+fi
+grep -q 'path="res://addons/PolyPet/PolyPetAvatar.cs"' "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/Samples/UidScene.tscn"
+grep -q 'path="res://addons/PolyPet/Samples/Assets/shuffle.svg"' "$workspace/success/Samples/PolyPetDemoGodot/addons/PolyPet/Samples/uid.import"
 
 cat > "$workspace/failure/Godot/addons/PolyPet/Core/keep.txt" <<'EOF'
 keep me
