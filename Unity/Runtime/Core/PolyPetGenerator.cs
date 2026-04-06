@@ -339,19 +339,27 @@ namespace PolyPet
                     break;
                 case TailStyle.Fan:
                     var fanCount = 3 + rng.Next(3); // 3-5 fan segments
-                    vertices = new Vec2[fanCount * 2 + 1];
-                    vertices[0] = new Vec2(0, 0);
+                    var outerVertices = new Vec2[fanCount];
+                    var innerVertices = new Vec2[fanCount];
                     for (var i = 0; i < fanCount; i++)
                     {
                         var angle = -0.4f + 0.8f * i / (fanCount - 1);
                         var len = tailSize * (0.8f + (float)rng.NextDouble() * 0.4f);
-                        vertices[i * 2 + 1] = new Vec2(
+                        outerVertices[i] = new Vec2(
                             (float)Math.Cos(angle) * len,
                             (float)Math.Sin(angle) * len);
-                        vertices[i * 2 + 2] = new Vec2(
+                        innerVertices[i] = new Vec2(
                             (float)Math.Cos(angle) * len * 0.5f,
                             (float)Math.Sin(angle) * len * 0.5f);
                     }
+
+                    vertices = new Vec2[fanCount * 2];
+                    vertices[0] = innerVertices[0];
+                    for (var i = 0; i < fanCount; i++)
+                        vertices[i + 1] = outerVertices[i];
+
+                    for (var i = fanCount - 1; i > 0; i--)
+                        vertices[fanCount + (fanCount - i)] = innerVertices[i];
 
                     break;
                 default: // None

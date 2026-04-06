@@ -58,9 +58,29 @@ public partial class PolyPetAvatar : Node2D
         Seed = new System.Random().Next();
     }
 
+    public void SetSeed(long value)
+    {
+        Seed = checked((int)value);
+    }
+
+    public void ClearSeed()
+    {
+        Seed = null;
+    }
+
     public void RandomizeNameSeed()
     {
         NameSeed = new System.Random().Next();
+    }
+
+    public void SetNameSeed(long value)
+    {
+        NameSeed = checked((int)value);
+    }
+
+    public void ClearNameSeed()
+    {
+        NameSeed = null;
     }
 
     public override void _Ready()

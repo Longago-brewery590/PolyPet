@@ -34,6 +34,17 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void PolyPetAvatar_ExposesGDScriptFriendlyNameSeedBridgeMethods()
+        {
+            var source = File.ReadAllText(RepoFile(Path.Combine("Godot", "addons", "PolyPet", "PolyPetAvatar.cs")));
+
+            Assert.Contains("public void SetSeed(long value)", source);
+            Assert.Contains("public void ClearSeed()", source);
+            Assert.Contains("public void SetNameSeed(long value)", source);
+            Assert.Contains("public void ClearNameSeed()", source);
+        }
+
+        [Fact]
         public void UnityPolyPetAvatar_UsesSerializedTypedUnityEventsInsteadOfPlainEvents()
         {
             var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
