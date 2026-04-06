@@ -473,11 +473,18 @@ public class PolyPetAvatar : MonoBehaviour
     {
         if (TryGetUiRenderContext(out var rectTransform, out var canvas))
         {
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                rectTransform,
-                screenPoint,
-                GetRectTransformEventCamera(canvas),
-                out localPosition);
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    rectTransform,
+                    screenPoint,
+                    GetRectTransformEventCamera(canvas),
+                    out localPosition)
+                && rectTransform.rect.Contains(localPosition))
+            {
+                return true;
+            }
+
+            localPosition = default;
+            return false;
         }
 
         var mainCamera = Camera.main;
@@ -487,8 +494,15 @@ public class PolyPetAvatar : MonoBehaviour
             return false;
         }
 
-        var screenDepth = mainCamera.WorldToScreenPoint(transform.position).z;
-        var worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenPoint.x, screenPoint.y, screenDepth));
+        var avatarPlane = new Plane(transform.forward, transform.position);
+        var ray = mainCamera.ScreenPointToRay(screenPoint);
+        if (!avatarPlane.Raycast(ray, out var hitDistance))
+        {
+            localPosition = default;
+            return false;
+        }
+
+        var worldPosition = ray.GetPoint(hitDistance);
         var local3 = transform.InverseTransformPoint(worldPosition);
         localPosition = new Vector2(local3.x, local3.y);
         return true;

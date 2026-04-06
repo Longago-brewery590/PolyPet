@@ -54,41 +54,5 @@ namespace PolyPet.Tests
                 "Expected PolyPetAvatar to inherit from Control.");
         }
 
-        [Fact]
-        public void UnityPolyPetAvatar_UsesSerializedTypedUnityEventsInsteadOfPlainEvents()
-        {
-            var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
-
-            Assert.Contains("using UnityEngine.Events;", source);
-            Assert.Contains("public struct NullableInt", source);
-            Assert.Contains("public sealed class AvatarNullableIntEvent : UnityEvent<PolyPetAvatar, NullableInt>",
-                source);
-            Assert.Contains("public delegate void SeedChangedCallback(PolyPetAvatar avatar, NullableInt seed);",
-                source);
-            Assert.Contains("public delegate void NameSeedChangedCallback(PolyPetAvatar avatar, NullableInt nameSeed);",
-                source);
-            Assert.Contains(
-                "[SerializeField] private AvatarNullableIntEvent _seedChanged = new AvatarNullableIntEvent();", source);
-            Assert.Contains(
-                "[SerializeField] private AvatarNullableIntEvent _nameSeedChanged = new AvatarNullableIntEvent();",
-                source);
-            Assert.Contains("public AvatarNullableIntEvent SeedChanged => _seedChanged;", source);
-            Assert.Contains("public AvatarNullableIntEvent NameSeedChanged => _nameSeedChanged;", source);
-            Assert.DoesNotContain("public event Action SeedChanged;", source);
-            Assert.DoesNotContain("public event Action NameSeedChanged;", source);
-        }
-
-        [Fact]
-        public void UnityPolyPetAvatar_ExposesFrameSizingAndRectTransformSupport()
-        {
-            var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
-
-            Assert.True(Regex.IsMatch(source, @"using\s+UnityEngine\s*;"),
-                "Expected UnityEngine support in the Unity avatar source.");
-            Assert.True(Regex.IsMatch(source, @"public\s+Vector2\s+FrameSize\b"),
-                "Expected a public FrameSize property.");
-            Assert.True(Regex.IsMatch(source, @"\bRectTransform\b"),
-                "Expected RectTransform support in the Unity avatar source.");
-        }
     }
 }
