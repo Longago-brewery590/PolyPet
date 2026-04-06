@@ -128,5 +128,9 @@ test -f "$workspace/failure/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet/
 
 grep -q 'bash ./scripts/sync-godot-sample.sh' "$repo_root/.github/workflows/sync-core.yml"
 grep -q 'bash ./scripts/sync-unity-sample.sh' "$repo_root/.github/workflows/sync-core.yml"
+grep -q 'bash ./scripts/sync-core-to-adapters.sh' "$repo_root/.github/workflows/sync-godot-addon.yml"
+grep -q 'bash ./scripts/sync-godot-sample.sh' "$repo_root/.github/workflows/sync-godot-addon.yml"
+grep -q 'bash ./scripts/sync-core-to-adapters.sh' "$repo_root/.github/workflows/sync-unity-package.yml"
+grep -q 'bash ./scripts/sync-unity-sample.sh' "$repo_root/.github/workflows/sync-unity-package.yml"
 
 echo "sync script smoke test passed"
