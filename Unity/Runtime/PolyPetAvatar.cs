@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using PolyPet;
 using Random = System.Random;
 
@@ -70,6 +71,7 @@ public class PolyPetAvatar : MonoBehaviour
     private Mesh _mesh;
     private Mesh _mouthMesh;
     private Material _material;
+    private PolyPetAvatarGraphic _uiGraphic;
 
     public AvatarNullableIntEvent SeedChanged => _seedChanged;
     public AvatarNullableIntEvent NameSeedChanged => _nameSeedChanged;
@@ -126,6 +128,12 @@ public class PolyPetAvatar : MonoBehaviour
     public void RandomizeSeed() { Seed = new Random().Next(); }
     public void RandomizeNameSeed() { NameSeed = new Random().Next(); }
 
+    void OnEnable()
+    {
+        RefreshRenderMode();
+        MarkUiGraphicDirty();
+    }
+
     void Start()
     {
         var shader = Shader.Find("Sprites/Default");
@@ -150,6 +158,9 @@ public class PolyPetAvatar : MonoBehaviour
         if (_state == PetState.BeingPet && _time - _petTime > 0.5f)
             _state = PetState.Idle;
 
+        RefreshRenderMode();
+        MarkUiGraphicDirty();
+
         if (Data.Body.Vertices == null)
             return;
 
@@ -166,7 +177,7 @@ public class PolyPetAvatar : MonoBehaviour
 
     void OnRenderObject()
     {
-        if (_mesh == null || _material == null) return;
+        if (IsUiRenderMode || _mesh == null || _material == null) return;
 
         var frame = GetCurrentFrame();
         var renderMatrix = GetRenderMatrix(frame);
@@ -203,10 +214,12 @@ public class PolyPetAvatar : MonoBehaviour
         _mesh.SetVertices(vertices);
         _mesh.SetColors(colors);
         _mesh.SetTriangles(triangles, 0);
+        _mesh.RecalculateBounds();
 
         _mouthMesh.SetVertices(mouthVertices);
         _mouthMesh.SetColors(mouthColors);
         _mouthMesh.SetTriangles(mouthTriangles, 0);
+        _mouthMesh.RecalculateBounds();
     }
 
     private void AddShapeToMesh(ShapePart part,
@@ -290,6 +303,7 @@ public class PolyPetAvatar : MonoBehaviour
             : CreateEmptyData();
 
         BuildMesh();
+        MarkUiGraphicDirty();
     }
 
     private void EmitSeedChanged()
@@ -316,6 +330,8 @@ public class PolyPetAvatar : MonoBehaviour
     {
         return PolyPetAnimation.GetFrame(_state, _time, _time - _petTime);
     }
+
+    private bool IsUiRenderMode => TryGetRectTransform(out _);
 
     private Matrix4x4 GetRenderMatrix(AnimationFrame frame)
     {
@@ -369,6 +385,34 @@ public class PolyPetAvatar : MonoBehaviour
             Mathf.Max(frameSize.y, Mathf.Epsilon));
     }
 
+    private void RefreshRenderMode()
+    {
+        if (TryGetRectTransform(out _))
+        {
+            if (_uiGraphic == null)
+                _uiGraphic = GetComponent<PolyPetAvatarGraphic>() ?? gameObject.AddComponent<PolyPetAvatarGraphic>();
+
+            _uiGraphic.Bind(this);
+            _uiGraphic.enabled = true;
+            return;
+        }
+
+        if (_uiGraphic != null)
+            _uiGraphic.enabled = false;
+    }
+
+    private void MarkUiGraphicDirty()
+    {
+        if (_uiGraphic != null && _uiGraphic.enabled)
+            _uiGraphic.RefreshGraphic();
+    }
+
+    private bool TryGetRectTransform(out RectTransform rectTransform)
+    {
+        rectTransform = transform as RectTransform;
+        return rectTransform != null;
+    }
+
     private bool TryGetPressedPetPosition(out Vector2 petPosition)
     {
         if (TryGetPressedPointerLocalPosition(out var localPosition))
@@ -419,7 +463,7 @@ public class PolyPetAvatar : MonoBehaviour
             return RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 rectTransform,
                 screenPoint,
-                Camera.main,
+                GetRectTransformEventCamera(rectTransform),
                 out localPosition);
         }
 
@@ -437,10 +481,168 @@ public class PolyPetAvatar : MonoBehaviour
         return true;
     }
 
+    private Camera GetRectTransformEventCamera(RectTransform rectTransform)
+    {
+        var canvas = rectTransform.GetComponentInParent<Canvas>();
+        if (canvas == null)
+            return null;
+
+        if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            return null;
+
+        return canvas.worldCamera != null ? canvas.worldCamera : Camera.main;
+    }
+
+    internal bool HasRenderableData => Data.Body.Vertices != null;
+
+    internal void PopulateUiMesh(VertexHelper vertexHelper)
+    {
+        vertexHelper.Clear();
+
+        if (!HasRenderableData)
+            return;
+
+        var frameRect = GetResolvedFrameRect();
+        var frameLayout = PolyPetLayout.CreateFrameLayout(Data, frameRect.width, frameRect.height);
+        var frame = GetCurrentFrame();
+
+        AddShapeToUiMesh(vertexHelper, Data.Body, frameRect, frameLayout, frame);
+        AddShapeToUiMesh(vertexHelper, Data.Head, frameRect, frameLayout, frame);
+        foreach (var ear in Data.Ears) AddShapeToUiMesh(vertexHelper, ear, frameRect, frameLayout, frame);
+        foreach (var eye in Data.Eyes) AddShapeToUiMesh(vertexHelper, eye, frameRect, frameLayout, frame);
+        AddMouthToUiMesh(vertexHelper, Data.Mouth, frameRect, frameLayout, frame);
+        foreach (var limb in Data.Limbs) AddShapeToUiMesh(vertexHelper, limb, frameRect, frameLayout, frame);
+        if (Data.Tail.Vertices != null && Data.Tail.Vertices.Length >= 3)
+            AddShapeToUiMesh(vertexHelper, Data.Tail, frameRect, frameLayout, frame);
+    }
+
+    private void AddShapeToUiMesh(
+        VertexHelper vertexHelper,
+        ShapePart part,
+        Rect frameRect,
+        PetFrameLayout frameLayout,
+        AnimationFrame frame)
+    {
+        if (part.Vertices == null || part.Vertices.Length < 3)
+            return;
+
+        var color = new UnityEngine.Color32(part.Color.R, part.Color.G, part.Color.B, part.Color.A);
+        var startIndex = vertexHelper.currentVertCount;
+
+        for (var i = 0; i < part.Vertices.Length; i++)
+        {
+            var petPoint = new Vector2(
+                part.Position.X + part.Vertices[i].X,
+                part.Position.Y + part.Vertices[i].Y);
+            AddUiVertex(vertexHelper, TransformToFrameSpace(petPoint, frameRect, frameLayout, frame), color);
+        }
+
+        for (var i = 1; i < part.Vertices.Length - 1; i++)
+            vertexHelper.AddTriangle(startIndex, startIndex + i, startIndex + i + 1);
+    }
+
+    private void AddMouthToUiMesh(
+        VertexHelper vertexHelper,
+        ShapePart mouth,
+        Rect frameRect,
+        PetFrameLayout frameLayout,
+        AnimationFrame frame)
+    {
+        if (mouth.Vertices == null || mouth.Vertices.Length < 2)
+            return;
+
+        var color = new UnityEngine.Color32(mouth.Color.R, mouth.Color.G, mouth.Color.B, mouth.Color.A);
+
+        for (var i = 0; i < mouth.Vertices.Length - 1; i++)
+        {
+            var start = new Vector2(
+                mouth.Position.X + mouth.Vertices[i].X,
+                mouth.Position.Y + mouth.Vertices[i].Y);
+            var end = new Vector2(
+                mouth.Position.X + mouth.Vertices[i + 1].X,
+                mouth.Position.Y + mouth.Vertices[i + 1].Y);
+
+            var segment = end - start;
+            if (segment.sqrMagnitude <= Mathf.Epsilon)
+                continue;
+
+            var normal = new Vector2(-segment.y, segment.x).normalized * (MouthLineWidth * 0.5f);
+            var startIndex = vertexHelper.currentVertCount;
+
+            AddUiVertex(vertexHelper, TransformToFrameSpace(start - normal, frameRect, frameLayout, frame), color);
+            AddUiVertex(vertexHelper, TransformToFrameSpace(start + normal, frameRect, frameLayout, frame), color);
+            AddUiVertex(vertexHelper, TransformToFrameSpace(end + normal, frameRect, frameLayout, frame), color);
+            AddUiVertex(vertexHelper, TransformToFrameSpace(end - normal, frameRect, frameLayout, frame), color);
+
+            vertexHelper.AddTriangle(startIndex, startIndex + 1, startIndex + 2);
+            vertexHelper.AddTriangle(startIndex, startIndex + 2, startIndex + 3);
+        }
+    }
+
+    private void AddUiVertex(VertexHelper vertexHelper, Vector2 position, UnityEngine.Color32 color)
+    {
+        var vertex = UIVertex.simpleVert;
+        vertex.position = position;
+        vertex.color = color;
+        vertexHelper.AddVert(vertex);
+    }
+
+    private Vector2 TransformToFrameSpace(
+        Vector2 point,
+        Rect frameRect,
+        PetFrameLayout frameLayout,
+        AnimationFrame frame)
+    {
+        var origin = GetLayoutOrigin(frameRect, frameLayout, frame);
+        var scale = GetLayoutScale(frameLayout, frame);
+
+        return new Vector2(
+            origin.x + point.x * scale.x,
+            origin.y + point.y * scale.y);
+    }
+
+    void OnRectTransformDimensionsChange()
+    {
+        MarkUiGraphicDirty();
+    }
+
     void OnDestroy()
     {
         if (_mesh != null) Destroy(_mesh);
         if (_mouthMesh != null) Destroy(_mouthMesh);
         if (_material != null) Destroy(_material);
+    }
+}
+
+[DisallowMultipleComponent]
+internal sealed class PolyPetAvatarGraphic : MaskableGraphic
+{
+    private PolyPetAvatar _avatar;
+
+    public void Bind(PolyPetAvatar avatar)
+    {
+        if (_avatar == avatar)
+            return;
+
+        _avatar = avatar;
+        raycastTarget = false;
+        RefreshGraphic();
+    }
+
+    public void RefreshGraphic()
+    {
+        SetVerticesDirty();
+        SetMaterialDirty();
+    }
+
+    protected override void OnPopulateMesh(VertexHelper vertexHelper)
+    {
+        if (_avatar == null || !_avatar.HasRenderableData)
+        {
+            vertexHelper.Clear();
+            return;
+        }
+
+        _avatar.PopulateUiMesh(vertexHelper);
     }
 }
