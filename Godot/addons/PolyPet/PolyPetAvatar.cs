@@ -23,8 +23,11 @@ public partial class PolyPetAvatar : Node2D
     private float _time;
     private float _petTime;
 
-    public event Action SeedChanged;
-    public event Action NameSeedChanged;
+    [Signal]
+    public delegate void SeedChangedEventHandler();
+
+    [Signal]
+    public delegate void NameSeedChangedEventHandler();
 
     public int? Seed
     {
@@ -61,13 +64,13 @@ public partial class PolyPetAvatar : Node2D
         if (_seed.HasValue)
         {
             Data = PolyPetGenerator.Create(_seed.Value, _nameSeed);
-            SeedChanged?.Invoke();
-            if (_nameSeed.HasValue) NameSeedChanged?.Invoke();
+            EmitSignal(SignalName.SeedChanged);
+            if (_nameSeed.HasValue) EmitSignal(SignalName.NameSeedChanged);
         }
         else if (_nameSeed.HasValue)
         {
             Data = PolyPetGenerator.Create(0, _nameSeed);
-            NameSeedChanged?.Invoke();
+            EmitSignal(SignalName.NameSeedChanged);
         }
     }
 
@@ -186,7 +189,7 @@ public partial class PolyPetAvatar : Node2D
     private void RegeneratePet()
     {
         Data = PolyPetGenerator.Create(Seed!.Value, NameSeed);
-        SeedChanged?.Invoke();
+        EmitSignal(SignalName.SeedChanged);
     }
 
     private void RegenerateName()
@@ -197,8 +200,8 @@ public partial class PolyPetAvatar : Node2D
         {
             if (!Seed.HasValue) return;
             Data = PolyPetGenerator.Create(Seed.Value, NameSeed);
-            SeedChanged?.Invoke();
-            NameSeedChanged?.Invoke();
+            EmitSignal(SignalName.SeedChanged);
+            EmitSignal(SignalName.NameSeedChanged);
             return;
         }
 
@@ -214,6 +217,6 @@ public partial class PolyPetAvatar : Node2D
             TertiaryColor = Data.TertiaryColor,
             Seed = Data.Seed
         };
-        NameSeedChanged?.Invoke();
+        EmitSignal(SignalName.NameSeedChanged);
     }
 }

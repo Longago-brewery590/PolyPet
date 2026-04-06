@@ -66,7 +66,7 @@ pet.NameSeed = 99;
 pet.RandomizeSeed();
 pet.RandomizeNameSeed();
 
-// Observe updates.
+// Observe updates from C#.
 pet.SeedChanged += () => { };
 pet.NameSeedChanged += () => { };
 
@@ -76,6 +76,8 @@ string? name = pet.Data.Name;
 ```
 
 If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
+
+In Godot, `SeedChanged` and `NameSeedChanged` are custom Godot signals, so they can also be connected from the editor after rebuilding the project's C# solution once.
 
 ## Inspector Fields
 
