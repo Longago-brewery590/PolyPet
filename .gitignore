@@ -3,6 +3,7 @@ Godot/Addons/PolyPet/Core/
 Unity/Runtime/Core/
 
 # .NET
+.dotnet-cli/
 bin/
 obj/
 *.user
@@ -16,3 +17,6 @@ obj/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local docs
+docs/superpowers/
