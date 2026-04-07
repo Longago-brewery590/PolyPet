@@ -14,7 +14,7 @@
   "samples": [
     {
       "displayName": "PolyPet Creator",
-      "description": "Single pet demo with re-roll and name randomization",
+      "description": "Pet creator scene with avatar preview, seed editing, and randomization",
       "path": "Samples~/PolyPetCreator"
     }
   ]
