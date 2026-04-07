@@ -1,6 +1,7 @@
-# Copied Core files (CI manages these)
+# Copied Core files (CI manages these — .meta files are tracked for stable GUIDs)
 Godot/addons/PolyPet/Core/
-Unity/Runtime/Core/
+Unity/Runtime/Core/*
+!Unity/Runtime/Core/*.meta
 
 # Copied addon/package in sample projects (CI manages these)
 Samples/PolyPetDemoGodot/addons/PolyPet/
