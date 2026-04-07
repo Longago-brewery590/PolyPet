@@ -98,5 +98,6 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
-# Package Manager imported samples (keep .meta for stable folder GUID)
-/[Aa]ssets/[Ss]amples/*/
+# Package Manager imported samples
+/[Aa]ssets/[Ss]amples/
+/[Aa]ssets/[Ss]amples.meta

@@ -21,3 +21,13 @@ cp -R "$source_dir" "$staging/Samples/PolyPetDemoUnity/Packages/com.shilo.polype
 mkdir -p "$(dirname "$dest")"
 rm -rf "$dest"
 mv "$staging/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet" "$dest"
+
+# Copy package sample into the standalone project's Assets so the scene is
+# available out-of-the-box without a Package Manager import step.
+sample_source="$source_dir/Samples~/PolyPetCreator"
+sample_dest="$repo_root/Samples/PolyPetDemoUnity/Assets/PolyPetCreator"
+if [[ -d "$sample_source" ]]; then
+  rm -rf "$sample_dest"
+  mkdir -p "$sample_dest"
+  cp -R "$sample_source"/. "$sample_dest"
+fi
