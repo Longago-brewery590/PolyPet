@@ -160,6 +160,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
 
         var avatarRect = CreateUiObject("PolyPetAvatar", avatarSurface);
         StretchToParent(avatarRect);
+        avatarRect.gameObject.AddComponent<CanvasRenderer>();
         _avatar = avatarRect.gameObject.AddComponent<PolyPetAvatar>();
 
         var controlColumn = CreateUiObject("ControlColumn", layoutRoot);
@@ -375,6 +376,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
     private TMP_InputField CreateInputField(string name, RectTransform parent, TMP_FontAsset fontAsset)
     {
         var inputRoot = CreateUiObject(name, parent);
+        inputRoot.gameObject.AddComponent<CanvasRenderer>();
         var background = inputRoot.gameObject.AddComponent<RoundedPanelGraphic>();
         background.color = InputFillColor;
         background.BorderColor = InputBorderColor;
@@ -417,6 +419,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
     private Button CreateButton(string name, RectTransform parent, TMP_FontAsset fontAsset, string label)
     {
         var buttonRoot = CreateUiObject(name, parent);
+        buttonRoot.gameObject.AddComponent<CanvasRenderer>();
         var background = buttonRoot.gameObject.AddComponent<RoundedPanelGraphic>();
         background.color = ButtonFillColor;
         background.BorderColor = FrameBorderColor;
@@ -460,6 +463,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
         bool raycastTarget)
     {
         var rectTransform = CreateUiObject(name, parent);
+        rectTransform.gameObject.AddComponent<CanvasRenderer>();
         var graphic = rectTransform.gameObject.AddComponent<RoundedPanelGraphic>();
         graphic.color = fillColor;
         graphic.BorderColor = borderColor;
