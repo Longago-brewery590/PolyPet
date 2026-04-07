@@ -13,8 +13,8 @@
   },
   "samples": [
     {
-      "displayName": "PolyPet Creator",
-      "description": "Pet creator scene with avatar preview, seed editing, and randomization",
+      "displayName": "PolyPet Samples",
+      "description": "Creator scene with seed editing and randomization, plus a Farm scene with a scrollable grid of random pets",
       "path": "Samples~/PolyPetCreator"
     }
   ]
