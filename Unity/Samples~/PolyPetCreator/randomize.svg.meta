@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fe41472b2d6bdc749ba812bfa44e2f06
+guid: 3a59fcfee9c73ce479196bf01bac68a3
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -39,7 +39,7 @@ ScriptedImporter:
   useSVGPixelsPerUnit: 0
   spriteData:
     TessellationDetail: 0
-    SpriteName: shuffle
+    SpriteName: randomize
     SpritePivot: {x: 0.5, y: 0.5}
     SpriteAlignment: 0
     SpriteBorder: {x: 0, y: 0, z: 0, w: 0}

@@ -1587,6 +1587,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8419227325125107437, guid: af117bc161b75c448a882bfee3f94fce, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8931763105239076552, guid: af117bc161b75c448a882bfee3f94fce, type: 3}
       propertyPath: m_Name
       value: SceneToggleButton
