@@ -147,7 +147,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 1, g: 0.965, b: 0.91, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -247,7 +247,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!1 &2046892654
+--- !u!1 &1805330261
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -255,45 +255,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2046892656}
-  - component: {fileID: 2046892655}
+  - component: {fileID: 1805330262}
+  - component: {fileID: 1805330263}
   m_Layer: 0
-  m_Name: PolyPetAvatar
+  m_Name: PolyPetCreatorSceneBootstrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2046892655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2046892654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37de067f2f44e494299458fe7d72cfe4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Shilo.PolyPet::PolyPetAvatar
-  _startSeed: 5
-  _startNameSeed: 5
-  _startSeedType: 1
-  _startNameSeedType: 1
-  _frameSize: {x: 5, y: 5}
-  _seedChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  _nameSeedChanged:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!4 &2046892656
+--- !u!4 &1805330262
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2046892654}
+  m_GameObject: {fileID: 1805330261}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -302,9 +279,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1805330263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805330261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa54d44dd45c4e569f3ab3d9c824b2ec, type: 3}
+  m_Name: ''
+  m_EditorClassIdentifier: ''
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 297318868}
-  - {fileID: 2046892656}
+  - {fileID: 1805330262}
