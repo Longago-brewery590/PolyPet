@@ -125,8 +125,7 @@ namespace PolyPet.Tests
                 Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreator.unity.meta"),
                 Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorPanel.cs"),
                 Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorPanel.cs.meta"),
-                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorSceneBootstrap.cs"),
-                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorSceneBootstrap.cs.meta"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "shuffle.svg"),
                 Path.Combine("Unity", "Samples~", "PolyPetCreator", "RoundedPanelGraphic.cs"),
                 Path.Combine("Unity", "Samples~", "PolyPetCreator", "RoundedPanelGraphic.cs.meta"),
             };

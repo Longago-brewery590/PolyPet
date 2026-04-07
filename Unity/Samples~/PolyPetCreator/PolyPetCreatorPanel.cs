@@ -14,34 +14,6 @@ public sealed class PolyPetCreatorPanel : MonoBehaviour
 
     private bool _isRefreshing;
 
-    public void Initialize(
-        PolyPetAvatar avatar,
-        TMP_InputField nameSeedInput,
-        TMP_InputField seedInput,
-        Button nameSeedRerollButton,
-        Button seedRerollButton)
-    {
-        var wasActive = isActiveAndEnabled;
-        if (wasActive)
-        {
-            UnbindControls();
-            UnbindAvatar();
-        }
-
-        _avatar = avatar;
-        _nameSeedInput = nameSeedInput;
-        _seedInput = seedInput;
-        _nameSeedRerollButton = nameSeedRerollButton;
-        _seedRerollButton = seedRerollButton;
-
-        if (wasActive)
-        {
-            BindAvatar();
-            BindControls();
-            RefreshFromAvatar();
-        }
-    }
-
     private void OnEnable()
     {
         BindAvatar();
