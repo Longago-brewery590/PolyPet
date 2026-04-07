@@ -49,6 +49,27 @@ try {
             throw "sync Unity sample failed with exit code $exitCode."
         }
 
+        # Verify Unity sample assets are in sync with source of truth.
+        $sampleSrc = "Unity/Samples~/PolyPetCreator"
+        $sampleDst = "Samples/PolyPetDemoUnity/Assets/PolyPetCreator"
+        if ((Test-Path $sampleSrc) -and (Test-Path $sampleDst)) {
+            $srcFiles = Get-ChildItem -Path $sampleSrc -Recurse -File | ForEach-Object {
+                $rel = $_.FullName.Substring((Resolve-Path $sampleSrc).Path.Length + 1)
+                @{ Rel = $rel; Hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
+            }
+            foreach ($f in $srcFiles) {
+                $dstPath = Join-Path $sampleDst $f.Rel
+                if (-not (Test-Path $dstPath)) {
+                    throw "Unity sample drift: $($f.Rel) exists in source of truth but not in sample project."
+                }
+                $dstHash = (Get-FileHash $dstPath -Algorithm SHA256).Hash
+                if ($f.Hash -ne $dstHash) {
+                    throw "Unity sample drift: $($f.Rel) differs between source of truth and sample project. Run sync-unity-sample.sh or sync-unity-package-from-sample.ps1."
+                }
+            }
+            Write-Host "Unity sample assets are in sync."
+        }
+
         & dotnet test ".\Core.Tests\Core.Tests.csproj"
         $exitCode = Get-LastExitCodeOrDefault -Default 0
         if ($exitCode -ne 0) {
