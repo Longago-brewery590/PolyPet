@@ -116,6 +116,26 @@ namespace PolyPet.Tests
         }
 
         [Fact]
+        public void UnityPackage_ExportsPolyPetCreatorSampleFiles()
+        {
+            var expectedFiles = new[]
+            {
+                Path.Combine("Unity", "Samples~", "PolyPetCreator.meta"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreator.unity"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreator.unity.meta"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorPanel.cs"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorPanel.cs.meta"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorSceneBootstrap.cs"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "PolyPetCreatorSceneBootstrap.cs.meta"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "RoundedPanelGraphic.cs"),
+                Path.Combine("Unity", "Samples~", "PolyPetCreator", "RoundedPanelGraphic.cs.meta"),
+            };
+
+            foreach (var relativePath in expectedFiles)
+                Assert.True(File.Exists(RepoFile(relativePath)), $"Expected exported sample file: {relativePath}");
+        }
+
+        [Fact]
         public void PolyPetAvatar_UsesRectTransformFrameOnlyWhenInUiRenderMode()
         {
             var source = File.ReadAllText(RepoFile(Path.Combine("Unity", "Runtime", "PolyPetAvatar.cs")));
