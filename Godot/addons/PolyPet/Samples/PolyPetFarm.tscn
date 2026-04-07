@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://addons/PolyPet/Samples/Assets/SceneToggleButton.tscn" id="1_stb"]
+
 [sub_resource type="StyleBoxFlat" id="sb_scroll_grabber"]
 content_margin_left = 5.0
 content_margin_right = 5.0
@@ -109,3 +111,5 @@ script = SubResource("GDScript_grid")
 [node name="Spacer2" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+
+[node name="SceneToggleButton" parent="." instance=ExtResource("1_stb")]
