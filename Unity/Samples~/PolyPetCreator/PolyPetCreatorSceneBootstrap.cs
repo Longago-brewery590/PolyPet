@@ -258,7 +258,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
             nameBinding = _nameText.gameObject.AddComponent<PolyPetName>();
 
         nameBinding.Avatar = _avatar;
-        _nameText.text = _avatar.Data != null ? _avatar.Data.Name ?? string.Empty : string.Empty;
+        _nameText.text = _avatar.Data.Name ?? string.Empty;
     }
 
     private void ConfigureAvatarStartState()
@@ -272,7 +272,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
         StartNameSeedTypeField?.SetValue(_avatar, StartSeedType.Fixed);
 
         // Rehydrated hierarchies may already have live seed state; snap them back immediately.
-        if (_avatar.Data != null || _avatar.Seed.HasValue || _avatar.NameSeed.HasValue)
+        if (_avatar.Data.Name != null || _avatar.Seed.HasValue || _avatar.NameSeed.HasValue)
         {
             if (_avatar.Seed != InitialSeed)
                 _avatar.Seed = InitialSeed;
@@ -398,13 +398,13 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
         textArea.gameObject.AddComponent<RectMask2D>();
 
         var text = CreateText("Text", textArea, fontAsset, 24f, TextPrimaryColor, TextAlignmentOptions.MidlineLeft);
-        text.enableWordWrapping = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
         text.richText = false;
         StretchToParent((RectTransform)text.transform);
 
         var placeholder = CreateText("Placeholder", textArea, fontAsset, 24f, PlaceholderColor, TextAlignmentOptions.MidlineLeft);
         placeholder.text = "Enter seed";
-        placeholder.enableWordWrapping = false;
+        placeholder.textWrappingMode = TextWrappingModes.NoWrap;
         placeholder.fontStyle = FontStyles.Italic;
         StretchToParent((RectTransform)placeholder.transform);
 
@@ -485,7 +485,7 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
         text.fontSize = fontSize;
         text.color = color;
         text.alignment = alignment;
-        text.enableWordWrapping = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
         text.raycastTarget = false;
         return text;
     }
