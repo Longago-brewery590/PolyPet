@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://addons/PolyPet/PolyPetAvatar.cs" id="1_l3c66"]
+
+[sub_resource type="StyleBoxFlat" id="sb_card"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(1, 0.95, 0.87, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.91, 0.69, 0.46, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[node name="PolyPetAvatarControl" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 200)
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("sb_card")
+
+[node name="PolyPetAvatar" type="Control" parent="."]
+layout_mode = 2
+script = ExtResource("1_l3c66")
+_startSeedType = 2
+_startNameSeedType = 2
