@@ -13,6 +13,9 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.VERSION }}
+      tag: ${{ steps.version.outputs.TAG }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -107,3 +110,12 @@ jobs:
             --generate-notes \
             PolyPet-Godot-${{ steps.version.outputs.VERSION }}.zip \
             PolyPet-Unity-${{ steps.version.outputs.VERSION }}.zip
+
+  build:
+    needs: release
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+      tag: ${{ needs.release.outputs.tag }}
+    permissions:
+      contents: write
