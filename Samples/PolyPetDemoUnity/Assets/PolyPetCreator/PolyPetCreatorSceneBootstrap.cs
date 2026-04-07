@@ -22,10 +22,18 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
     private const string NameSeedButtonPath = ControlCardPath + "/NameSeedRow/NameSeedButton";
     private const string BodySeedButtonPath = ControlCardPath + "/BodySeedRow/BodySeedButton";
 
-    private static readonly FieldInfo StartSeedField = typeof(PolyPetAvatar).GetField("_startSeed", BindingFlags.Instance | BindingFlags.NonPublic);
-    private static readonly FieldInfo StartNameSeedField = typeof(PolyPetAvatar).GetField("_startNameSeed", BindingFlags.Instance | BindingFlags.NonPublic);
-    private static readonly FieldInfo StartSeedTypeField = typeof(PolyPetAvatar).GetField("_startSeedType", BindingFlags.Instance | BindingFlags.NonPublic);
-    private static readonly FieldInfo StartNameSeedTypeField = typeof(PolyPetAvatar).GetField("_startNameSeedType", BindingFlags.Instance | BindingFlags.NonPublic);
+    private static readonly FieldInfo StartSeedField = ResolveField("_startSeed");
+    private static readonly FieldInfo StartNameSeedField = ResolveField("_startNameSeed");
+    private static readonly FieldInfo StartSeedTypeField = ResolveField("_startSeedType");
+    private static readonly FieldInfo StartNameSeedTypeField = ResolveField("_startNameSeedType");
+
+    private static FieldInfo ResolveField(string name)
+    {
+        var field = typeof(PolyPetAvatar).GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
+        if (field == null)
+            Debug.LogWarning($"PolyPetCreatorSceneBootstrap: PolyPetAvatar.{name} not found — seed defaults may not apply.");
+        return field;
+    }
 
     private static readonly Color PageBackgroundColor = new(1f, 0.965f, 0.91f, 1f);
     private static readonly Color BlobPrimaryColor = new(1f, 0.86f, 0.68f, 0.65f);
