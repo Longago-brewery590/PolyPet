@@ -4,6 +4,187 @@
 [ext_resource type="Script" path="res://addons/PolyPet/PolyPetAvatar.cs" id="2_33x3t"]
 [ext_resource type="Texture2D" path="res://addons/PolyPet/Samples/Assets/shuffle.svg" id="3_o1n1n"]
 
+[sub_resource type="StyleBoxFlat" id="sb_btn_hover"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 0.82, 0.5, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="sb_btn"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 0.77, 0.43, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="sb_btn_pressed"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.93, 0.68, 0.36, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="sb_input_focus"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 0.99, 0.96, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="sb_input"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 0.99, 0.96, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.9, 0.76, 0.58, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="sb_arrow"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 0.93, 0.85, 1)
+
+[sub_resource type="StyleBoxFlat" id="sb_arrow_hover"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 0.88, 0.75, 1)
+
+[sub_resource type="StyleBoxFlat" id="sb_arrow_pressed"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.95, 0.82, 0.68, 1)
+
+[sub_resource type="Theme" id="main_theme"]
+Button/colors/icon_normal_color = Color(0.53, 0.33, 0.21, 1)
+Button/styles/focus = SubResource("sb_btn_hover")
+Button/styles/hover = SubResource("sb_btn_hover")
+Button/styles/normal = SubResource("sb_btn")
+Button/styles/pressed = SubResource("sb_btn_pressed")
+Label/colors/font_color = Color(0.53, 0.33, 0.21, 1)
+Label/font_sizes/font_size = 22
+LineEdit/colors/font_color = Color(0.39, 0.22, 0.12, 1)
+LineEdit/font_sizes/font_size = 18
+LineEdit/styles/focus = SubResource("sb_input_focus")
+LineEdit/styles/normal = SubResource("sb_input")
+SpinBox/colors/down_hover_icon_modulate = Color(0.53, 0.33, 0.21, 1)
+SpinBox/colors/down_icon_modulate = Color(0.84, 0.56, 0.32, 1)
+SpinBox/colors/down_pressed_icon_modulate = Color(0.53, 0.33, 0.21, 1)
+SpinBox/colors/up_hover_icon_modulate = Color(0.53, 0.33, 0.21, 1)
+SpinBox/colors/up_icon_modulate = Color(0.84, 0.56, 0.32, 1)
+SpinBox/colors/up_pressed_icon_modulate = Color(0.53, 0.33, 0.21, 1)
+SpinBox/styles/down_background = SubResource("sb_arrow")
+SpinBox/styles/down_background_hovered = SubResource("sb_arrow_hover")
+SpinBox/styles/down_background_pressed = SubResource("sb_arrow_pressed")
+SpinBox/styles/up_background = SubResource("sb_arrow")
+SpinBox/styles/up_background_hovered = SubResource("sb_arrow_hover")
+SpinBox/styles/up_background_pressed = SubResource("sb_arrow_pressed")
+
+[sub_resource type="StyleBoxFlat" id="sb_bg"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 0.965, 0.91, 1)
+
+[sub_resource type="StyleBoxFlat" id="sb_avatar_frame"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 0.92, 0.8, 1)
+border_width_left = 12
+border_width_top = 12
+border_width_right = 12
+border_width_bottom = 12
+border_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+
+[sub_resource type="StyleBoxFlat" id="sb_avatar_inset"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 0.97, 0.9, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.91, 0.69, 0.46, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+
+[sub_resource type="StyleBoxFlat" id="sb_control_card"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 0.95, 0.87, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.91, 0.69, 0.46, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
 [sub_resource type="GDScript" id="GDScript_m6ijy"]
 resource_name = "NameSeed"
 script/source = "extends SpinBox
@@ -52,107 +233,104 @@ func _pressed() -> void:
 	%PolyPetAvatar.RandomizeSeed()
 "
 
-[node name="PolyPetCreator" type="MarginContainer" unique_id=1288176367]
+[node name="PolyPetCreator" type="PanelContainer" unique_id=1375981643]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme = SubResource("main_theme")
+theme_override_styles/panel = SubResource("sb_bg")
 
-[node name="AvatarContainer" type="Control" parent="." unique_id=1813218209]
+[node name="Layout" type="HBoxContainer" parent="." unique_id=1286131812]
 layout_mode = 2
-mouse_filter = 2
+theme_override_constants/separation = 20
 
-[node name="Origin" type="Control" parent="AvatarContainer" unique_id=408482342]
-layout_mode = 1
-anchor_left = 0.5
-anchor_top = 0.75
-anchor_right = 0.5
-anchor_bottom = 0.75
-grow_horizontal = 2
-grow_vertical = 2
+[node name="AvatarFrame" type="PanelContainer" parent="Layout" unique_id=1768207409]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("sb_avatar_frame")
 
-[node name="PolyPetAvatar" type="Control" parent="AvatarContainer/Origin" unique_id=264461052]
+[node name="AvatarInset" type="PanelContainer" parent="Layout/AvatarFrame" unique_id=2023537528]
+layout_mode = 2
+theme_override_styles/panel = SubResource("sb_avatar_inset")
+
+[node name="PolyPetAvatar" type="Control" parent="Layout/AvatarFrame/AvatarInset" unique_id=1337301134]
 unique_name_in_owner = true
+layout_mode = 2
 script = ExtResource("2_33x3t")
 _startSeedType = 2
 _startNameSeedType = 2
 
-[node name="UI" type="PanelContainer" parent="." unique_id=1075514391]
+[node name="ControlCard" type="PanelContainer" parent="Layout" unique_id=1535420405]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
+theme_override_styles/panel = SubResource("sb_control_card")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI" unique_id=1027590759]
+[node name="Controls" type="VBoxContainer" parent="Layout/ControlCard" unique_id=453972670]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/separation = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer" unique_id=242556999]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="PolyPetName" type="Label" parent="UI/MarginContainer/VBoxContainer" unique_id=1675894007 node_paths=PackedStringArray("Avatar")]
+[node name="PolyPetName" type="Label" parent="Layout/ControlCard/Controls" unique_id=360752132 node_paths=PackedStringArray("Avatar")]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.39, 0.22, 0.12, 1)
+theme_override_font_sizes/font_size = 36
 text = "PolyPet Name"
 horizontal_alignment = 1
 script = ExtResource("1_k8tk0")
-Avatar = NodePath("../../../../AvatarContainer/Origin/PolyPetAvatar")
+Avatar = NodePath("../../../AvatarFrame/AvatarInset/PolyPetAvatar")
 
-[node name="GridContainer" type="GridContainer" parent="UI/MarginContainer/VBoxContainer" unique_id=861989436]
+[node name="GridContainer" type="GridContainer" parent="Layout/ControlCard/Controls" unique_id=997604750]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 3
 
-[node name="NameLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=579698615]
+[node name="NameLabel" type="Label" parent="Layout/ControlCard/Controls/GridContainer" unique_id=465016121]
 layout_mode = 2
-text = "Name:"
+text = "Name"
+vertical_alignment = 1
 
-[node name="NameSeed" type="SpinBox" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=820435238]
-custom_minimum_size = Vector2(165, 0)
-layout_mode = 2
-min_value = -2147483646.0
-max_value = 2147483647.0
-rounded = true
-prefix = "Seed"
-script = SubResource("GDScript_m6ijy")
-
-[node name="RandomizeName" type="Button" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=786034616]
-layout_mode = 2
-icon = ExtResource("3_o1n1n")
-script = SubResource("GDScript_33x3t")
-
-[node name="AvatarLabel" type="Label" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=38632948]
-layout_mode = 2
-text = "Body:"
-
-[node name="AvatarSeed" type="SpinBox" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=1290128746]
-custom_minimum_size = Vector2(165, 0)
+[node name="NameSeed" type="SpinBox" parent="Layout/ControlCard/Controls/GridContainer" unique_id=1437503816]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -2147483646.0
 max_value = 2147483647.0
 rounded = true
-prefix = "Seed"
+script = SubResource("GDScript_m6ijy")
+
+[node name="RandomizeName" type="Button" parent="Layout/ControlCard/Controls/GridContainer" unique_id=1758494117]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("3_o1n1n")
+expand_icon = true
+script = SubResource("GDScript_33x3t")
+
+[node name="AvatarLabel" type="Label" parent="Layout/ControlCard/Controls/GridContainer" unique_id=610438278]
+layout_mode = 2
+text = "Body"
+vertical_alignment = 1
+
+[node name="AvatarSeed" type="SpinBox" parent="Layout/ControlCard/Controls/GridContainer" unique_id=105836729]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -2147483646.0
+max_value = 2147483647.0
+rounded = true
 script = SubResource("GDScript_kwek3")
 
-[node name="RandomizeAvatar" type="Button" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=1833411425]
+[node name="RandomizeAvatar" type="Button" parent="Layout/ControlCard/Controls/GridContainer" unique_id=1668898742]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_vertical = 4
 icon = ExtResource("3_o1n1n")
+expand_icon = true
 script = SubResource("GDScript_o1n1n")
 
-[node name="Node" type="Node" parent="UI/MarginContainer/VBoxContainer/GridContainer" unique_id=409569466]
-
-[connection signal="NameSeedChanged" from="AvatarContainer/Origin/PolyPetAvatar" to="UI/MarginContainer/VBoxContainer/GridContainer/NameSeed" method="_on_poly_pet_avatar_name_seed_changed"]
-[connection signal="SeedChanged" from="AvatarContainer/Origin/PolyPetAvatar" to="UI/MarginContainer/VBoxContainer/GridContainer/AvatarSeed" method="_on_poly_pet_avatar_seed_changed"]
-[connection signal="value_changed" from="UI/MarginContainer/VBoxContainer/GridContainer/NameSeed" to="UI/MarginContainer/VBoxContainer/GridContainer/NameSeed" method="_on_value_changed"]
-[connection signal="value_changed" from="UI/MarginContainer/VBoxContainer/GridContainer/AvatarSeed" to="UI/MarginContainer/VBoxContainer/GridContainer/AvatarSeed" method="_on_value_changed"]
+[connection signal="NameSeedChanged" from="Layout/AvatarFrame/AvatarInset/PolyPetAvatar" to="Layout/ControlCard/Controls/GridContainer/NameSeed" method="_on_poly_pet_avatar_name_seed_changed"]
+[connection signal="SeedChanged" from="Layout/AvatarFrame/AvatarInset/PolyPetAvatar" to="Layout/ControlCard/Controls/GridContainer/AvatarSeed" method="_on_poly_pet_avatar_seed_changed"]
+[connection signal="value_changed" from="Layout/ControlCard/Controls/GridContainer/NameSeed" to="Layout/ControlCard/Controls/GridContainer/NameSeed" method="_on_value_changed"]
+[connection signal="value_changed" from="Layout/ControlCard/Controls/GridContainer/AvatarSeed" to="Layout/ControlCard/Controls/GridContainer/AvatarSeed" method="_on_value_changed"]
