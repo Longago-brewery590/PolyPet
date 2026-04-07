@@ -1,33 +1,111 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://addons/PolyPet/PolyPetAvatar.cs" id="1_pq1lp"]
+[sub_resource type="StyleBoxFlat" id="sb_scroll_grabber"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.91, 0.69, 0.46, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[node name="PolyPetFarm" type="MarginContainer" unique_id=1224817186]
+[sub_resource type="StyleBoxFlat" id="sb_scroll_grabber_hover"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_scroll_grabber_pressed"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.53, 0.33, 0.21, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_scroll_bg"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(1, 0.93, 0.85, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="Theme" id="farm_theme"]
+VScrollBar/styles/grabber = SubResource("sb_scroll_grabber")
+VScrollBar/styles/grabber_highlight = SubResource("sb_scroll_grabber_hover")
+VScrollBar/styles/grabber_pressed = SubResource("sb_scroll_grabber_pressed")
+VScrollBar/styles/scroll = SubResource("sb_scroll_bg")
+
+[sub_resource type="StyleBoxFlat" id="sb_bg"]
+bg_color = Color(1, 0.965, 0.91, 1)
+
+[sub_resource type="GDScript" id="GDScript_grid"]
+resource_name = "ResponsiveGrid"
+script/source = "extends GridContainer
+
+@export var cell_size: float = 200.0
+@export var margin: float = 50.0
+@export var item_count: int = 40
+
+var _item_scene: PackedScene = preload(\"res://addons/PolyPet/Samples/Assets/PolyPetAvatarContainer.tscn\")
+
+func _ready() -> void:
+	for i in item_count:
+		add_child(_item_scene.instantiate())
+	get_tree().root.size_changed.connect(_update_columns)
+	_update_columns()
+
+func _update_columns() -> void:
+	var spacing := get_theme_constant(&\"h_separation\")
+	var available := get_viewport_rect().size.x - margin
+	var col_count := int((available + spacing) / (cell_size + spacing))
+	columns = max(1, col_count)
+"
+
+[node name="PolyPetFarm" type="PanelContainer" unique_id=33093102]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("farm_theme")
+theme_override_styles/panel = SubResource("sb_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1098953032]
+layout_mode = 2
 theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=1845497369]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ContentMargin" type="MarginContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1152404224]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/ContentMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer" unique_id=1776957124]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="ScrollContainer" unique_id=538845316]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer" unique_id=820776555]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+script = SubResource("GDScript_grid")
 
-[node name="PolyPetAvatarControl" type="PanelContainer" parent="ScrollContainer/GridContainer" unique_id=1012661569]
-custom_minimum_size = Vector2(200, 200)
+[node name="Spacer2" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer" unique_id=900083062]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-
-[node name="Origin" type="Control" parent="ScrollContainer/GridContainer/PolyPetAvatarControl" unique_id=80489148]
-layout_mode = 2
-
-[node name="PolyPetAvatar" type="Control" parent="ScrollContainer/GridContainer/PolyPetAvatarControl/Origin" unique_id=1703280634]
-script = ExtResource("1_pq1lp")
-metadata/_custom_type_script = "uid://b770jfm8t7i50"
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=490887993]
