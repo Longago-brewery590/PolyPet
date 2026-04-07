@@ -43,10 +43,11 @@ Build the project's C# solution once so Godot can compile the addon scripts, the
 ### Unity
 
 1. Add the package.
-2. Create an empty GameObject and add the `PolyPetAvatar` component.
-3. Size the avatar by either setting `FrameSize` on the component for scene-space use, or by placing it on a Canvas object with a `RectTransform` and sizing that rect directly.
-4. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
-5. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+2. Import the **PolyPet Creator** sample from `Window > Package Manager > PolyPet > Samples > Import` to see a ready-made creator scene with avatar display, seed editing, and randomization.
+3. Or build your own: create an empty GameObject and add the `PolyPetAvatar` component.
+4. Size the avatar by either setting `FrameSize` on the component for scene-space use, or by placing it on a Canvas object with a `RectTransform` and sizing that rect directly.
+5. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
+6. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
 
 ### Godot
 
