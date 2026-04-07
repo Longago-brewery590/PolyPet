@@ -492,14 +492,22 @@ public sealed class PolyPetCreatorSceneBootstrap : MonoBehaviour
 
     private static TMP_FontAsset ResolveFontAsset()
     {
-        if (TMP_Settings.defaultFontAsset != null)
-            return TMP_Settings.defaultFontAsset;
+        try
+        {
+            var settings = TMP_Settings.defaultFontAsset;
+            if (settings != null)
+                return settings;
+        }
+        catch (System.NullReferenceException)
+        {
+            // TMP_Settings asset not yet imported — fall through to resource lookup.
+        }
 
         var fallback = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
         if (fallback != null)
             return fallback;
 
-        Debug.LogWarning("PolyPetCreatorSceneBootstrap could not find a TMP font asset. The sample UI text may render incorrectly.");
+        Debug.LogWarning("PolyPetCreatorSceneBootstrap could not find a TMP font asset. Import TextMeshPro essentials via Window > TextMeshPro > Import TMP Essential Resources.");
         return null;
     }
 
