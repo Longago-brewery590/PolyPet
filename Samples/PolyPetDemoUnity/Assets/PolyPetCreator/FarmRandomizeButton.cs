@@ -32,7 +32,7 @@ public sealed class FarmRandomizeButton : MonoBehaviour
 
     private void OnRandomize()
     {
-        foreach (var avatar in FindObjectsByType<PolyPetAvatar>(FindObjectsSortMode.None))
+        foreach (var avatar in FindObjectsByType<PolyPetAvatar>())
         {
             avatar.RandomizeSeed();
             avatar.RandomizeNameSeed();
