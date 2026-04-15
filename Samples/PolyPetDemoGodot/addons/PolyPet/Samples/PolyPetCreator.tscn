@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c35hfj2hb2ktd"]
 
-[ext_resource type="Script" path="res://addons/PolyPet/PolyPetName.cs" id="1_k8tk0"]
-[ext_resource type="Script" path="res://addons/PolyPet/PolyPetAvatar.cs" id="2_33x3t"]
-[ext_resource type="Texture2D" path="res://addons/PolyPet/Samples/Assets/randomize.svg" id="3_o1n1n"]
-[ext_resource type="PackedScene" path="res://addons/PolyPet/Samples/Assets/SceneToggleButton.tscn" id="4_stb"]
+[ext_resource type="Script" uid="uid://jcvwfrqtn7lj" path="res://addons/PolyPet/PolyPetName.cs" id="1_k8tk0"]
+[ext_resource type="Script" uid="uid://b770jfm8t7i50" path="res://addons/PolyPet/PolyPetAvatar.cs" id="2_33x3t"]
+[ext_resource type="Texture2D" uid="uid://mfmo5lq8oe18" path="res://addons/PolyPet/Samples/Assets/randomize.svg" id="3_o1n1n"]
+[ext_resource type="PackedScene" uid="uid://bm2vl6ly74k3b" path="res://addons/PolyPet/Samples/Assets/SceneToggleButton.tscn" id="4_stb"]
 
 [sub_resource type="StyleBoxFlat" id="sb_btn_hover"]
 content_margin_left = 10.0
@@ -331,7 +331,7 @@ icon = ExtResource("3_o1n1n")
 expand_icon = true
 script = SubResource("GDScript_o1n1n")
 
-[node name="SceneToggleButton" parent="." instance=ExtResource("4_stb")]
+[node name="SceneToggleButton" parent="." unique_id=744398100 instance=ExtResource("4_stb")]
 
 [connection signal="NameSeedChanged" from="Layout/AvatarFrame/AvatarInset/PolyPetAvatar" to="Layout/ControlCard/Controls/GridContainer/NameSeed" method="_on_poly_pet_avatar_name_seed_changed"]
 [connection signal="SeedChanged" from="Layout/AvatarFrame/AvatarInset/PolyPetAvatar" to="Layout/ControlCard/Controls/GridContainer/AvatarSeed" method="_on_poly_pet_avatar_seed_changed"]
