@@ -57,6 +57,8 @@ public delegate void NameSeedChangedCallback(PolyPetAvatar avatar, NullableInt n
 public class PolyPetAvatar : MonoBehaviour
 {
     private const float MouthLineWidth = 2f;
+    private static readonly object RandomLock = new object();
+    private static readonly Random SharedRandom = new Random();
 
     [SerializeField] private int _startSeed;
     [SerializeField] private int _startNameSeed;
@@ -129,8 +131,8 @@ public class PolyPetAvatar : MonoBehaviour
 
     public PolyPetData Data { get; private set; }
 
-    public void RandomizeSeed() { Seed = new Random().Next(); }
-    public void RandomizeNameSeed() { NameSeed = new Random().Next(); }
+    public void RandomizeSeed() { Seed = NextRandomSeed(); }
+    public void RandomizeNameSeed() { NameSeed = NextRandomSeed(); }
 
     void OnEnable()
     {
@@ -145,10 +147,10 @@ public class PolyPetAvatar : MonoBehaviour
             _material = new Material(shader);
 
         if (_startSeedType == StartSeedType.Fixed) _seed = _startSeed;
-        else if (_startSeedType == StartSeedType.Random) _seed = new Random().Next();
+        else if (_startSeedType == StartSeedType.Random) _seed = NextRandomSeed();
 
         if (_startNameSeedType == StartSeedType.Fixed) _nameSeed = _startNameSeed;
-        else if (_startNameSeedType == StartSeedType.Random) _nameSeed = new Random().Next();
+        else if (_startNameSeedType == StartSeedType.Random) _nameSeed = NextRandomSeed();
 
         RefreshDataAndMesh();
         RefreshRenderMode();
@@ -328,12 +330,27 @@ public class PolyPetAvatar : MonoBehaviour
 
     private static PolyPetData CreateEmptyData()
     {
+        var emptyShape = new ShapePart
+        {
+            Vertices = Array.Empty<Vec2>()
+        };
+
         return new PolyPetData
         {
+            Body = emptyShape,
+            Head = emptyShape,
+            Mouth = emptyShape,
+            Tail = emptyShape,
             Eyes = Array.Empty<ShapePart>(),
             Ears = Array.Empty<ShapePart>(),
             Limbs = Array.Empty<ShapePart>()
         };
+    }
+
+    private static int NextRandomSeed()
+    {
+        lock (RandomLock)
+            return SharedRandom.Next();
     }
 
     private AnimationFrame GetCurrentFrame()

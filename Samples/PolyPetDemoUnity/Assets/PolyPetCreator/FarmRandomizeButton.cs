@@ -4,16 +4,27 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class FarmRandomizeButton : MonoBehaviour
 {
-    private Button _button;
+    [SerializeField] private Button _button;
 
     private void Awake()
     {
-        _button = GetComponent<Button>();
-        if (_button != null)
-            _button.onClick.AddListener(OnRandomize);
+        if (_button == null)
+            _button = GetComponent<Button>();
+
+        if (_button == null)
+            _button = GetComponentInChildren<Button>(true);
     }
 
-    private void OnDestroy()
+    private void OnEnable()
+    {
+        if (_button != null)
+        {
+            _button.onClick.RemoveListener(OnRandomize);
+            _button.onClick.AddListener(OnRandomize);
+        }
+    }
+
+    private void OnDisable()
     {
         if (_button != null)
             _button.onClick.RemoveListener(OnRandomize);

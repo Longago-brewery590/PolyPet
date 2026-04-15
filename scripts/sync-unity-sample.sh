@@ -27,7 +27,13 @@ mv "$staging/Samples/PolyPetDemoUnity/Packages/com.shilo.polypet" "$dest"
 sample_source="$source_dir/Samples~/PolyPetCreator"
 sample_dest="$repo_root/Samples/PolyPetDemoUnity/Assets/PolyPetCreator"
 if [[ -d "$sample_source" ]]; then
-  rm -rf "$sample_dest"
   mkdir -p "$sample_dest"
-  cp -R "$sample_source"/. "$sample_dest"
+  while IFS= read -r -d '' file; do
+    rel="${file#"$sample_dest"/}"
+    if [[ ! -f "$sample_source/$rel" ]]; then
+      rm -f "$file"
+    fi
+  done < <(find "$sample_dest" -type f -print0)
+  find "$sample_dest" -depth -type d -empty -delete
+  cp -R "$sample_source"/. "$sample_dest"/
 fi

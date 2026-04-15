@@ -43,7 +43,7 @@ Build the project's C# solution once so Godot can compile the addon scripts, the
 ### Unity
 
 1. Add the package.
-2. Import the **PolyPet Samples** from `Window > Package Manager > PolyPet > Samples > Import` to get the **Creator** scene (avatar display, seed editing, and randomization) and the **Farm** scene (scrollable grid of random pets).
+2. Import the **PolyPet Creator** sample from `Window > Package Manager > PolyPet > Samples > Import` to get the **Creator** scene (avatar display, seed editing, and randomization) and the **Farm** scene (scrollable grid of random pets).
 3. Or build your own: create an empty GameObject and add the `PolyPetAvatar` component.
 4. Size the avatar by either setting `FrameSize` on the component for scene-space use, or by placing it on a Canvas object with a `RectTransform` and sizing that rect directly.
 5. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
@@ -161,6 +161,8 @@ The `Samples/` folder contains standalone engine projects for testing the addon/
 
 - **`Samples/PolyPetDemoGodot/`** — Standalone Godot project with the addon included.
 - **`Samples/PolyPetDemoUnity/`** — Standalone Unity project with the package included.
+
+A sample parity audit for the creator/farm demo surfaces lives in [`docs/samples/sample-parity.md`](docs/samples/sample-parity.md).
 
 The addon and package folders inside the sample projects are **managed by CI** (copied from `Godot/` and `Unity/` by the sync-core and release workflows) and are gitignored. They are not present after a fresh clone — run the sync workflow or copy manually:
 

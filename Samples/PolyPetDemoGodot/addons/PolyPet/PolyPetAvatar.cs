@@ -12,6 +12,9 @@ public enum StartSeedType
 [GlobalClass]
 public partial class PolyPetAvatar : Control
 {
+    private static readonly object RandomLock = new object();
+    private static readonly System.Random SharedRandom = new System.Random();
+
     [Export] private int _startSeed;
     [Export] private int _startNameSeed;
     [Export] private StartSeedType _startSeedType = StartSeedType.Fixed;
@@ -55,7 +58,7 @@ public partial class PolyPetAvatar : Control
 
     public void RandomizeSeed()
     {
-        Seed = new System.Random().Next();
+        Seed = NextRandomSeed();
     }
 
     public void SetSeed(long value)
@@ -70,7 +73,7 @@ public partial class PolyPetAvatar : Control
 
     public void RandomizeNameSeed()
     {
-        NameSeed = new System.Random().Next();
+        NameSeed = NextRandomSeed();
     }
 
     public void SetNameSeed(long value)
@@ -86,10 +89,10 @@ public partial class PolyPetAvatar : Control
     public override void _Ready()
     {
         if (_startSeedType == StartSeedType.Fixed) _seed = _startSeed;
-        else if (_startSeedType == StartSeedType.Random) _seed = new System.Random().Next();
+        else if (_startSeedType == StartSeedType.Random) _seed = NextRandomSeed();
 
         if (_startNameSeedType == StartSeedType.Fixed) _nameSeed = _startNameSeed;
-        else if (_startNameSeedType == StartSeedType.Random) _nameSeed = new System.Random().Next();
+        else if (_startNameSeedType == StartSeedType.Random) _nameSeed = NextRandomSeed();
 
         RefreshData();
         EmitSeedChanged();
@@ -264,11 +267,26 @@ public partial class PolyPetAvatar : Control
 
     private static PolyPetData CreateEmptyData()
     {
+        var emptyShape = new ShapePart
+        {
+            Vertices = Array.Empty<Vec2>()
+        };
+
         return new PolyPetData
         {
+            Body = emptyShape,
+            Head = emptyShape,
+            Mouth = emptyShape,
+            Tail = emptyShape,
             Eyes = Array.Empty<ShapePart>(),
             Ears = Array.Empty<ShapePart>(),
             Limbs = Array.Empty<ShapePart>()
         };
+    }
+
+    private static int NextRandomSeed()
+    {
+        lock (RandomLock)
+            return SharedRandom.Next();
     }
 }

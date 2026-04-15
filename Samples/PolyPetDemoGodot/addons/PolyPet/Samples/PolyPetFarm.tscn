@@ -124,7 +124,7 @@ resource_name = "RandomizeAll"
 script/source = "extends Button
 
 func _pressed() -> void:
-	for node in get_tree().current_scene.find_children(\"PolyPetAvatar\"):
+	for node in get_tree().current_scene.find_children(\"PolyPetAvatar\", \"\", true, false):
 		if node.has_method(\"RandomizeSeed\"):
 			node.RandomizeSeed()
 			node.RandomizeNameSeed()
