@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://cjo36jx38rrp5"]
+[gd_scene format=3]
 
-[ext_resource type="PackedScene" uid="uid://bm2vl6ly74k3b" path="res://addons/PolyPet/Samples/Assets/SceneToggleButton.tscn" id="1_stb"]
-[ext_resource type="Texture2D" uid="uid://mfmo5lq8oe18" path="res://addons/PolyPet/Samples/Assets/randomize.svg" id="2_rnd"]
+[ext_resource type="PackedScene" path="res://addons/PolyPet/Samples/Assets/SceneToggleButton.tscn" id="1_stb"]
+[ext_resource type="Texture2D" path="res://addons/PolyPet/Samples/Assets/randomize.svg" id="2_rnd"]
 
 [sub_resource type="StyleBoxFlat" id="sb_scroll_grabber"]
 content_margin_left = 5.0
@@ -87,22 +87,6 @@ corner_radius_top_right = 18
 corner_radius_bottom_right = 18
 corner_radius_bottom_left = 18
 
-[sub_resource type="StyleBoxFlat" id="sb_rnd_pressed"]
-content_margin_left = 10.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
-bg_color = Color(0.93, 0.68, 0.36, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.84, 0.56, 0.32, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-
 [sub_resource type="StyleBoxFlat" id="sb_rnd_hover"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -119,20 +103,34 @@ corner_radius_top_right = 18
 corner_radius_bottom_right = 18
 corner_radius_bottom_left = 18
 
+[sub_resource type="StyleBoxFlat" id="sb_rnd_pressed"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.93, 0.68, 0.36, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.84, 0.56, 0.32, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
 [sub_resource type="GDScript" id="GDScript_rnd"]
 resource_name = "RandomizeAll"
 script/source = "extends Button
 
 func _pressed() -> void:
-	# TODO fix avatar finding
 	for node in get_tree().current_scene.find_children(\"PolyPetAvatar\"):
-		print(node)
 		if node.has_method(\"RandomizeSeed\"):
 			node.RandomizeSeed()
 			node.RandomizeNameSeed()
 "
 
-[node name="PolyPetFarm" type="PanelContainer" unique_id=2070872756]
+[node name="PolyPetFarm" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -141,60 +139,60 @@ grow_vertical = 2
 theme = SubResource("farm_theme")
 theme_override_styles/panel = SubResource("sb_bg")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1408573837]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=1595275260]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="ContentMargin" type="MarginContainer" parent="MarginContainer/ScrollContainer" unique_id=1136696582]
+[node name="ContentMargin" type="MarginContainer" parent="MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_right = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/ContentMargin" unique_id=994713278]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer/ContentMargin"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer" unique_id=129015119]
+[node name="Spacer" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer" unique_id=1250414785]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 script = SubResource("GDScript_grid")
 
-[node name="Spacer2" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer" unique_id=169938913]
+[node name="Spacer2" type="Control" parent="MarginContainer/ScrollContainer/ContentMargin/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="SceneToggleButton" parent="." unique_id=609784347 instance=ExtResource("1_stb")]
+[node name="SceneToggleButton" parent="." instance=ExtResource("1_stb")]
 
-[node name="RandomizeAllButton" type="CanvasLayer" parent="." unique_id=1741228901]
+[node name="RandomizeAllButton" type="CanvasLayer" parent="."]
 layer = 100
 
-[node name="Button" type="Button" parent="RandomizeAllButton" unique_id=2013412118]
+[node name="Button" type="Button" parent="RandomizeAllButton"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -68.0
-offset_top = 10.0
-offset_right = -18.0
-offset_bottom = 60.0
+offset_left = -66.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 66.0
 grow_horizontal = 0
 theme_override_colors/icon_normal_color = Color(0.53, 0.33, 0.21, 1)
-theme_override_colors/icon_pressed_color = Color(0.39, 0.22, 0.12, 1)
 theme_override_colors/icon_hover_color = Color(0.53, 0.33, 0.21, 1)
+theme_override_colors/icon_pressed_color = Color(0.39, 0.22, 0.12, 1)
+theme_override_styles/focus = SubResource("sb_rnd_hover")
+theme_override_styles/hover = SubResource("sb_rnd_hover")
 theme_override_styles/normal = SubResource("sb_rnd_normal")
 theme_override_styles/pressed = SubResource("sb_rnd_pressed")
-theme_override_styles/hover = SubResource("sb_rnd_hover")
-theme_override_styles/focus = SubResource("sb_rnd_hover")
 icon = ExtResource("2_rnd")
 expand_icon = true
 script = SubResource("GDScript_rnd")
