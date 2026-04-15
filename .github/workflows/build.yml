@@ -22,11 +22,11 @@ jobs:
           ref: ${{ inputs.tag }}
 
       - name: Setup Godot
-        uses: chickensoft-games/setup-godot@v3
+        uses: chickensoft-games/setup-godot@v2.4.1
         with:
           version: 4.6.0-stable
           use-dotnet: true
-          export-templates: true
+          include-templates: true
 
       - name: Restore .NET dependencies
         run: dotnet restore Samples/PolyPetDemoGodot/PolyPetDemoGodot.csproj
